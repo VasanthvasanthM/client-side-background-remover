@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Dictionaries hold no crawlable content; the pages already carry the text.
+Disallow: /assets/i18n/
+
+Sitemap: https://client-side-background-remover.pages.dev/sitemap.xml

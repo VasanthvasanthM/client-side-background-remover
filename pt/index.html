@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="pt" dir="ltr" class="scroll-pt-20">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Remover fundo de imagem — grátis, privado, no seu navegador</title>
+    <meta name="description" content="Remova o fundo de uma imagem e baixe um PNG transparente. Tudo roda no seu navegador: sua foto nunca é enviada. Grátis, sem cadastro e sem marca d&#39;água." />
+    <meta name="keywords" content="remover fundo, tirar fundo de imagem, png transparente, remover fundo branco, remover chroma key, borracha de fundo, deixar fundo transparente" />
+    <link rel="canonical" href="https://client-side-background-remover.pages.dev/pt/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#7c3aed" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Cutout" />
+    <meta property="og:title" content="Removedor de fundo — sua imagem nunca sai do seu aparelho" />
+    <meta property="og:description" content="Recorte um fundo e salve um PNG transparente, inteiramente no navegador. Sem upload, sem conta e sem marca d&#39;água." />
+    <meta property="og:url" content="https://client-side-background-remover.pages.dev/pt/" />
+    <meta property="og:image" content="https://client-side-background-remover.pages.dev/assets/og/cover.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Removedor de fundo — sua imagem nunca sai do seu aparelho" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:locale:alternate" content="es_ES" />
+    <meta property="og:locale:alternate" content="fr_FR" />
+    <meta property="og:locale:alternate" content="hi_IN" />
+    <meta property="og:locale:alternate" content="id_ID" />
+    <meta property="og:locale:alternate" content="ar_AR" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Removedor de fundo — sua imagem nunca sai do seu aparelho" />
+    <meta name="twitter:description" content="Recorte um fundo e salve um PNG transparente, inteiramente no navegador. Sem upload, sem conta e sem marca d&#39;água." />
+    <meta name="twitter:image" content="https://client-side-background-remover.pages.dev/assets/og/cover.png" />
+
+    <link rel="alternate" hreflang="en" href="https://client-side-background-remover.pages.dev/" />
+    <link rel="alternate" hreflang="es" href="https://client-side-background-remover.pages.dev/es/" />
+    <link rel="alternate" hreflang="pt" href="https://client-side-background-remover.pages.dev/pt/" />
+    <link rel="alternate" hreflang="fr" href="https://client-side-background-remover.pages.dev/fr/" />
+    <link rel="alternate" hreflang="hi" href="https://client-side-background-remover.pages.dev/hi/" />
+    <link rel="alternate" hreflang="id" href="https://client-side-background-remover.pages.dev/id/" />
+    <link rel="alternate" hreflang="ar" href="https://client-side-background-remover.pages.dev/ar/" />
+    <link rel="alternate" hreflang="x-default" href="https://client-side-background-remover.pages.dev/" />
+
+    <link rel="icon" href="../assets/icon/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png" />
+    <link rel="manifest" href="../assets/site.webmanifest" />
+
+    <link rel="stylesheet" href="../assets/css/app.css?v=e1f98b56" />
+
+    <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Cutout","alternateName":"Remover fundo de imagem — grátis, privado, no seu navegador","url":"https://client-side-background-remover.pages.dev/pt/","description":"Remova o fundo de uma imagem e baixe um PNG transparente. Tudo roda no seu navegador: sua foto nunca é enviada. Grátis, sem cadastro e sem marca d'água.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any browser","browserRequirements":"Requires JavaScript","inLanguage":"pt","isAccessibleForFree":true,"isFamilyFriendly":true,"image":"https://client-side-background-remover.pages.dev/assets/og/cover.png","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":[null,null,null,null],"permissions":"none","storageRequirements":"Local browser storage only"},{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"pt","mainEntity":[{"@type":"Question","name":"Minha imagem é enviada para algum lugar?","acceptedAnswer":{"@type":"Answer","text":"Não. A página não tem servidor nenhum para onde enviar. Sua foto é decodificada pelo navegador, processada por um worker na sua própria máquina e descartada quando você fecha a aba. Dá para conferir: abra a aba de rede e remova um fundo; nada é enviado."}},{"@type":"Question","name":"É realmente grátis? Cadê a marca d'água?","acceptedAnswer":{"@type":"Answer","text":"Grátis, sem conta, sem limite de imagens e sem marca d'água. A página são arquivos estáticos em hospedagem gratuita, então depois de carregada não sobra nada a pagar nem nada a cobrar de você."}},{"@type":"Question","name":"Ele recorta cabelo numa foto com fundo bagunçado?","acceptedAnswer":{"@type":"Answer","text":"Não, e ele avisa em vez de fingir. Isso funciona comparando cores, então é excelente com fundo liso ou quase liso — fotos de produto, logos, assinaturas, capturas de tela, chroma key — e ruim com um objeto fotografado diante de uma cena bagunçada. As ferramentas que resolvem esse caso rodam uma rede neural e precisam baixar dezenas de megabytes de pesos."}},{"@type":"Question","name":"Por que sobra um contorno fraco em volta do recorte?","acceptedAnswer":{"@type":"Answer","text":"Os pixels da borda são uma mistura real de objeto e fundo, então, depois do recorte, ainda carregam a cor do fundo antigo. Deixe «Remover a franja colorida» ligado e essa mistura é desfeita por cálculo. Se sobrar uma borda, baixe um ou dois pontos o deslocamento da borda para raspá-la."}},{"@type":"Question","name":"Por que parte do meu objeto some?","acceptedAnswer":{"@type":"Answer","text":"A cor dele está próxima demais da do fundo. Diminua primeiro a tolerância; se isso deixar pontinhos, mantenha-a baixa e pinte o resto com o pincel. Numa foto com fundo claro e objeto claro, escolher a cor exata do fundo costuma render mais que o automático."}},{"@type":"Question","name":"Posso usar os resultados comercialmente?","acceptedAnswer":{"@type":"Answer","text":"Pode. A imagem é sua, o resultado é seu e não há exigência de atribuição. Nada é acrescentado ao arquivo."}}]}]</script>
+
+    <!-- Applies the saved theme before first paint. A separate file rather than
+         an inline block, which is what keeps script-src at a plain 'self'. -->
+    <script src="../assets/js/theme.js"></script>
+
+  </head>
+
+  <body>
+    <a
+      href="#content"
+      class="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-cut-600 focus:px-4 focus:py-2 focus:text-white"
+      >Pular para a ferramenta</a
+    >
+
+    <header
+      class="sticky top-0 z-40 border-b border-ink-200/80 bg-ink-50/85 backdrop-blur dark:border-ink-800/80 dark:bg-ink-950/85"
+    >
+      <div class="mx-auto flex max-w-content items-center gap-3 px-4 py-2.5 sm:px-6">
+        <a href="../" class="flex min-w-0 items-center gap-2.5">
+          <span
+            class="grid h-9 w-9 flex-none place-items-center rounded-xl bg-cut-600 text-white shadow-sm"
+            aria-hidden="true"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="h-5 w-5" focusable="false">
+              <circle cx="6" cy="6" r="2.6" />
+              <circle cx="6" cy="18" r="2.6" />
+              <path d="M8.1 7.6 20 18M20 6 8.1 16.4" />
+            </svg>
+          </span>
+          <span class="min-w-0">
+            <span class="block truncate text-sm font-bold leading-tight">Cutout</span>
+            <span class="hidden text-xs text-ink-500 dark:text-ink-400 sm:block">Remova fundos no seu navegador</span>
+          </span>
+        </a>
+
+        <div class="ms-auto flex items-center gap-1">
+          <nav class="hidden items-center gap-0.5 sm:flex" aria-label="Idioma">
+            <a href="../" hreflang="en" lang="en" class="rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-ink-100" >EN<span class="sr-only"> — English</span></a>
+            <a href="../es/" hreflang="es" lang="es" class="rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-ink-100" >ES<span class="sr-only"> — Español</span></a>
+            <a href="../pt/" hreflang="pt" lang="pt" aria-current="page" class="rounded-lg px-2 py-1.5 text-xs font-semibold text-clock-700 dark:text-clock-300" >PT<span class="sr-only"> — Português</span></a>
+            <a href="../fr/" hreflang="fr" lang="fr" class="rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-ink-100" >FR<span class="sr-only"> — Français</span></a>
+            <a href="../hi/" hreflang="hi" lang="hi" class="rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-ink-100" >HI<span class="sr-only"> — हिन्दी</span></a>
+            <a href="../id/" hreflang="id" lang="id" class="rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-ink-100" >ID<span class="sr-only"> — Bahasa Indonesia</span></a>
+            <a href="../ar/" hreflang="ar" lang="ar" class="rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-ink-100" >AR<span class="sr-only"> — العربية</span></a>
+          </nav>
+
+          <label class="sr-only" for="lang-select">Idioma</label>
+          <select id="lang-select" class="select max-w-[9rem] py-1.5 text-xs sm:hidden">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="pt" selected>Português</option>
+            <option value="fr">Français</option>
+            <option value="hi">हिन्दी</option>
+            <option value="id">Bahasa Indonesia</option>
+            <option value="ar">العربية</option>
+          </select>
+
+          <button type="button" class="btn-icon" data-theme-toggle aria-label="Mudar o tema de cores">
+            <svg
+              class="h-5 w-5 dark:hidden"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4m0-14.2-1.4 1.4M6.3 17.7l-1.4 1.4" />
+            </svg>
+            <svg
+              class="hidden h-5 w-5 dark:block"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-content px-4 pb-16 pt-6 sm:px-6">
+      <div class="mx-auto max-w-3xl text-center">
+        <h1 id="content" class="text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">Remova o fundo de uma imagem, no seu navegador</h1>
+        <p class="mx-auto mt-3 max-w-2xl text-pretty text-base text-ink-600 dark:text-ink-300">Solte uma imagem e o fundo sai. Nada é enviado, não há fila de espera e não há marca d&#39;água: tudo roda no seu próprio aparelho.</p>
+
+        <ul class="mt-5 flex flex-wrap items-center justify-center gap-2" role="list">
+          <li class="badge">Nada é enviado</li>
+          <li class="badge">Sem cadastro</li>
+          <li class="badge">Funciona offline</li>
+          <li class="badge">Sem marca d&#39;água</li>
+        </ul>
+      </div>
+
+      <!-- The editor. data-has-image and data-pointer-mode are set by app.js
+           and drive every disabled/cursor state in CSS, so there is no
+           class-juggling in JavaScript. -->
+      <section class="mt-8" data-app data-has-image="false" data-pointer-mode="none" aria-label="Removedor de fundo">
+        <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+          <!-- Canvas column -->
+          <div class="flex flex-col gap-3">
+            <div
+              class="canvas-stage relative grid min-h-[18rem] place-items-center overflow-hidden rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
+              data-drop
+            >
+              <canvas
+                class="max-h-[70vh] w-auto max-w-full touch-none rounded-lg shadow-sm"
+                data-canvas
+                width="16"
+                height="16"
+                role="img"
+                aria-label="Prévia da imagem com o fundo removido"
+              ></canvas>
+
+              <!-- The empty state sits on top of the canvas and is hidden the
+                   moment an image loads, via the data-has-image attribute. -->
+              <div
+                class="absolute inset-0 grid place-items-center bg-white/80 p-6 text-center backdrop-blur-sm dark:bg-ink-950/80"
+                data-empty
+              >
+                <div>
+                  <svg
+                    class="mx-auto h-10 w-10 text-ink-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path d="M12 16V4m0 0L8 8m4-4 4 4" />
+                    <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+                  </svg>
+                  <p class="mt-3 text-base font-semibold">Solte uma imagem aqui</p>
+                  <p class="mt-1 text-sm text-ink-600 dark:text-ink-300">Ou cole uma, ou escolha um arquivo.</p>
+
+                  <label class="btn-primary mt-4 cursor-pointer">
+                    <input type="file" class="sr-only" data-file />
+                    <span>Escolher uma imagem</span>
+                  </label>
+
+                  <p class="mt-3 text-xs text-ink-500 dark:text-ink-400">
+                    <span data-accepts></span>
+                  </p>
+                  <p class="mt-1 text-xs text-ink-500 dark:text-ink-400">Sua imagem fica neste aparelho. Nunca é enviada.</p>
+                </div>
+              </div>
+            </div>
+
+            <p class="notice" data-warning hidden></p>
+
+            <div class="flex flex-wrap items-center gap-2" data-needs-image>
+              <button type="button" class="toggle" data-tool="pick" aria-pressed="false">Escolher cor</button>
+              <button type="button" class="toggle" data-tool="brush" aria-pressed="false">Pincel</button>
+              <button type="button" class="btn-secondary" data-compare>Segure para comparar</button>
+              <span class="picked-chip ms-auto font-mono text-xs text-ink-500 dark:text-ink-400" data-picked></span>
+            </div>
+
+            <p class="text-xs text-ink-500 dark:text-ink-400" data-info></p>
+          </div>
+
+          <!-- Controls column -->
+          <div class="flex flex-col gap-4">
+            <div class="card">
+              <h2 class="text-sm font-bold">Como encontrar o fundo</h2>
+              <div class="mt-3 grid grid-cols-3 gap-2" role="group" aria-label="Como encontrar o fundo">
+                <button type="button" class="toggle px-2 text-xs" data-mode="auto" aria-pressed="true">
+                  Automático
+                </button>
+                <button type="button" class="toggle px-2 text-xs" data-mode="color" aria-pressed="false">
+                  Por cor
+                </button>
+                <button type="button" class="toggle px-2 text-xs" data-mode="chroma" aria-pressed="false">
+                  Chroma key
+                </button>
+              </div>
+              <p class="mt-2 text-xs text-ink-500 dark:text-ink-400">O automático lê a cor em volta das bordas. Por cor remove uma cor que você escolhe. Chroma key trabalha sobre a matiz, então somem tanto a parte iluminada quanto a sombra.</p>
+            </div>
+
+            <div class="card" data-needs-image>
+              <h2 class="text-sm font-bold">Ajustar o recorte</h2>
+
+              <div class="mt-3 space-y-3">
+                <div>
+                  <label class="field-label" for="tolerance">
+                    <span>Tolerância</span>
+                    <span class="field-value" data-value-of="tolerance"></span>
+                  </label>
+                  <input
+                    id="tolerance"
+                    class="range"
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="1"
+                    data-field="tolerance"
+                  />
+                  <p class="text-xs text-ink-500 dark:text-ink-400">O quanto um pixel pode diferir e ainda contar como fundo. Aumente se sobrarem pontinhos; diminua se estiver comendo o objeto.</p>
+                </div>
+
+                <div>
+                  <label class="field-label" for="softness">
+                    <span>Suavidade da borda</span>
+                    <span class="field-value" data-value-of="softness"></span>
+                  </label>
+                  <input id="softness" class="range" type="range" min="0" max="100" step="1" data-field="softness" />
+                </div>
+
+                <div>
+                  <label class="field-label" for="edgeShift">
+                    <span>Deslocamento da borda</span>
+                    <span class="field-value" data-value-of="edgeShift"></span>
+                  </label>
+                  <input id="edgeShift" class="range" type="range" min="-5" max="5" step="1" data-field="edgeShift" />
+                  <p class="text-xs text-ink-500 dark:text-ink-400">Negativo encolhe o objeto para cortar um halo. Positivo devolve.</p>
+                </div>
+
+                <div>
+                  <label class="field-label" for="featherRadius">
+                    <span>Enevoamento</span>
+                    <span class="field-value" data-value-of="featherRadius"></span>
+                  </label>
+                  <input
+                    id="featherRadius"
+                    class="range"
+                    type="range"
+                    min="0"
+                    max="8"
+                    step="1"
+                    data-field="featherRadius"
+                  />
+                </div>
+
+                <label class="check">
+                  <input type="checkbox" data-field="contiguous" />
+                  <span>Só a área ligada às bordas</span>
+                </label>
+                <p class="-mt-2 text-xs text-ink-500 dark:text-ink-400">Desligue para limpar o fundo que aparece por vãos: o miolo de um O, o espaço dentro de uma alça.</p>
+
+                <label class="check">
+                  <input type="checkbox" data-field="removeSpeckles" />
+                  <span>Remover pontinhos soltos</span>
+                </label>
+
+                <label class="check">
+                  <input type="checkbox" data-field="fillHoles" />
+                  <span>Preencher buracos no objeto</span>
+                </label>
+
+                <label class="check">
+                  <input type="checkbox" data-field="decontaminate" />
+                  <span>Remover a franja colorida</span>
+                </label>
+                <p class="-mt-2 text-xs text-ink-500 dark:text-ink-400">Separa o fundo antigo dos pixels semitransparentes da borda, que é o que evita o halo branco ou a borda esverdeada.</p>
+
+                <div>
+                  <label class="field-label" for="despill"><span>Neutralizar dominante de cor</span></label>
+                  <select id="despill" class="select mt-1" data-field="despillChannel">
+                    <option value="">Nenhuma</option>
+                    <option value="g">Dominante verde</option>
+                    <option value="b">Dominante azul</option>
+                    <option value="r">Dominante vermelha</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" data-needs-image>
+              <h2 class="text-sm font-bold">Corrigir à mão</h2>
+              <p class="mt-1 text-xs text-ink-500 dark:text-ink-400">Pinte sobre o que o automático errou. As pinceladas sobrevivem a qualquer outra mudança, então dá para continuar ajustando depois.</p>
+
+              <div class="mt-3 space-y-3">
+                <label class="check">
+                  <input type="checkbox" data-field="brushErase" data-local="1" />
+                  <span>Apagar (desmarque para restaurar)</span>
+                </label>
+
+                <div>
+                  <label class="field-label" for="brushSize">
+                    <span>Tamanho do pincel</span>
+                    <span class="field-value" data-value-of="brushSize"></span>
+                  </label>
+                  <input
+                    id="brushSize"
+                    class="range"
+                    type="range"
+                    min="2"
+                    max="200"
+                    step="2"
+                    data-field="brushSize"
+                    data-local="1"
+                  />
+                </div>
+
+                <div>
+                  <label class="field-label" for="brushHardness">
+                    <span>Dureza</span>
+                    <span class="field-value" data-value-of="brushHardness"></span>
+                  </label>
+                  <input
+                    id="brushHardness"
+                    class="range"
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="5"
+                    data-field="brushHardness"
+                    data-local="1"
+                  />
+                </div>
+
+                <div class="flex gap-2">
+                  <button type="button" class="btn-secondary flex-1 text-xs" data-undo-stroke>Desfazer pincelada</button>
+                  <button type="button" class="btn-secondary flex-1 text-xs" data-clear-strokes>
+                    Limpar pinceladas
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" data-needs-image>
+              <h2 class="text-sm font-bold">Saída</h2>
+
+              <div class="mt-3 space-y-3">
+                <div>
+                  <p class="field-label"><span>Fundo</span></p>
+                  <div class="mt-2 flex flex-wrap items-center gap-2" data-swatches></div>
+                  <label class="mt-2 flex items-center gap-2 text-xs text-ink-600 dark:text-ink-300">
+                    <input type="color" class="h-8 w-10 cursor-pointer rounded border-0 bg-transparent p-0" data-custom-background />
+                    <span>Cor personalizada</span>
+                  </label>
+                </div>
+
+                <label class="check">
+                  <input type="checkbox" data-field="trim" />
+                  <span>Recortar no objeto</span>
+                </label>
+
+                <div>
+                  <label class="field-label" for="exportFormat"><span>Tipo de arquivo</span></label>
+                  <select id="exportFormat" class="select mt-1" data-field="exportFormat" data-local="1">
+                    <option value="png">PNG — transparente, sem perdas</option>
+                    <option value="webp">WebP — transparente, menor</option>
+                  </select>
+                </div>
+
+                <button type="button" class="btn-primary w-full" data-download>Baixar imagem</button>
+                <p class="text-center text-xs text-ink-500 dark:text-ink-400" data-status role="status" aria-live="polite"></p>
+
+                <div class="flex gap-2">
+                  <button type="button" class="btn-ghost flex-1 text-xs" data-reset-settings>Redefinir ajustes</button>
+                  <button type="button" class="btn-ghost flex-1 text-xs" data-clear>Nova imagem</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Internal links. Three families, each a different search intent. -->
+      <section class="mt-14" aria-labelledby="links-tools">
+        <h2 class="text-lg font-bold" id="links-tools">Todas as ferramentas</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <a class="badge" href="./removedor-de-fundo/">Removedor de fundo</a>
+          <a class="badge" href="./remover-fundo-por-cor/">Remover fundo por cor</a>
+          <a class="badge" href="./remover-chroma-key/">Remover chroma key</a>
+          <a class="badge" href="./trocar-cor-de-fundo/">Trocar a cor de fundo</a>
+          <a class="badge" href="./borracha-de-fundo/">Borracha de fundo</a>
+          <a class="badge" href="./criar-png-transparente/">Criar PNG transparente</a>
+        </div>
+      </section>
+
+      <section class="mt-10" aria-labelledby="links-colors">
+        <h2 class="text-lg font-bold" id="links-colors">Remover uma cor de fundo específica</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <a class="badge" href="./remover-fundo-branco/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#ffffff" aria-hidden="true"></span>branco</a>
+          <a class="badge" href="./remover-fundo-preto/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#000000" aria-hidden="true"></span>preto</a>
+          <a class="badge" href="./remover-fundo-cinza/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#808080" aria-hidden="true"></span>cinza</a>
+          <a class="badge" href="./remover-fundo-verde/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#00b140" aria-hidden="true"></span>verde</a>
+          <a class="badge" href="./remover-fundo-azul/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#0047ab" aria-hidden="true"></span>azul</a>
+          <a class="badge" href="./remover-fundo-vermelho/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#d22b2b" aria-hidden="true"></span>vermelho</a>
+          <a class="badge" href="./remover-fundo-amarelo/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#ffd700" aria-hidden="true"></span>amarelo</a>
+          <a class="badge" href="./remover-fundo-laranja/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#ff7f24" aria-hidden="true"></span>laranja</a>
+          <a class="badge" href="./remover-fundo-roxo/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#7b3ff2" aria-hidden="true"></span>roxo</a>
+          <a class="badge" href="./remover-fundo-rosa/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#ff69b4" aria-hidden="true"></span>rosa</a>
+          <a class="badge" href="./remover-fundo-marrom/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#8b5a2b" aria-hidden="true"></span>marrom</a>
+          <a class="badge" href="./remover-fundo-bege/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#f5f5dc" aria-hidden="true"></span>bege</a>
+          <a class="badge" href="./remover-fundo-azul-marinho/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#001f54" aria-hidden="true"></span>azul-marinho</a>
+          <a class="badge" href="./remover-fundo-verde-azulado/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#008080" aria-hidden="true"></span>verde-azulado</a>
+          <a class="badge" href="./remover-fundo-ciano/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#00bcd4" aria-hidden="true"></span>ciano</a>
+          <a class="badge" href="./remover-fundo-magenta/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#d8008f" aria-hidden="true"></span>magenta</a>
+          <a class="badge" href="./remover-fundo-dourado/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#d4af37" aria-hidden="true"></span>dourado</a>
+          <a class="badge" href="./remover-fundo-prateado/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#c0c0c0" aria-hidden="true"></span>prateado</a>
+        </div>
+      </section>
+
+      <section class="mt-10" aria-labelledby="links-uses">
+        <h2 class="text-lg font-bold" id="links-uses">Remover o fundo de…</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <a class="badge" href="./remover-fundo-de-logo/">um logo</a>
+          <a class="badge" href="./remover-fundo-de-signature/">uma assinatura</a>
+          <a class="badge" href="./remover-fundo-de-product-photo/">uma foto de produto</a>
+          <a class="badge" href="./remover-fundo-de-headshot/">uma foto de rosto</a>
+          <a class="badge" href="./remover-fundo-de-screenshot/">uma captura de tela</a>
+          <a class="badge" href="./remover-fundo-de-sticker/">um adesivo</a>
+          <a class="badge" href="./remover-fundo-de-stamp/">um carimbo</a>
+          <a class="badge" href="./remover-fundo-de-qr-code/">um QR code</a>
+          <a class="badge" href="./remover-fundo-de-drawing/">um desenho</a>
+          <a class="badge" href="./remover-fundo-de-sketch/">um esboço</a>
+          <a class="badge" href="./remover-fundo-de-scanned-document/">um documento digitalizado</a>
+          <a class="badge" href="./remover-fundo-de-passport-photo/">uma foto de passaporte</a>
+        </div>
+      </section>
+
+      <section class="mt-10" aria-labelledby="links-formats">
+        <h2 class="text-lg font-bold" id="links-formats">Converter um arquivo em PNG transparente</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <a class="badge" href="./jpg-para-png-transparente/">JPG &rarr; PNG</a>
+          <a class="badge" href="./jpeg-para-png-transparente/">JPEG &rarr; PNG</a>
+          <a class="badge" href="./png-para-png-transparente/">PNG &rarr; PNG</a>
+          <a class="badge" href="./webp-para-png-transparente/">WebP &rarr; PNG</a>
+          <a class="badge" href="./gif-para-png-transparente/">GIF &rarr; PNG</a>
+          <a class="badge" href="./bmp-para-png-transparente/">BMP &rarr; PNG</a>
+          <a class="badge" href="./avif-para-png-transparente/">AVIF &rarr; PNG</a>
+          <a class="badge" href="./ico-para-png-transparente/">ICO &rarr; PNG</a>
+        </div>
+      </section>
+
+      <section class="mt-14" aria-labelledby="faq-heading">
+        <h2 class="text-lg font-bold" id="faq-heading">Perguntas frequentes</h2>
+        <div class="mt-3 space-y-2">
+          <details class="card">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold">
+              Minha imagem é enviada para algum lugar?
+            </summary>
+            <p class="border-t border-ink-200 px-4 py-3 text-sm leading-relaxed text-ink-600 dark:border-ink-800 dark:text-ink-300">Não. A página não tem servidor nenhum para onde enviar. Sua foto é decodificada pelo navegador, processada por um worker na sua própria máquina e descartada quando você fecha a aba. Dá para conferir: abra a aba de rede e remova um fundo; nada é enviado.</p>
+          </details>
+          <details class="card">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold">
+              É realmente grátis? Cadê a marca d&#39;água?
+            </summary>
+            <p class="border-t border-ink-200 px-4 py-3 text-sm leading-relaxed text-ink-600 dark:border-ink-800 dark:text-ink-300">Grátis, sem conta, sem limite de imagens e sem marca d&#39;água. A página são arquivos estáticos em hospedagem gratuita, então depois de carregada não sobra nada a pagar nem nada a cobrar de você.</p>
+          </details>
+          <details class="card">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold">
+              Ele recorta cabelo numa foto com fundo bagunçado?
+            </summary>
+            <p class="border-t border-ink-200 px-4 py-3 text-sm leading-relaxed text-ink-600 dark:border-ink-800 dark:text-ink-300">Não, e ele avisa em vez de fingir. Isso funciona comparando cores, então é excelente com fundo liso ou quase liso — fotos de produto, logos, assinaturas, capturas de tela, chroma key — e ruim com um objeto fotografado diante de uma cena bagunçada. As ferramentas que resolvem esse caso rodam uma rede neural e precisam baixar dezenas de megabytes de pesos.</p>
+          </details>
+          <details class="card">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold">
+              Por que sobra um contorno fraco em volta do recorte?
+            </summary>
+            <p class="border-t border-ink-200 px-4 py-3 text-sm leading-relaxed text-ink-600 dark:border-ink-800 dark:text-ink-300">Os pixels da borda são uma mistura real de objeto e fundo, então, depois do recorte, ainda carregam a cor do fundo antigo. Deixe «Remover a franja colorida» ligado e essa mistura é desfeita por cálculo. Se sobrar uma borda, baixe um ou dois pontos o deslocamento da borda para raspá-la.</p>
+          </details>
+          <details class="card">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold">
+              Por que parte do meu objeto some?
+            </summary>
+            <p class="border-t border-ink-200 px-4 py-3 text-sm leading-relaxed text-ink-600 dark:border-ink-800 dark:text-ink-300">A cor dele está próxima demais da do fundo. Diminua primeiro a tolerância; se isso deixar pontinhos, mantenha-a baixa e pinte o resto com o pincel. Numa foto com fundo claro e objeto claro, escolher a cor exata do fundo costuma render mais que o automático.</p>
+          </details>
+          <details class="card">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold">
+              Posso usar os resultados comercialmente?
+            </summary>
+            <p class="border-t border-ink-200 px-4 py-3 text-sm leading-relaxed text-ink-600 dark:border-ink-800 dark:text-ink-300">Pode. A imagem é sua, o resultado é seu e não há exigência de atribuição. Nada é acrescentado ao arquivo.</p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-ink-200 bg-white dark:border-ink-800 dark:bg-ink-900">
+      <div class="mx-auto max-w-content px-4 py-10 sm:px-6">
+        <div class="grid gap-8 sm:grid-cols-3">
+          <div>
+            <p class="text-sm font-bold">Cutout</p>
+            <p class="mt-2 text-sm text-ink-600 dark:text-ink-300">Cada pixel é processado no seu navegador. Sem conta, sem uploads e sem marca d&#39;água.</p>
+            <p class="mt-3 flex items-center gap-2 text-xs text-ink-500 dark:text-ink-400">
+              <span data-storage-state>Ajustes salvos neste aparelho</span>
+            </p>
+            <button type="button" class="btn-ghost mt-2 px-2 py-1 text-xs" data-reset-storage>Apagar os ajustes salvos</button>
+          </div>
+          <nav aria-labelledby="foot-tools">
+            <p class="text-sm font-bold" id="foot-tools">Ferramentas</p>
+            <ul class="mt-2 space-y-1.5 text-sm" role="list">
+              <li><a class="link" href="./removedor-de-fundo/">Removedor de fundo</a></li>
+              <li><a class="link" href="./remover-fundo-por-cor/">Remover fundo por cor</a></li>
+              <li><a class="link" href="./remover-chroma-key/">Remover chroma key</a></li>
+              <li><a class="link" href="./trocar-cor-de-fundo/">Trocar a cor de fundo</a></li>
+              <li><a class="link" href="./borracha-de-fundo/">Borracha de fundo</a></li>
+              <li><a class="link" href="./criar-png-transparente/">Criar PNG transparente</a></li>
+            </ul>
+          </nav>
+          <nav aria-labelledby="foot-langs">
+            <p class="text-sm font-bold" id="foot-langs">Idiomas</p>
+            <ul class="mt-2 grid grid-cols-2 gap-1.5 text-sm" role="list">
+              <li><a class="link" href="../" hreflang="en" lang="en" >English</a></li>
+              <li><a class="link" href="../es/" hreflang="es" lang="es" >Español</a></li>
+              <li><a class="font-semibold" href="../pt/" hreflang="pt" lang="pt" aria-current="page" >Português</a></li>
+              <li><a class="link" href="../fr/" hreflang="fr" lang="fr" >Français</a></li>
+              <li><a class="link" href="../hi/" hreflang="hi" lang="hi" >हिन्दी</a></li>
+              <li><a class="link" href="../id/" hreflang="id" lang="id" >Bahasa Indonesia</a></li>
+              <li><a class="link" href="../ar/" hreflang="ar" lang="ar" >العربية</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <div class="mt-8 border-t border-ink-200 pt-6 dark:border-ink-800">
+          <p class="text-xs text-ink-500 dark:text-ink-400">O resultado depende de quão distinto o objeto é do fundo. Isto compara cores; não reconhece objetos.</p>
+          <!-- Rendered with the build year, then re-rendered by chrome.js with
+               the browser's current year, so a page cached across New Year's
+               Eve never shows a stale copyright. -->
+          <p class="mt-2 text-xs text-ink-500 dark:text-ink-400" data-copyright>© 2026 Cutout</p>
+        </div>
+      </div>
+    </footer>
+
+    <script type="application/json" id="i18n-dict">{"app.name":"Cutout","app.tagline":"Remova fundos no seu navegador","a11y.skip":"Pular para a ferramenta","a11y.langPicker":"Idioma","a11y.theme":"Mudar o tema de cores","a11y.editor":"Removedor de fundo","a11y.canvas":"Prévia da imagem com o fundo removido","a11y.breadcrumb":"Trilha de navegação","common.saved":"Ajustes salvos neste aparelho","common.notSaved":"Seu navegador está bloqueando o armazenamento local, então os ajustes se perdem ao fechar a aba.","common.reset":"Apagar os ajustes salvos","common.faq":"Perguntas frequentes","foot.privacy":"Cada pixel é processado no seu navegador. Sem conta, sem uploads e sem marca d'água.","foot.tools":"Ferramentas","foot.languages":"Idiomas","foot.disclaimer":"O resultado depende de quão distinto o objeto é do fundo. Isto compara cores; não reconhece objetos.","foot.copyright":"© {year} {name}"}</script>
+    <script type="module" src="../assets/js/app.js"></script>
+  </body>
+</html>

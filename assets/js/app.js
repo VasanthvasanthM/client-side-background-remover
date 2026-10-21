@@ -1,0 +1,425 @@
+/**
+ * Application bootstrap.
+ *
+ * Wires the controls to the editor and keeps the DOM in step with the store.
+ * Deliberately the only file that knows about both: the engine knows nothing
+ * about the DOM, and the editor knows nothing about which button is which.
+ */
+
+import { store } from './store.js';
+import { initChrome } from './chrome.js';
+import { t, applyTranslations, formatBytes, formatDimensions } from './i18n.js';
+import { Editor, ACCEPTED_TYPES } from './editor.js';
+import { parseHex, luminance } from './color.js';
+
+const $ = (selector, scope = document) => scope.querySelector(selector);
+const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
+
+/** Preset output backgrounds, in swatch order. */
+const BACKGROUND_PRESETS = ['transparent', '#ffffff', '#000000', '#f3f4f6', '#0b1220', '#00b140', '#2563eb'];
+
+const app = $('[data-app]');
+if (app) boot(app);
+
+function boot(root) {
+  initChrome();
+
+  const canvas = $('[data-canvas]', root);
+  const editor = new Editor({ canvas, onState: () => renderState() });
+
+  /** The colour the eyedropper last picked, kept out of the store until used. */
+  let pickedColor = '';
+  /** 'none' | 'pick' | 'brush' */
+  let pointerMode = 'none';
+  let painting = false;
+  let refreshHandle = 0;
+
+  // -------------------------------------------------------------------------
+  // Refresh scheduling
+  // -------------------------------------------------------------------------
+
+  /**
+   * Coalesce rapid changes into one recompute per frame.
+   *
+   * A range input fires on every pixel of travel. Without this, dragging the
+   * tolerance slider across its width queues a hundred full segmentations and
+   * the preview trails the handle by seconds.
+   */
+  function scheduleRefresh() {
+    if (refreshHandle) cancelAnimationFrame(refreshHandle);
+    refreshHandle = requestAnimationFrame(() => {
+      refreshHandle = 0;
+      editor.refresh(pickedColor);
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // Loading
+  // -------------------------------------------------------------------------
+
+  const fileInput = $('[data-file]', root);
+  const dropZone = $('[data-drop]', root);
+
+  fileInput?.addEventListener('change', () => {
+    const file = fileInput.files?.[0];
+    if (file) accept(file);
+    // Cleared so choosing the same file twice still fires a change event.
+    fileInput.value = '';
+  });
+
+  async function accept(file) {
+    const ok = await editor.load(file);
+    if (ok) {
+      pickedColor = '';
+      scheduleRefresh();
+    }
+  }
+
+  if (dropZone) {
+    for (const type of ['dragenter', 'dragover']) {
+      dropZone.addEventListener(type, (event) => {
+        event.preventDefault();
+        dropZone.classList.add('is-dragging');
+      });
+    }
+    for (const type of ['dragleave', 'drop']) {
+      dropZone.addEventListener(type, (event) => {
+        event.preventDefault();
+        dropZone.classList.remove('is-dragging');
+      });
+    }
+    dropZone.addEventListener('drop', (event) => {
+      const file = event.dataTransfer?.files?.[0];
+      if (file) accept(file);
+    });
+  }
+
+  // Paste is how people move a screenshot in, and it is the fastest path
+  // there is — no file dialog, no temporary file on disk.
+  document.addEventListener('paste', (event) => {
+    const item = [...(event.clipboardData?.items ?? [])].find((entry) => entry.type.startsWith('image/'));
+    if (!item) return;
+    const file = item.getAsFile();
+    if (file) {
+      event.preventDefault();
+      accept(file);
+    }
+  });
+
+  $('[data-clear]', root)?.addEventListener('click', () => {
+    editor.unload();
+    pickedColor = '';
+  });
+
+  // -------------------------------------------------------------------------
+  // Controls
+  // -------------------------------------------------------------------------
+
+  // Mode tabs
+  for (const button of $$('[data-mode]', root)) {
+    button.addEventListener('click', () => {
+      const mode = button.dataset.mode;
+      store.set({ mode });
+      // Chroma keying without a key colour is meaningless; seed a sensible
+      // green so the first result is the one the user expected.
+      if (mode === 'chroma' && !pickedColor) pickedColor = '#00b140';
+      if (mode === 'auto') pickedColor = '';
+      renderState();
+      scheduleRefresh();
+    });
+  }
+
+  // Numeric and boolean fields, bound by name.
+  for (const input of $$('[data-field]', root)) {
+    const field = input.dataset.field;
+    const event = input.type === 'checkbox' || input.tagName === 'SELECT' ? 'change' : 'input';
+
+    input.addEventListener(event, () => {
+      const value =
+        input.type === 'checkbox'
+          ? input.checked
+          : input.type === 'range' || input.type === 'number'
+            ? Number(input.value)
+            : input.value;
+
+      store.set({ [field]: value });
+      renderState();
+      // Brush and export settings change nothing about the current mask.
+      if (!input.dataset.local) scheduleRefresh();
+    });
+  }
+
+  // Background swatches
+  const swatchRow = $('[data-swatches]', root);
+  if (swatchRow) {
+    for (const preset of BACKGROUND_PRESETS) {
+      swatchRow.append(buildSwatch(preset));
+    }
+  }
+
+  function buildSwatch(value) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'swatch';
+    button.dataset.background = value;
+    button.setAttribute('aria-label', value === 'transparent' ? t('out.transparent') : value);
+    button.title = value === 'transparent' ? t('out.transparent') : value;
+
+    if (value === 'transparent') {
+      button.classList.add('swatch-transparent');
+    } else {
+      button.style.backgroundColor = value;
+      const rgb = parseHex(value);
+      if (rgb) button.classList.add(luminance(...rgb) > 0.5 ? 'swatch-light' : 'swatch-dark');
+    }
+
+    button.addEventListener('click', () => {
+      store.set({ background: value });
+      renderState();
+      scheduleRefresh();
+    });
+    return button;
+  }
+
+  $('[data-custom-background]', root)?.addEventListener('input', (event) => {
+    store.set({ background: event.target.value });
+    renderState();
+    scheduleRefresh();
+  });
+
+  // Pointer tools
+  for (const button of $$('[data-tool]', root)) {
+    button.addEventListener('click', () => {
+      pointerMode = pointerMode === button.dataset.tool ? 'none' : button.dataset.tool;
+      renderState();
+    });
+  }
+
+  $('[data-undo-stroke]', root)?.addEventListener('click', () => {
+    if (editor.undoStroke()) scheduleRefresh();
+  });
+
+  $('[data-clear-strokes]', root)?.addEventListener('click', () => {
+    if (editor.clearStrokes()) scheduleRefresh();
+  });
+
+  $('[data-reset-settings]', root)?.addEventListener('click', () => {
+    store.resetSettings();
+    pickedColor = '';
+    renderState();
+    scheduleRefresh();
+  });
+
+  // -------------------------------------------------------------------------
+  // Canvas interaction
+  // -------------------------------------------------------------------------
+
+  canvas.addEventListener('pointerdown', (event) => {
+    if (!editor.hasImage) return;
+
+    if (pointerMode === 'pick') {
+      const hex = editor.pick(event.clientX, event.clientY);
+      if (hex) {
+        pickedColor = hex;
+        store.rememberColor(hex);
+        if (store.get('mode') === 'auto') store.set({ mode: 'color' });
+        renderState();
+        scheduleRefresh();
+      }
+      return;
+    }
+
+    if (pointerMode === 'brush') {
+      painting = true;
+      canvas.setPointerCapture(event.pointerId);
+      if (editor.paint(event.clientX, event.clientY)) scheduleRefresh();
+    }
+  });
+
+  canvas.addEventListener('pointermove', (event) => {
+    if (!painting) return;
+    if (editor.paint(event.clientX, event.clientY)) scheduleRefresh();
+  });
+
+  for (const type of ['pointerup', 'pointercancel']) {
+    canvas.addEventListener(type, (event) => {
+      if (!painting) return;
+      painting = false;
+      canvas.releasePointerCapture?.(event.pointerId);
+    });
+  }
+
+  // Hold to compare against the original. Pointer and keyboard both, because
+  // "hold a key" is unusable for anyone who cannot hold two at once.
+  const compare = $('[data-compare]', root);
+  if (compare) {
+    const show = (on) => {
+      store.set({ showOriginal: on });
+      editor.draw();
+      renderState();
+    };
+    compare.addEventListener('pointerdown', () => show(true));
+    compare.addEventListener('pointerup', () => show(false));
+    compare.addEventListener('pointerleave', () => show(false));
+    compare.addEventListener('click', (event) => {
+      // A click with no preceding pointerdown is a keyboard activation:
+      // toggle instead of requiring a hold.
+      if (event.detail === 0) show(!store.get('showOriginal'));
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // Export
+  // -------------------------------------------------------------------------
+
+  const downloadButton = $('[data-download]', root);
+  downloadButton?.addEventListener('click', async () => {
+    if (!editor.hasImage) return;
+
+    downloadButton.disabled = true;
+    setStatus(t('out.working'));
+
+    try {
+      const result = await editor.exportBlob(pickedColor);
+      if (!result?.blob) {
+        setStatus(t('err.exportFailed'));
+        return;
+      }
+
+      const url = URL.createObjectURL(result.blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = editor.suggestedName(result.type);
+      link.rel = 'noopener';
+      document.body.append(link);
+      link.click();
+      link.remove();
+      // Revoked on the next tick: revoking synchronously races the download
+      // in Safari and silently produces an empty file.
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+
+      setStatus(
+        t('out.saved', {
+          size: formatBytes(result.blob.size),
+          dimensions: formatDimensions(result.width, result.height),
+        }),
+      );
+    } catch (error) {
+      setStatus(error.message || t('err.exportFailed'));
+    } finally {
+      downloadButton.disabled = false;
+    }
+  });
+
+  // -------------------------------------------------------------------------
+  // Keyboard
+  // -------------------------------------------------------------------------
+
+  document.addEventListener('keydown', (event) => {
+    if (event.target.matches('input, textarea, select')) return;
+    if (event.ctrlKey || event.metaKey) {
+      if (event.key.toLowerCase() === 'z' && editor.hasImage) {
+        event.preventDefault();
+        if (editor.undoStroke()) scheduleRefresh();
+      }
+      return;
+    }
+
+    const key = event.key.toLowerCase();
+    if (key === 'b') setPointerMode('brush');
+    else if (key === 'i') setPointerMode('pick');
+    else if (key === 'escape') setPointerMode('none');
+  });
+
+  function setPointerMode(mode) {
+    pointerMode = pointerMode === mode ? 'none' : mode;
+    renderState();
+  }
+
+  // -------------------------------------------------------------------------
+  // Rendering the UI from state
+  // -------------------------------------------------------------------------
+
+  const statusLine = $('[data-status]', root);
+  function setStatus(message) {
+    if (statusLine) statusLine.textContent = message;
+  }
+
+  function renderState() {
+    const state = store.snapshot();
+
+    root.dataset.hasImage = String(editor.hasImage);
+    root.dataset.pointerMode = pointerMode;
+    root.dataset.mode = state.mode;
+
+    for (const button of $$('[data-mode]', root)) {
+      button.setAttribute('aria-pressed', String(button.dataset.mode === state.mode));
+    }
+    for (const button of $$('[data-tool]', root)) {
+      button.setAttribute('aria-pressed', String(button.dataset.tool === pointerMode));
+    }
+    for (const button of $$('[data-background]', root)) {
+      button.setAttribute('aria-pressed', String(button.dataset.background === state.background));
+    }
+
+    for (const input of $$('[data-field]', root)) {
+      const field = input.dataset.field;
+      if (!(field in state)) continue;
+      if (input.type === 'checkbox') input.checked = Boolean(state[field]);
+      else if (document.activeElement !== input) input.value = String(state[field]);
+    }
+
+    for (const output of $$('[data-value-of]', root)) {
+      const field = output.dataset.valueOf;
+      if (field in state) output.textContent = String(state[field]);
+    }
+
+    const picked = $('[data-picked]', root);
+    if (picked) {
+      picked.textContent = pickedColor || t('pick.none');
+      picked.style.setProperty('--picked', pickedColor || 'transparent');
+    }
+
+    renderInfo();
+    renderWarning();
+  }
+
+  function renderInfo() {
+    const info = $('[data-info]', root);
+    if (!info) return;
+
+    if (!editor.hasImage) {
+      info.textContent = '';
+      return;
+    }
+    info.textContent = t('info.image', {
+      name: editor.fileName,
+      dimensions: formatDimensions(editor.full.width, editor.full.height),
+    });
+  }
+
+  function renderWarning() {
+    const box = $('[data-warning]', root);
+    if (!box) return;
+
+    const warning = editor.error || (editor.hasImage ? editor.meta.warning : '');
+    const key = editor.error ? '' : warning && `warn.${warning}`;
+
+    box.textContent = editor.error || (key ? t(key) : '');
+    box.hidden = !box.textContent;
+  }
+
+  // -------------------------------------------------------------------------
+
+  const accepts = $('[data-accepts]', root);
+  if (accepts) accepts.textContent = ACCEPTED_TYPES.map((type) => type.split('/')[1].toUpperCase()).join(', ');
+  if (fileInput) fileInput.accept = ACCEPTED_TYPES.join(',');
+
+  store.onPersistFailure = () => {
+    const notice = $('[data-storage-state]', root);
+    if (notice) notice.textContent = t('common.notSaved');
+  };
+
+  applyTranslations(root);
+  renderState();
+}

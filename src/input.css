@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Component classes live here rather than being assembled as strings in JS, so
+   Tailwind's scanner always sees them and no safelist is needed. */
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  /* A display utility (flex, inline-flex, grid) outranks the browser's default
+     [hidden] rule, which would silently un-hide anything toggled from JS. */
+  [hidden] {
+    display: none !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    @apply bg-ink-50 font-sans text-ink-900 antialiased dark:bg-ink-950 dark:text-ink-100;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-cut-600 ring-offset-2 ring-offset-white dark:ring-cut-400 dark:ring-offset-ink-950;
+  }
+
+  /* Devanagari and Arabic carry marks above and below the baseline that get
+     clipped at the Latin default line height. */
+  html[lang='hi'] body,
+  html[lang='ar'] body {
+    line-height: 1.8;
+  }
+
+  /* Pixel dimensions and percentages are compared digit by digit, so they stay
+     tabular and in Latin numerals even where the UI language uses its own —
+     a mixed numeral system inside one readout reads as a fault. */
+  .tabular-nums,
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+}
+
+@layer components {
+  .link {
+    @apply font-medium text-cut-700 underline decoration-cut-300 underline-offset-2 hover:decoration-cut-600 dark:text-cut-300 dark:decoration-cut-700 dark:hover:decoration-cut-400;
+  }
+
+  .card {
+    @apply rounded-2xl border border-ink-200 bg-white p-4 shadow-sm dark:border-ink-800 dark:bg-ink-900 sm:p-5;
+  }
+
+  /* 44px minimum on every interactive control: the WCAG target size, and the
+     practical floor for a thumb on a phone. */
+  .btn {
+    @apply inline-flex min-h-[2.75rem] items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-cut-600 text-white hover:bg-cut-700 disabled:hover:bg-cut-600;
+  }
+
+  .btn-secondary {
+    @apply btn border border-ink-200 bg-white text-ink-800 hover:bg-ink-100 dark:border-ink-700 dark:bg-ink-800 dark:text-ink-100 dark:hover:bg-ink-700;
+  }
+
+  .btn-ghost {
+    @apply btn text-ink-600 hover:bg-ink-100 dark:text-ink-300 dark:hover:bg-ink-800;
+  }
+
+  .btn-icon {
+    @apply grid h-10 w-10 place-items-center rounded-xl text-ink-600 transition-colors hover:bg-ink-100 dark:text-ink-300 dark:hover:bg-ink-800;
+  }
+
+  /* A pressed toggle has to be legible without colour alone, so the selected
+     state changes weight and border as well as background. */
+  .toggle {
+    @apply btn border border-ink-200 bg-white text-ink-700 hover:bg-ink-100 dark:border-ink-700 dark:bg-ink-900 dark:text-ink-200 dark:hover:bg-ink-800;
+  }
+
+  .toggle[aria-pressed='true'] {
+    @apply border-cut-600 bg-cut-50 font-bold text-cut-800 dark:border-cut-400 dark:bg-cut-950 dark:text-cut-100;
+  }
+
+  .field-label {
+    @apply flex items-baseline justify-between gap-2 text-sm font-medium text-ink-700 dark:text-ink-200;
+  }
+
+  .field-value {
+    @apply font-mono text-xs text-ink-500 tabular-nums dark:text-ink-400;
+  }
+
+  .range {
+    @apply h-11 w-full cursor-pointer accent-cut-600 dark:accent-cut-400;
+  }
+
+  .check {
+    @apply flex min-h-[2.75rem] cursor-pointer items-center gap-3 text-sm text-ink-700 dark:text-ink-200;
+  }
+
+  .check input {
+    @apply h-5 w-5 shrink-0 cursor-pointer rounded accent-cut-600 dark:accent-cut-400;
+  }
+
+  .select {
+    @apply min-h-[2.75rem] w-full rounded-xl border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 dark:border-ink-700 dark:bg-ink-800 dark:text-ink-100;
+  }
+
+  .swatch {
+    @apply h-9 w-9 shrink-0 rounded-lg border-2 border-ink-200 transition-transform hover:scale-110 dark:border-ink-700;
+  }
+
+  .swatch[aria-pressed='true'] {
+    @apply border-cut-600 ring-2 ring-cut-600 ring-offset-2 ring-offset-white dark:border-cut-300 dark:ring-cut-300 dark:ring-offset-ink-900;
+  }
+
+  /* The transparency swatch draws its own checkerboard, so it reads as
+     "no background" rather than as a white one. */
+  .swatch-transparent {
+    background-image:
+      linear-gradient(45deg, #c8c8c8 25%, transparent 25%),
+      linear-gradient(-45deg, #c8c8c8 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #c8c8c8 75%),
+      linear-gradient(-45deg, transparent 75%, #c8c8c8 75%);
+    background-size: 10px 10px;
+    background-position:
+      0 0,
+      0 5px,
+      5px -5px,
+      -5px 0;
+    background-color: #fff;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1 text-xs font-medium text-ink-700 ring-1 ring-ink-200 dark:bg-ink-900/80 dark:text-ink-200 dark:ring-ink-700;
+  }
+
+  .notice {
+    @apply rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-200;
+  }
+
+  .prose-block :where(p, ul, ol) {
+    @apply text-ink-700 dark:text-ink-300;
+  }
+
+  .prose-block :where(h2) {
+    @apply mt-8 text-xl font-bold text-ink-900 dark:text-ink-50;
+  }
+
+  .prose-block :where(h3) {
+    @apply mt-6 text-base font-semibold text-ink-900 dark:text-ink-50;
+  }
+}
+
+@layer utilities {
+  /* The editing surface. A fixed checkerboard behind the canvas means an
+     image with transparency reads correctly before the canvas has painted. */
+  .canvas-stage {
+    background-image:
+      linear-gradient(45deg, #d8d8d8 25%, transparent 25%),
+      linear-gradient(-45deg, #d8d8d8 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #d8d8d8 75%),
+      linear-gradient(-45deg, transparent 75%, #d8d8d8 75%);
+    background-size: 20px 20px;
+    background-position:
+      0 0,
+      0 10px,
+      10px -10px,
+      -10px 0;
+    background-color: #fff;
+  }
+
+  .dark .canvas-stage {
+    background-image:
+      linear-gradient(45deg, #2b303c 25%, transparent 25%),
+      linear-gradient(-45deg, #2b303c 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #2b303c 75%),
+      linear-gradient(-45deg, transparent 75%, #2b303c 75%);
+    background-color: #1b1f28;
+  }
+
+  .is-dragging {
+    @apply border-cut-500 bg-cut-50 dark:bg-cut-950/40;
+  }
+
+  /* The cursor is the only affordance telling you which pointer tool is live,
+     so it is driven by the same state attribute the buttons are. */
+  [data-pointer-mode='pick'] [data-canvas] {
+    cursor: crosshair;
+  }
+
+  [data-pointer-mode='brush'] [data-canvas] {
+    cursor: cell;
+  }
+
+  [data-has-image='false'] [data-needs-image] {
+    @apply pointer-events-none opacity-40;
+  }
+
+  .picked-chip::before {
+    content: '';
+    background: var(--picked, transparent);
+    @apply mr-2 inline-block h-3 w-3 rounded border border-ink-300 align-middle dark:border-ink-600;
+  }
+}
+
+@layer utilities {
+  /* The empty state covers the canvas until an image is loaded. Driven by the
+     same data attribute as every other state, so app.js sets one property and
+     the whole UI follows. */
+  [data-has-image='true'] [data-empty] {
+    display: none;
+  }
+
+  /* Before any image exists the canvas is a 16x16 placeholder; showing it
+     would be a stray grey square under the drop prompt. */
+  [data-has-image='false'] [data-canvas] {
+    visibility: hidden;
+  }
+}

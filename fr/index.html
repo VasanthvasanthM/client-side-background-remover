@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="fr" dir="ltr" class="scroll-pt-20">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Supprimer l&#39;arrière-plan d&#39;une image — gratuit, privé, dans votre navigateur</title>
+    <meta name="description" content="Supprimez l&#39;arrière-plan d&#39;une image et téléchargez un PNG transparent. Tout se fait dans votre navigateur : votre photo n&#39;est jamais envoyée. Gratuit, sans inscription et sans filigrane." />
+    <meta name="keywords" content="supprimer arrière-plan, détourer une image, png transparent, supprimer fond blanc, supprimer fond vert, gomme d&#39;arrière-plan, rendre le fond transparent" />
+    <link rel="canonical" href="https://client-side-background-remover.pages.dev/fr/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#7c3aed" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Cutout" />
+    <meta property="og:title" content="Suppression d&#39;arrière-plan — votre image ne quitte jamais votre appareil" />
+    <meta property="og:description" content="Détourez un arrière-plan et enregistrez un PNG transparent, entièrement dans votre navigateur. Sans envoi, sans compte et sans filigrane." />
+    <meta property="og:url" content="https://client-side-background-remover.pages.dev/fr/" />
+    <meta property="og:image" content="https://client-side-background-remover.pages.dev/assets/og/cover.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Suppression d&#39;arrière-plan — votre image ne quitte jamais votre appareil" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:locale:alternate" content="es_ES" />
+    <meta property="og:locale:alternate" content="pt_BR" />
+    <meta property="og:locale:alternate" content="hi_IN" />
+    <meta property="og:locale:alternate" content="id_ID" />
+    <meta property="og:locale:alternate" content="ar_AR" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Suppression d&#39;arrière-plan — votre image ne quitte jamais votre appareil" />
+    <meta name="twitter:description" content="Détourez un arrière-plan et enregistrez un PNG transparent, entièrement dans votre navigateur. Sans envoi, sans compte et sans filigrane." />
+    <meta name="twitter:image" content="https://client-side-background-remover.pages.dev/assets/og/cover.png" />
+
+    <link rel="alternate" hreflang="en" href="https://client-side-background-remover.pages.dev/" />
+    <link rel="alternate" hreflang="es" href="https://client-side-background-remover.pages.dev/es/" />
+    <link rel="alternate" hreflang="pt" href="https://client-side-background-remover.pages.dev/pt/" />
+    <link rel="alternate" hreflang="fr" href="https://client-side-background-remover.pages.dev/fr/" />
+    <link rel="alternate" hreflang="hi" href="https://client-side-background-remover.pages.dev/hi/" />
+    <link rel="alternate" hreflang="id" href="https://client-side-background-remover.pages.dev/id/" />
+    <link rel="alternate" hreflang="ar" href="https://client-side-background-remover.pages.dev/ar/" />
+    <link rel="alternate" hreflang="x-default" href="https://client-side-background-remover.pages.dev/" />
+
+    <link rel="icon" href="../assets/icon/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png" />
+    <link rel="manifest" href="../assets/site.webmanifest" />
+
+    <link rel="stylesheet" href="../assets/css/app.css?v=e1f98b56" />
+
+    <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Cutout","alternateName":"Supprimer l'arrière-plan d'une image — gratuit, privé, dans votre navigateur","url":"https://client-side-background-remover.pages.dev/fr/","description":"Supprimez l'arrière-plan d'une image et téléchargez un PNG transparent. Tout se fait dans votre navigateur : votre photo n'est jamais envoyée. Gratuit, sans inscription et sans filigrane.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any browser","browserRequirements":"Requires JavaScript","inLanguage":"fr","isAccessibleForFree":true,"isFamilyFriendly":true,"image":"https://client-side-background-remover.pages.dev/assets/og/cover.png","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":[null,null,null,null],"permissions":"none","storageRequirements":"Local browser storage only"},{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"fr","mainEntity":[{"@type":"Question","name":"Mon image est-elle envoyée quelque part ?","acceptedAnswer":{"@type":"Answer","text":"Non. La page n'a aucun serveur vers lequel envoyer quoi que ce soit. Votre photo est décodée par le navigateur, traitée par un worker sur votre propre machine, et abandonnée à la fermeture de l'onglet. Vous pouvez le vérifier : ouvrez l'onglet réseau et supprimez un arrière-plan — rien ne part."}},{"@type":"Question","name":"C'est vraiment gratuit ? Où est le filigrane ?","acceptedAnswer":{"@type":"Answer","text":"Gratuit, sans compte, sans limite du nombre d'images et sans filigrane. La page n'est que des fichiers statiques sur un hébergement gratuit : une fois chargée, il ne reste rien à payer et rien à vous facturer."}},{"@type":"Question","name":"Est-ce que ça détoure des cheveux sur une photo au fond chargé ?","acceptedAnswer":{"@type":"Answer","text":"Non, et il le dit plutôt que de faire semblant. Cet outil compare des couleurs : il est excellent sur un fond uni ou presque — photos de produit, logos, signatures, captures d'écran, fonds verts — et mauvais sur un sujet photographié devant une scène encombrée. Les outils qui gèrent ce cas font tourner un réseau de neurones et doivent télécharger des dizaines de mégaoctets de poids."}},{"@type":"Question","name":"Pourquoi reste-t-il un contour pâle autour de mon détourage ?","acceptedAnswer":{"@type":"Answer","text":"Les pixels du bord sont un vrai mélange de sujet et d'arrière-plan : après détourage, ils portent encore la couleur de l'ancien fond. Laissez « Supprimer la frange colorée » activé et ce mélange est défait par le calcul. S'il reste un liseré, baissez d'un ou deux crans le décalage du bord pour le raser."}},{"@type":"Question","name":"Pourquoi une partie de mon sujet disparaît-elle ?","acceptedAnswer":{"@type":"Answer","text":"Sa couleur est trop proche de celle de l'arrière-plan. Baissez d'abord la tolérance ; si cela laisse des points, gardez-la basse et peignez le reste au pinceau. Sur une photo au fond clair et au sujet clair, prélever la couleur exacte du fond vaut généralement mieux que l'automatique."}},{"@type":"Question","name":"Puis-je utiliser les résultats commercialement ?","acceptedAnswer":{"@type":"Answer","text":"Oui. L'image est à vous, le résultat est à vous, et aucune attribution n'est demandée. Rien n'est ajouté au fichier."}}]}]</script>
+
+    <!-- Applies the saved theme before first paint. A separate file rather than
+         an inline block, which is what keeps script-src at a plain 'self'. -->
+    <script src="../assets/js/theme.js"></script>
+
+  </head>
+
+  <body>
+    <a
+      href="#content"
+      class="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-cut-600 focus:px-4 focus:py-2 focus:text-white"
+      >Aller à l&#39;outil</a
+    >
+
+    <header
+      class="sticky top-0 z-40 border-b border-ink-200/80 bg-ink-50/85 backdrop-blur dark:border-ink-800/80 dark:bg-ink-950/85"
+    >
+      <div class="mx-auto flex max-w-content items-center gap-3 px-4 py-2.5 sm:px-6">
+        <a href="../" class="flex min-w-0 items-center gap-2.5">
+          <span
+            class="grid h-9 w-9 flex-none place-items-center rounded-xl bg-cut-600 text-white shadow-sm"
+            aria-hidden="true"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="h-5 w-5" focusable="false">
+              <circle cx="6" cy="6" r="2.6" />
+              <circle cx="6" cy="18" r="2.6" />
+              <path d="M8.1 7.6 20 18M20 6 8.1 16.4" />
+            </svg>
+          </span>
+          <span class="min-w-0">
+            <span class="block truncate text-sm font-bold leading-tight">Cutout</span>
+            <span class="hidden text-xs text-ink-500 dark:text-ink-400 sm:block">Supprimez les arrière-plans dans votre navigateur</span>
+          </span>
+        </a>
+
+        <div class="ms-auto flex items-center gap-1">
+          <nav class="hidden items-center gap-0.5 sm:flex" aria-label="Langue">
+            <a href="../" hreflang="en" lang="en" class="rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-ink-100" >EN<span class="sr-only"> — English</span></a>
+            <a href="../es/" hreflang="es" lang="es" class="rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-ink-100" >ES<span class="sr-only"> — Español</span></a>
+            <a href="../pt/" hreflang="pt" lang="pt" class="rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-ink-100" >PT<span class="sr-only"> — Português</span></a>
+            <a href="../fr/" hreflang="fr" lang="fr" aria-current="page" class="rounded-lg px-2 py-1.5 text-xs font-semibold text-clock-700 dark:text-clock-300" >FR<span class="sr-only"> — Français</span></a>
+            <a href="../hi/" hreflang="hi" lang="hi" class="rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-ink-100" >HI<span class="sr-only"> — हिन्दी</span></a>
+            <a href="../id/" hreflang="id" lang="id" class="rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-ink-100" >ID<span class="sr-only"> — Bahasa Indonesia</span></a>
+            <a href="../ar/" hreflang="ar" lang="ar" class="rounded-lg px-2 py-1.5 text-xs font-medium text-ink-500 hover:bg-ink-100 hover:text-ink-800 dark:text-ink-400 dark:hover:bg-ink-800 dark:hover:text-ink-100" >AR<span class="sr-only"> — العربية</span></a>
+          </nav>
+
+          <label class="sr-only" for="lang-select">Langue</label>
+          <select id="lang-select" class="select max-w-[9rem] py-1.5 text-xs sm:hidden">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="pt">Português</option>
+            <option value="fr" selected>Français</option>
+            <option value="hi">हिन्दी</option>
+            <option value="id">Bahasa Indonesia</option>
+            <option value="ar">العربية</option>
+          </select>
+
+          <button type="button" class="btn-icon" data-theme-toggle aria-label="Changer le thème de couleurs">
+            <svg
+              class="h-5 w-5 dark:hidden"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4m0-14.2-1.4 1.4M6.3 17.7l-1.4 1.4" />
+            </svg>
+            <svg
+              class="hidden h-5 w-5 dark:block"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-content px-4 pb-16 pt-6 sm:px-6">
+      <div class="mx-auto max-w-3xl text-center">
+        <h1 id="content" class="text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">Supprimez l&#39;arrière-plan d&#39;une image, dans votre navigateur</h1>
+        <p class="mx-auto mt-3 max-w-2xl text-pretty text-base text-ink-600 dark:text-ink-300">Déposez une image et l&#39;arrière-plan s&#39;en va. Rien n&#39;est envoyé, rien n&#39;est mis en file d&#39;attente et il n&#39;y a pas de filigrane : tout tourne sur votre propre appareil.</p>
+
+        <ul class="mt-5 flex flex-wrap items-center justify-center gap-2" role="list">
+          <li class="badge">Rien n&#39;est envoyé</li>
+          <li class="badge">Sans inscription</li>
+          <li class="badge">Fonctionne hors ligne</li>
+          <li class="badge">Sans filigrane</li>
+        </ul>
+      </div>
+
+      <!-- The editor. data-has-image and data-pointer-mode are set by app.js
+           and drive every disabled/cursor state in CSS, so there is no
+           class-juggling in JavaScript. -->
+      <section class="mt-8" data-app data-has-image="false" data-pointer-mode="none" aria-label="Suppression d&#39;arrière-plan">
+        <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+          <!-- Canvas column -->
+          <div class="flex flex-col gap-3">
+            <div
+              class="canvas-stage relative grid min-h-[18rem] place-items-center overflow-hidden rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
+              data-drop
+            >
+              <canvas
+                class="max-h-[70vh] w-auto max-w-full touch-none rounded-lg shadow-sm"
+                data-canvas
+                width="16"
+                height="16"
+                role="img"
+                aria-label="Aperçu de l&#39;image avec l&#39;arrière-plan supprimé"
+              ></canvas>
+
+              <!-- The empty state sits on top of the canvas and is hidden the
+                   moment an image loads, via the data-has-image attribute. -->
+              <div
+                class="absolute inset-0 grid place-items-center bg-white/80 p-6 text-center backdrop-blur-sm dark:bg-ink-950/80"
+                data-empty
+              >
+                <div>
+                  <svg
+                    class="mx-auto h-10 w-10 text-ink-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path d="M12 16V4m0 0L8 8m4-4 4 4" />
+                    <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+                  </svg>
+                  <p class="mt-3 text-base font-semibold">Déposez une image ici</p>
+                  <p class="mt-1 text-sm text-ink-600 dark:text-ink-300">Ou collez-en une, ou choisissez un fichier.</p>
+
+                  <label class="btn-primary mt-4 cursor-pointer">
+                    <input type="file" class="sr-only" data-file />
+                    <span>Choisir une image</span>
+                  </label>
+
+                  <p class="mt-3 text-xs text-ink-500 dark:text-ink-400">
+                    <span data-accepts></span>
+                  </p>
+                  <p class="mt-1 text-xs text-ink-500 dark:text-ink-400">Votre image reste sur cet appareil. Elle n&#39;est jamais envoyée.</p>
+                </div>
+              </div>
+            </div>
+
+            <p class="notice" data-warning hidden></p>
+
+            <div class="flex flex-wrap items-center gap-2" data-needs-image>
+              <button type="button" class="toggle" data-tool="pick" aria-pressed="false">Prélever une couleur</button>
+              <button type="button" class="toggle" data-tool="brush" aria-pressed="false">Pinceau</button>
+              <button type="button" class="btn-secondary" data-compare>Maintenir pour comparer</button>
+              <span class="picked-chip ms-auto font-mono text-xs text-ink-500 dark:text-ink-400" data-picked></span>
+            </div>
+
+            <p class="text-xs text-ink-500 dark:text-ink-400" data-info></p>
+          </div>
+
+          <!-- Controls column -->
+          <div class="flex flex-col gap-4">
+            <div class="card">
+              <h2 class="text-sm font-bold">Comment trouver l&#39;arrière-plan</h2>
+              <div class="mt-3 grid grid-cols-3 gap-2" role="group" aria-label="Comment trouver l&#39;arrière-plan">
+                <button type="button" class="toggle px-2 text-xs" data-mode="auto" aria-pressed="true">
+                  Automatique
+                </button>
+                <button type="button" class="toggle px-2 text-xs" data-mode="color" aria-pressed="false">
+                  Par couleur
+                </button>
+                <button type="button" class="toggle px-2 text-xs" data-mode="chroma" aria-pressed="false">
+                  Fond vert
+                </button>
+              </div>
+              <p class="mt-2 text-xs text-ink-500 dark:text-ink-400">Le mode automatique lit la couleur sur le pourtour. Par couleur supprime une couleur que vous choisissez. Fond vert travaille sur la teinte, donc la partie éclairée et son ombre partent ensemble.</p>
+            </div>
+
+            <div class="card" data-needs-image>
+              <h2 class="text-sm font-bold">Ajuster le détourage</h2>
+
+              <div class="mt-3 space-y-3">
+                <div>
+                  <label class="field-label" for="tolerance">
+                    <span>Tolérance</span>
+                    <span class="field-value" data-value-of="tolerance"></span>
+                  </label>
+                  <input
+                    id="tolerance"
+                    class="range"
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="1"
+                    data-field="tolerance"
+                  />
+                  <p class="text-xs text-ink-500 dark:text-ink-400">De combien un pixel peut différer tout en comptant comme arrière-plan. Augmentez si des points subsistent, baissez si le sujet se fait manger.</p>
+                </div>
+
+                <div>
+                  <label class="field-label" for="softness">
+                    <span>Douceur du bord</span>
+                    <span class="field-value" data-value-of="softness"></span>
+                  </label>
+                  <input id="softness" class="range" type="range" min="0" max="100" step="1" data-field="softness" />
+                </div>
+
+                <div>
+                  <label class="field-label" for="edgeShift">
+                    <span>Décalage du bord</span>
+                    <span class="field-value" data-value-of="edgeShift"></span>
+                  </label>
+                  <input id="edgeShift" class="range" type="range" min="-5" max="5" step="1" data-field="edgeShift" />
+                  <p class="text-xs text-ink-500 dark:text-ink-400">En négatif, rétrécit le sujet pour supprimer un halo. En positif, le redonne.</p>
+                </div>
+
+                <div>
+                  <label class="field-label" for="featherRadius">
+                    <span>Contour progressif</span>
+                    <span class="field-value" data-value-of="featherRadius"></span>
+                  </label>
+                  <input
+                    id="featherRadius"
+                    class="range"
+                    type="range"
+                    min="0"
+                    max="8"
+                    step="1"
+                    data-field="featherRadius"
+                  />
+                </div>
+
+                <label class="check">
+                  <input type="checkbox" data-field="contiguous" />
+                  <span>Seulement la zone reliée aux bords</span>
+                </label>
+                <p class="-mt-2 text-xs text-ink-500 dark:text-ink-400">Désactivez pour nettoyer l&#39;arrière-plan visible dans les creux : l&#39;intérieur d&#39;un O, l&#39;espace dans une anse.</p>
+
+                <label class="check">
+                  <input type="checkbox" data-field="removeSpeckles" />
+                  <span>Supprimer les points isolés</span>
+                </label>
+
+                <label class="check">
+                  <input type="checkbox" data-field="fillHoles" />
+                  <span>Combler les trous du sujet</span>
+                </label>
+
+                <label class="check">
+                  <input type="checkbox" data-field="decontaminate" />
+                  <span>Supprimer la frange colorée</span>
+                </label>
+                <p class="-mt-2 text-xs text-ink-500 dark:text-ink-400">Démêle l&#39;ancien arrière-plan des pixels semi-transparents du bord, ce qui évite le halo blanc ou le liseré vert.</p>
+
+                <div>
+                  <label class="field-label" for="despill"><span>Neutraliser la dominante</span></label>
+                  <select id="despill" class="select mt-1" data-field="despillChannel">
+                    <option value="">Aucune</option>
+                    <option value="g">Dominante verte</option>
+                    <option value="b">Dominante bleue</option>
+                    <option value="r">Dominante rouge</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" data-needs-image>
+              <h2 class="text-sm font-bold">Corriger à la main</h2>
+              <p class="mt-1 text-xs text-ink-500 dark:text-ink-400">Peignez sur ce que la passe automatique a raté. Les traits survivent à tous les autres changements : vous pouvez continuer à ajuster ensuite.</p>
+
+              <div class="mt-3 space-y-3">
+                <label class="check">
+                  <input type="checkbox" data-field="brushErase" data-local="1" />
+                  <span>Effacer (décochez pour restaurer)</span>
+                </label>
+
+                <div>
+                  <label class="field-label" for="brushSize">
+                    <span>Taille du pinceau</span>
+                    <span class="field-value" data-value-of="brushSize"></span>
+                  </label>
+                  <input
+                    id="brushSize"
+                    class="range"
+                    type="range"
+                    min="2"
+                    max="200"
+                    step="2"
+                    data-field="brushSize"
+                    data-local="1"
+                  />
+                </div>
+
+                <div>
+                  <label class="field-label" for="brushHardness">
+                    <span>Dureté</span>
+                    <span class="field-value" data-value-of="brushHardness"></span>
+                  </label>
+                  <input
+                    id="brushHardness"
+                    class="range"
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="5"
+                    data-field="brushHardness"
+                    data-local="1"
+                  />
+                </div>
+
+                <div class="flex gap-2">
+                  <button type="button" class="btn-secondary flex-1 text-xs" data-undo-stroke>Annuler le trait</button>
+                  <button type="button" class="btn-secondary flex-1 text-xs" data-clear-strokes>
+                    Effacer les traits
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" data-needs-image>
+              <h2 class="text-sm font-bold">Sortie</h2>
+
+              <div class="mt-3 space-y-3">
+                <div>
+                  <p class="field-label"><span>Arrière-plan</span></p>
+                  <div class="mt-2 flex flex-wrap items-center gap-2" data-swatches></div>
+                  <label class="mt-2 flex items-center gap-2 text-xs text-ink-600 dark:text-ink-300">
+                    <input type="color" class="h-8 w-10 cursor-pointer rounded border-0 bg-transparent p-0" data-custom-background />
+                    <span>Couleur personnalisée</span>
+                  </label>
+                </div>
+
+                <label class="check">
+                  <input type="checkbox" data-field="trim" />
+                  <span>Rogner au sujet</span>
+                </label>
+
+                <div>
+                  <label class="field-label" for="exportFormat"><span>Type de fichier</span></label>
+                  <select id="exportFormat" class="select mt-1" data-field="exportFormat" data-local="1">
+                    <option value="png">PNG — transparent, sans perte</option>
+                    <option value="webp">WebP — transparent, plus léger</option>
+                  </select>
+                </div>
+
+                <button type="button" class="btn-primary w-full" data-download>Télécharger l&#39;image</button>
+                <p class="text-center text-xs text-ink-500 dark:text-ink-400" data-status role="status" aria-live="polite"></p>
+
+                <div class="flex gap-2">
+                  <button type="button" class="btn-ghost flex-1 text-xs" data-reset-settings>Réinitialiser les réglages</button>
+                  <button type="button" class="btn-ghost flex-1 text-xs" data-clear>Nouvelle image</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Internal links. Three families, each a different search intent. -->
+      <section class="mt-14" aria-labelledby="links-tools">
+        <h2 class="text-lg font-bold" id="links-tools">Tous les outils</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <a class="badge" href="./supprimer-arriere-plan/">Suppression d&#39;arrière-plan</a>
+          <a class="badge" href="./supprimer-fond-par-couleur/">Suppression par couleur</a>
+          <a class="badge" href="./incrustation-fond-vert/">Suppression de fond vert</a>
+          <a class="badge" href="./changer-couleur-arriere-plan/">Changer la couleur d&#39;arrière-plan</a>
+          <a class="badge" href="./gomme-arriere-plan/">Gomme d&#39;arrière-plan</a>
+          <a class="badge" href="./creer-png-transparent/">Créer un PNG transparent</a>
+        </div>
+      </section>
+
+      <section class="mt-10" aria-labelledby="links-colors">
+        <h2 class="text-lg font-bold" id="links-colors">Supprimer une couleur de fond précise</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <a class="badge" href="./supprimer-fond-blanc/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#ffffff" aria-hidden="true"></span>blanc</a>
+          <a class="badge" href="./supprimer-fond-noir/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#000000" aria-hidden="true"></span>noir</a>
+          <a class="badge" href="./supprimer-fond-gris/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#808080" aria-hidden="true"></span>gris</a>
+          <a class="badge" href="./supprimer-fond-vert/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#00b140" aria-hidden="true"></span>vert</a>
+          <a class="badge" href="./supprimer-fond-bleu/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#0047ab" aria-hidden="true"></span>bleu</a>
+          <a class="badge" href="./supprimer-fond-rouge/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#d22b2b" aria-hidden="true"></span>rouge</a>
+          <a class="badge" href="./supprimer-fond-jaune/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#ffd700" aria-hidden="true"></span>jaune</a>
+          <a class="badge" href="./supprimer-fond-orange/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#ff7f24" aria-hidden="true"></span>orange</a>
+          <a class="badge" href="./supprimer-fond-violet/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#7b3ff2" aria-hidden="true"></span>violet</a>
+          <a class="badge" href="./supprimer-fond-rose/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#ff69b4" aria-hidden="true"></span>rose</a>
+          <a class="badge" href="./supprimer-fond-marron/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#8b5a2b" aria-hidden="true"></span>marron</a>
+          <a class="badge" href="./supprimer-fond-beige/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#f5f5dc" aria-hidden="true"></span>beige</a>
+          <a class="badge" href="./supprimer-fond-bleu-marine/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#001f54" aria-hidden="true"></span>bleu marine</a>
+          <a class="badge" href="./supprimer-fond-bleu-canard/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#008080" aria-hidden="true"></span>bleu canard</a>
+          <a class="badge" href="./supprimer-fond-cyan/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#00bcd4" aria-hidden="true"></span>cyan</a>
+          <a class="badge" href="./supprimer-fond-magenta/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#d8008f" aria-hidden="true"></span>magenta</a>
+          <a class="badge" href="./supprimer-fond-dore/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#d4af37" aria-hidden="true"></span>doré</a>
+          <a class="badge" href="./supprimer-fond-argente/"><span class="h-3 w-3 rounded-full ring-1 ring-ink-300 dark:ring-ink-600" style="background:#c0c0c0" aria-hidden="true"></span>argenté</a>
+        </div>
+      </section>
+
+      <section class="mt-10" aria-labelledby="links-uses">
+        <h2 class="text-lg font-bold" id="links-uses">Supprimer l&#39;arrière-plan de…</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <a class="badge" href="./supprimer-arriere-plan-logo/">un logo</a>
+          <a class="badge" href="./supprimer-arriere-plan-signature/">une signature</a>
+          <a class="badge" href="./supprimer-arriere-plan-product-photo/">une photo de produit</a>
+          <a class="badge" href="./supprimer-arriere-plan-headshot/">un portrait</a>
+          <a class="badge" href="./supprimer-arriere-plan-screenshot/">une capture d&#39;écran</a>
+          <a class="badge" href="./supprimer-arriere-plan-sticker/">un sticker</a>
+          <a class="badge" href="./supprimer-arriere-plan-stamp/">un tampon</a>
+          <a class="badge" href="./supprimer-arriere-plan-qr-code/">un QR code</a>
+          <a class="badge" href="./supprimer-arriere-plan-drawing/">un dessin</a>
+          <a class="badge" href="./supprimer-arriere-plan-sketch/">un croquis</a>
+          <a class="badge" href="./supprimer-arriere-plan-scanned-document/">un document numérisé</a>
+          <a class="badge" href="./supprimer-arriere-plan-passport-photo/">une photo d&#39;identité</a>
+        </div>
+      </section>
+
+      <section class="mt-10" aria-labelledby="links-formats">
+        <h2 class="text-lg font-bold" id="links-formats">Convertir un fichier en PNG transparent</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <a class="badge" href="./jpg-en-png-transparent/">JPG &rarr; PNG</a>
+          <a class="badge" href="./jpeg-en-png-transparent/">JPEG &rarr; PNG</a>
+          <a class="badge" href="./png-en-png-transparent/">PNG &rarr; PNG</a>
+          <a class="badge" href="./webp-en-png-transparent/">WebP &rarr; PNG</a>
+          <a class="badge" href="./gif-en-png-transparent/">GIF &rarr; PNG</a>
+          <a class="badge" href="./bmp-en-png-transparent/">BMP &rarr; PNG</a>
+          <a class="badge" href="./avif-en-png-transparent/">AVIF &rarr; PNG</a>
+          <a class="badge" href="./ico-en-png-transparent/">ICO &rarr; PNG</a>
+        </div>
+      </section>
+
+      <section class="mt-14" aria-labelledby="faq-heading">
+        <h2 class="text-lg font-bold" id="faq-heading">Questions fréquentes</h2>
+        <div class="mt-3 space-y-2">
+          <details class="card">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold">
+              Mon image est-elle envoyée quelque part ?
+            </summary>
+            <p class="border-t border-ink-200 px-4 py-3 text-sm leading-relaxed text-ink-600 dark:border-ink-800 dark:text-ink-300">Non. La page n&#39;a aucun serveur vers lequel envoyer quoi que ce soit. Votre photo est décodée par le navigateur, traitée par un worker sur votre propre machine, et abandonnée à la fermeture de l&#39;onglet. Vous pouvez le vérifier : ouvrez l&#39;onglet réseau et supprimez un arrière-plan — rien ne part.</p>
+          </details>
+          <details class="card">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold">
+              C&#39;est vraiment gratuit ? Où est le filigrane ?
+            </summary>
+            <p class="border-t border-ink-200 px-4 py-3 text-sm leading-relaxed text-ink-600 dark:border-ink-800 dark:text-ink-300">Gratuit, sans compte, sans limite du nombre d&#39;images et sans filigrane. La page n&#39;est que des fichiers statiques sur un hébergement gratuit : une fois chargée, il ne reste rien à payer et rien à vous facturer.</p>
+          </details>
+          <details class="card">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold">
+              Est-ce que ça détoure des cheveux sur une photo au fond chargé ?
+            </summary>
+            <p class="border-t border-ink-200 px-4 py-3 text-sm leading-relaxed text-ink-600 dark:border-ink-800 dark:text-ink-300">Non, et il le dit plutôt que de faire semblant. Cet outil compare des couleurs : il est excellent sur un fond uni ou presque — photos de produit, logos, signatures, captures d&#39;écran, fonds verts — et mauvais sur un sujet photographié devant une scène encombrée. Les outils qui gèrent ce cas font tourner un réseau de neurones et doivent télécharger des dizaines de mégaoctets de poids.</p>
+          </details>
+          <details class="card">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold">
+              Pourquoi reste-t-il un contour pâle autour de mon détourage ?
+            </summary>
+            <p class="border-t border-ink-200 px-4 py-3 text-sm leading-relaxed text-ink-600 dark:border-ink-800 dark:text-ink-300">Les pixels du bord sont un vrai mélange de sujet et d&#39;arrière-plan : après détourage, ils portent encore la couleur de l&#39;ancien fond. Laissez « Supprimer la frange colorée » activé et ce mélange est défait par le calcul. S&#39;il reste un liseré, baissez d&#39;un ou deux crans le décalage du bord pour le raser.</p>
+          </details>
+          <details class="card">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold">
+              Pourquoi une partie de mon sujet disparaît-elle ?
+            </summary>
+            <p class="border-t border-ink-200 px-4 py-3 text-sm leading-relaxed text-ink-600 dark:border-ink-800 dark:text-ink-300">Sa couleur est trop proche de celle de l&#39;arrière-plan. Baissez d&#39;abord la tolérance ; si cela laisse des points, gardez-la basse et peignez le reste au pinceau. Sur une photo au fond clair et au sujet clair, prélever la couleur exacte du fond vaut généralement mieux que l&#39;automatique.</p>
+          </details>
+          <details class="card">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold">
+              Puis-je utiliser les résultats commercialement ?
+            </summary>
+            <p class="border-t border-ink-200 px-4 py-3 text-sm leading-relaxed text-ink-600 dark:border-ink-800 dark:text-ink-300">Oui. L&#39;image est à vous, le résultat est à vous, et aucune attribution n&#39;est demandée. Rien n&#39;est ajouté au fichier.</p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-ink-200 bg-white dark:border-ink-800 dark:bg-ink-900">
+      <div class="mx-auto max-w-content px-4 py-10 sm:px-6">
+        <div class="grid gap-8 sm:grid-cols-3">
+          <div>
+            <p class="text-sm font-bold">Cutout</p>
+            <p class="mt-2 text-sm text-ink-600 dark:text-ink-300">Chaque pixel est traité dans votre navigateur. Sans compte, sans envoi et sans filigrane.</p>
+            <p class="mt-3 flex items-center gap-2 text-xs text-ink-500 dark:text-ink-400">
+              <span data-storage-state>Réglages enregistrés sur cet appareil</span>
+            </p>
+            <button type="button" class="btn-ghost mt-2 px-2 py-1 text-xs" data-reset-storage>Effacer les réglages enregistrés</button>
+          </div>
+          <nav aria-labelledby="foot-tools">
+            <p class="text-sm font-bold" id="foot-tools">Outils</p>
+            <ul class="mt-2 space-y-1.5 text-sm" role="list">
+              <li><a class="link" href="./supprimer-arriere-plan/">Suppression d&#39;arrière-plan</a></li>
+              <li><a class="link" href="./supprimer-fond-par-couleur/">Suppression par couleur</a></li>
+              <li><a class="link" href="./incrustation-fond-vert/">Suppression de fond vert</a></li>
+              <li><a class="link" href="./changer-couleur-arriere-plan/">Changer la couleur d&#39;arrière-plan</a></li>
+              <li><a class="link" href="./gomme-arriere-plan/">Gomme d&#39;arrière-plan</a></li>
+              <li><a class="link" href="./creer-png-transparent/">Créer un PNG transparent</a></li>
+            </ul>
+          </nav>
+          <nav aria-labelledby="foot-langs">
+            <p class="text-sm font-bold" id="foot-langs">Langues</p>
+            <ul class="mt-2 grid grid-cols-2 gap-1.5 text-sm" role="list">
+              <li><a class="link" href="../" hreflang="en" lang="en" >English</a></li>
+              <li><a class="link" href="../es/" hreflang="es" lang="es" >Español</a></li>
+              <li><a class="link" href="../pt/" hreflang="pt" lang="pt" >Português</a></li>
+              <li><a class="font-semibold" href="../fr/" hreflang="fr" lang="fr" aria-current="page" >Français</a></li>
+              <li><a class="link" href="../hi/" hreflang="hi" lang="hi" >हिन्दी</a></li>
+              <li><a class="link" href="../id/" hreflang="id" lang="id" >Bahasa Indonesia</a></li>
+              <li><a class="link" href="../ar/" hreflang="ar" lang="ar" >العربية</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <div class="mt-8 border-t border-ink-200 pt-6 dark:border-ink-800">
+          <p class="text-xs text-ink-500 dark:text-ink-400">Le résultat dépend du contraste entre votre sujet et son arrière-plan. Cet outil compare des couleurs ; il ne reconnaît pas les objets.</p>
+          <!-- Rendered with the build year, then re-rendered by chrome.js with
+               the browser's current year, so a page cached across New Year's
+               Eve never shows a stale copyright. -->
+          <p class="mt-2 text-xs text-ink-500 dark:text-ink-400" data-copyright>© 2026 Cutout</p>
+        </div>
+      </div>
+    </footer>
+
+    <script type="application/json" id="i18n-dict">{"app.name":"Cutout","app.tagline":"Supprimez les arrière-plans dans votre navigateur","a11y.skip":"Aller à l'outil","a11y.langPicker":"Langue","a11y.theme":"Changer le thème de couleurs","a11y.editor":"Suppression d'arrière-plan","a11y.canvas":"Aperçu de l'image avec l'arrière-plan supprimé","a11y.breadcrumb":"Fil d'Ariane","common.saved":"Réglages enregistrés sur cet appareil","common.notSaved":"Votre navigateur bloque le stockage local : les réglages seront perdus à la fermeture de l'onglet.","common.reset":"Effacer les réglages enregistrés","common.faq":"Questions fréquentes","foot.privacy":"Chaque pixel est traité dans votre navigateur. Sans compte, sans envoi et sans filigrane.","foot.tools":"Outils","foot.languages":"Langues","foot.disclaimer":"Le résultat dépend du contraste entre votre sujet et son arrière-plan. Cet outil compare des couleurs ; il ne reconnaît pas les objets.","foot.copyright":"© {year} {name}"}</script>
+    <script type="module" src="../assets/js/app.js"></script>
+  </body>
+</html>

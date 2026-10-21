@@ -1,0 +1,10 @@
+node_modules/
+.wrangler/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
+
+# Local test images, generated — not part of the deploy.
+samples/

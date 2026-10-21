@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="{{LANG}}" dir="{{DIR}}" class="scroll-pt-20">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{{t.meta.title}}</title>
+    <meta name="description" content="{{t.meta.description}}" />
+    <meta name="keywords" content="{{t.meta.keywords}}" />
+    <link rel="canonical" href="{{CANONICAL}}" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#7c3aed" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="{{t.app.name}}" />
+    <meta property="og:title" content="{{t.meta.ogTitle}}" />
+    <meta property="og:description" content="{{t.meta.ogDescription}}" />
+    <meta property="og:url" content="{{CANONICAL}}" />
+    <meta property="og:image" content="{{OG_IMAGE}}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="{{t.meta.ogTitle}}" />
+    <meta property="og:locale" content="{{OG_LOCALE}}" />
+{{OG_ALTERNATES}}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{t.meta.ogTitle}}" />
+    <meta name="twitter:description" content="{{t.meta.ogDescription}}" />
+    <meta name="twitter:image" content="{{OG_IMAGE}}" />
+
+{{HREFLANG}}
+
+    <link rel="icon" href="{{ASSET_PREFIX}}assets/icon/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="{{ASSET_PREFIX}}assets/icon/apple-touch-icon.png" />
+    <link rel="manifest" href="{{ASSET_PREFIX}}assets/site.webmanifest" />
+
+    <link rel="stylesheet" href="{{ASSET_PREFIX}}assets/css/app.css{{CSS_VERSION}}" />
+
+    <script type="application/ld+json">{{JSONLD}}</script>
+
+    <!-- Applies the saved theme before first paint. A separate file rather than
+         an inline block, which is what keeps script-src at a plain 'self'. -->
+    <script src="{{ASSET_PREFIX}}assets/js/theme.js"></script>
+{{GA4}}
+  </head>
+
+  <body>
+    <a
+      href="#content"
+      class="sr-only focus:not-sr-only focus:absolute focus:start-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-cut-600 focus:px-4 focus:py-2 focus:text-white"
+      >{{t.a11y.skip}}</a
+    >
+
+{{HEADER}}
+
+    <main class="mx-auto max-w-content px-4 pb-16 pt-6 sm:px-6">
+      <div class="mx-auto max-w-3xl text-center">
+        <h1 id="content" class="text-balance text-3xl font-extrabold tracking-tight sm:text-4xl">{{t.h1}}</h1>
+        <p class="mx-auto mt-3 max-w-2xl text-pretty text-base text-ink-600 dark:text-ink-300">{{t.lede}}</p>
+
+        <ul class="mt-5 flex flex-wrap items-center justify-center gap-2" role="list">
+          <li class="badge">{{t.badge.private}}</li>
+          <li class="badge">{{t.badge.nosignup}}</li>
+          <li class="badge">{{t.badge.offline}}</li>
+          <li class="badge">{{t.badge.instant}}</li>
+        </ul>
+      </div>
+
+      <!-- The editor. data-has-image and data-pointer-mode are set by app.js
+           and drive every disabled/cursor state in CSS, so there is no
+           class-juggling in JavaScript. -->
+      <section class="mt-8" data-app data-has-image="false" data-pointer-mode="none" aria-label="{{t.a11y.editor}}">
+        <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
+          <!-- Canvas column -->
+          <div class="flex flex-col gap-3">
+            <div
+              class="canvas-stage relative grid min-h-[18rem] place-items-center overflow-hidden rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
+              data-drop
+            >
+              <canvas
+                class="max-h-[70vh] w-auto max-w-full touch-none rounded-lg shadow-sm"
+                data-canvas
+                width="16"
+                height="16"
+                role="img"
+                aria-label="{{t.a11y.canvas}}"
+              ></canvas>
+
+              <!-- The empty state sits on top of the canvas and is hidden the
+                   moment an image loads, via the data-has-image attribute. -->
+              <div
+                class="absolute inset-0 grid place-items-center bg-white/80 p-6 text-center backdrop-blur-sm dark:bg-ink-950/80"
+                data-empty
+              >
+                <div>
+                  <svg
+                    class="mx-auto h-10 w-10 text-ink-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path d="M12 16V4m0 0L8 8m4-4 4 4" />
+                    <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+                  </svg>
+                  <p class="mt-3 text-base font-semibold">{{t.drop.title}}</p>
+                  <p class="mt-1 text-sm text-ink-600 dark:text-ink-300">{{t.drop.hint}}</p>
+
+                  <label class="btn-primary mt-4 cursor-pointer">
+                    <input type="file" class="sr-only" data-file />
+                    <span>{{t.drop.choose}}</span>
+                  </label>
+
+                  <p class="mt-3 text-xs text-ink-500 dark:text-ink-400">
+                    <span data-accepts></span>
+                  </p>
+                  <p class="mt-1 text-xs text-ink-500 dark:text-ink-400">{{t.drop.privacy}}</p>
+                </div>
+              </div>
+            </div>
+
+            <p class="notice" data-warning hidden></p>
+
+            <div class="flex flex-wrap items-center gap-2" data-needs-image>
+              <button type="button" class="toggle" data-tool="pick" aria-pressed="false">{{t.tool.pick}}</button>
+              <button type="button" class="toggle" data-tool="brush" aria-pressed="false">{{t.tool.brush}}</button>
+              <button type="button" class="btn-secondary" data-compare>{{t.tool.compare}}</button>
+              <span class="picked-chip ms-auto font-mono text-xs text-ink-500 dark:text-ink-400" data-picked></span>
+            </div>
+
+            <p class="text-xs text-ink-500 dark:text-ink-400" data-info></p>
+          </div>
+
+          <!-- Controls column -->
+          <div class="flex flex-col gap-4">
+            <div class="card">
+              <h2 class="text-sm font-bold">{{t.mode.heading}}</h2>
+              <div class="mt-3 grid grid-cols-3 gap-2" role="group" aria-label="{{t.mode.heading}}">
+                <button type="button" class="toggle px-2 text-xs" data-mode="auto" aria-pressed="true">
+                  {{t.mode.auto}}
+                </button>
+                <button type="button" class="toggle px-2 text-xs" data-mode="color" aria-pressed="false">
+                  {{t.mode.color}}
+                </button>
+                <button type="button" class="toggle px-2 text-xs" data-mode="chroma" aria-pressed="false">
+                  {{t.mode.chroma}}
+                </button>
+              </div>
+              <p class="mt-2 text-xs text-ink-500 dark:text-ink-400">{{t.mode.hint}}</p>
+            </div>
+
+            <div class="card" data-needs-image>
+              <h2 class="text-sm font-bold">{{t.adjust.heading}}</h2>
+
+              <div class="mt-3 space-y-3">
+                <div>
+                  <label class="field-label" for="tolerance">
+                    <span>{{t.adjust.tolerance}}</span>
+                    <span class="field-value" data-value-of="tolerance"></span>
+                  </label>
+                  <input
+                    id="tolerance"
+                    class="range"
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="1"
+                    data-field="tolerance"
+                  />
+                  <p class="text-xs text-ink-500 dark:text-ink-400">{{t.adjust.toleranceHint}}</p>
+                </div>
+
+                <div>
+                  <label class="field-label" for="softness">
+                    <span>{{t.adjust.softness}}</span>
+                    <span class="field-value" data-value-of="softness"></span>
+                  </label>
+                  <input id="softness" class="range" type="range" min="0" max="100" step="1" data-field="softness" />
+                </div>
+
+                <div>
+                  <label class="field-label" for="edgeShift">
+                    <span>{{t.adjust.edgeShift}}</span>
+                    <span class="field-value" data-value-of="edgeShift"></span>
+                  </label>
+                  <input id="edgeShift" class="range" type="range" min="-5" max="5" step="1" data-field="edgeShift" />
+                  <p class="text-xs text-ink-500 dark:text-ink-400">{{t.adjust.edgeShiftHint}}</p>
+                </div>
+
+                <div>
+                  <label class="field-label" for="featherRadius">
+                    <span>{{t.adjust.feather}}</span>
+                    <span class="field-value" data-value-of="featherRadius"></span>
+                  </label>
+                  <input
+                    id="featherRadius"
+                    class="range"
+                    type="range"
+                    min="0"
+                    max="8"
+                    step="1"
+                    data-field="featherRadius"
+                  />
+                </div>
+
+                <label class="check">
+                  <input type="checkbox" data-field="contiguous" />
+                  <span>{{t.adjust.contiguous}}</span>
+                </label>
+                <p class="-mt-2 text-xs text-ink-500 dark:text-ink-400">{{t.adjust.contiguousHint}}</p>
+
+                <label class="check">
+                  <input type="checkbox" data-field="removeSpeckles" />
+                  <span>{{t.adjust.speckles}}</span>
+                </label>
+
+                <label class="check">
+                  <input type="checkbox" data-field="fillHoles" />
+                  <span>{{t.adjust.holes}}</span>
+                </label>
+
+                <label class="check">
+                  <input type="checkbox" data-field="decontaminate" />
+                  <span>{{t.adjust.decontaminate}}</span>
+                </label>
+                <p class="-mt-2 text-xs text-ink-500 dark:text-ink-400">{{t.adjust.decontaminateHint}}</p>
+
+                <div>
+                  <label class="field-label" for="despill"><span>{{t.adjust.despill}}</span></label>
+                  <select id="despill" class="select mt-1" data-field="despillChannel">
+                    <option value="">{{t.adjust.despillNone}}</option>
+                    <option value="g">{{t.adjust.despillGreen}}</option>
+                    <option value="b">{{t.adjust.despillBlue}}</option>
+                    <option value="r">{{t.adjust.despillRed}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" data-needs-image>
+              <h2 class="text-sm font-bold">{{t.brush.heading}}</h2>
+              <p class="mt-1 text-xs text-ink-500 dark:text-ink-400">{{t.brush.hint}}</p>
+
+              <div class="mt-3 space-y-3">
+                <label class="check">
+                  <input type="checkbox" data-field="brushErase" data-local="1" />
+                  <span>{{t.brush.erase}}</span>
+                </label>
+
+                <div>
+                  <label class="field-label" for="brushSize">
+                    <span>{{t.brush.size}}</span>
+                    <span class="field-value" data-value-of="brushSize"></span>
+                  </label>
+                  <input
+                    id="brushSize"
+                    class="range"
+                    type="range"
+                    min="2"
+                    max="200"
+                    step="2"
+                    data-field="brushSize"
+                    data-local="1"
+                  />
+                </div>
+
+                <div>
+                  <label class="field-label" for="brushHardness">
+                    <span>{{t.brush.hardness}}</span>
+                    <span class="field-value" data-value-of="brushHardness"></span>
+                  </label>
+                  <input
+                    id="brushHardness"
+                    class="range"
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="5"
+                    data-field="brushHardness"
+                    data-local="1"
+                  />
+                </div>
+
+                <div class="flex gap-2">
+                  <button type="button" class="btn-secondary flex-1 text-xs" data-undo-stroke>{{t.brush.undo}}</button>
+                  <button type="button" class="btn-secondary flex-1 text-xs" data-clear-strokes>
+                    {{t.brush.clear}}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" data-needs-image>
+              <h2 class="text-sm font-bold">{{t.out.heading}}</h2>
+
+              <div class="mt-3 space-y-3">
+                <div>
+                  <p class="field-label"><span>{{t.out.background}}</span></p>
+                  <div class="mt-2 flex flex-wrap items-center gap-2" data-swatches></div>
+                  <label class="mt-2 flex items-center gap-2 text-xs text-ink-600 dark:text-ink-300">
+                    <input type="color" class="h-8 w-10 cursor-pointer rounded border-0 bg-transparent p-0" data-custom-background />
+                    <span>{{t.out.custom}}</span>
+                  </label>
+                </div>
+
+                <label class="check">
+                  <input type="checkbox" data-field="trim" />
+                  <span>{{t.out.trim}}</span>
+                </label>
+
+                <div>
+                  <label class="field-label" for="exportFormat"><span>{{t.out.format}}</span></label>
+                  <select id="exportFormat" class="select mt-1" data-field="exportFormat" data-local="1">
+                    <option value="png">{{t.out.png}}</option>
+                    <option value="webp">{{t.out.webp}}</option>
+                  </select>
+                </div>
+
+                <button type="button" class="btn-primary w-full" data-download>{{t.out.download}}</button>
+                <p class="text-center text-xs text-ink-500 dark:text-ink-400" data-status role="status" aria-live="polite"></p>
+
+                <div class="flex gap-2">
+                  <button type="button" class="btn-ghost flex-1 text-xs" data-reset-settings>{{t.out.reset}}</button>
+                  <button type="button" class="btn-ghost flex-1 text-xs" data-clear>{{t.out.newImage}}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Internal links. Three families, each a different search intent. -->
+      <section class="mt-14" aria-labelledby="links-tools">
+        <h2 class="text-lg font-bold" id="links-tools">{{t.related.tools}}</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+{{TOOL_LINKS}}
+        </div>
+      </section>
+
+      <section class="mt-10" aria-labelledby="links-colors">
+        <h2 class="text-lg font-bold" id="links-colors">{{t.related.colors}}</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+{{COLOR_LINKS}}
+        </div>
+      </section>
+
+      <section class="mt-10" aria-labelledby="links-uses">
+        <h2 class="text-lg font-bold" id="links-uses">{{t.related.uses}}</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+{{USE_LINKS}}
+        </div>
+      </section>
+
+      <section class="mt-10" aria-labelledby="links-formats">
+        <h2 class="text-lg font-bold" id="links-formats">{{t.related.formats}}</h2>
+        <div class="mt-3 flex flex-wrap gap-2">
+{{FORMAT_LINKS}}
+        </div>
+      </section>
+
+      <section class="mt-14" aria-labelledby="faq-heading">
+        <h2 class="text-lg font-bold" id="faq-heading">{{t.common.faq}}</h2>
+        <div class="mt-3 space-y-2">
+{{FAQ_ITEMS}}
+        </div>
+      </section>
+    </main>
+
+{{FOOTER}}
+
+    <script type="application/json" id="i18n-dict">{{I18N_DICT}}</script>
+    <script type="module" src="{{ASSET_PREFIX}}assets/js/app.js"></script>
+  </body>
+</html>
