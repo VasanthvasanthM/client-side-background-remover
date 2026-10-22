@@ -46,7 +46,7 @@
     <link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png" />
     <link rel="manifest" href="../assets/site.webmanifest" />
 
-    <link rel="stylesheet" href="../assets/css/app.css?v=e1f98b56" />
+    <link rel="stylesheet" href="../assets/css/app.css?v=a6973d29" />
 
     <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Cutout","alternateName":"Supprimer l'arrière-plan d'une image — gratuit, privé, dans votre navigateur","url":"https://client-side-background-remover.pages.dev/fr/","description":"Supprimez l'arrière-plan d'une image et téléchargez un PNG transparent. Tout se fait dans votre navigateur : votre photo n'est jamais envoyée. Gratuit, sans inscription et sans filigrane.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any browser","browserRequirements":"Requires JavaScript","inLanguage":"fr","isAccessibleForFree":true,"isFamilyFriendly":true,"image":"https://client-side-background-remover.pages.dev/assets/og/cover.png","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":[null,null,null,null],"permissions":"none","storageRequirements":"Local browser storage only"},{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"fr","mainEntity":[{"@type":"Question","name":"Mon image est-elle envoyée quelque part ?","acceptedAnswer":{"@type":"Answer","text":"Non. La page n'a aucun serveur vers lequel envoyer quoi que ce soit. Votre photo est décodée par le navigateur, traitée par un worker sur votre propre machine, et abandonnée à la fermeture de l'onglet. Vous pouvez le vérifier : ouvrez l'onglet réseau et supprimez un arrière-plan — rien ne part."}},{"@type":"Question","name":"C'est vraiment gratuit ? Où est le filigrane ?","acceptedAnswer":{"@type":"Answer","text":"Gratuit, sans compte, sans limite du nombre d'images et sans filigrane. La page n'est que des fichiers statiques sur un hébergement gratuit : une fois chargée, il ne reste rien à payer et rien à vous facturer."}},{"@type":"Question","name":"Est-ce que ça détoure des cheveux sur une photo au fond chargé ?","acceptedAnswer":{"@type":"Answer","text":"Non, et il le dit plutôt que de faire semblant. Cet outil compare des couleurs : il est excellent sur un fond uni ou presque — photos de produit, logos, signatures, captures d'écran, fonds verts — et mauvais sur un sujet photographié devant une scène encombrée. Les outils qui gèrent ce cas font tourner un réseau de neurones et doivent télécharger des dizaines de mégaoctets de poids."}},{"@type":"Question","name":"Pourquoi reste-t-il un contour pâle autour de mon détourage ?","acceptedAnswer":{"@type":"Answer","text":"Les pixels du bord sont un vrai mélange de sujet et d'arrière-plan : après détourage, ils portent encore la couleur de l'ancien fond. Laissez « Supprimer la frange colorée » activé et ce mélange est défait par le calcul. S'il reste un liseré, baissez d'un ou deux crans le décalage du bord pour le raser."}},{"@type":"Question","name":"Pourquoi une partie de mon sujet disparaît-elle ?","acceptedAnswer":{"@type":"Answer","text":"Sa couleur est trop proche de celle de l'arrière-plan. Baissez d'abord la tolérance ; si cela laisse des points, gardez-la basse et peignez le reste au pinceau. Sur une photo au fond clair et au sujet clair, prélever la couleur exacte du fond vaut généralement mieux que l'automatique."}},{"@type":"Question","name":"Puis-je utiliser les résultats commercialement ?","acceptedAnswer":{"@type":"Answer","text":"Oui. L'image est à vous, le résultat est à vous, et aucune attribution n'est demandée. Rien n'est ajouté au fichier."}}]}]</script>
 
@@ -158,17 +158,27 @@
           <!-- Canvas column -->
           <div class="flex flex-col gap-3">
             <div
-              class="canvas-stage relative grid min-h-[18rem] place-items-center overflow-hidden rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
+              class="canvas-stage relative min-h-[18rem] rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
               data-drop
             >
-              <canvas
-                class="max-h-[70vh] w-auto max-w-full touch-none rounded-lg shadow-sm"
-                data-canvas
-                width="16"
-                height="16"
-                role="img"
-                aria-label="Aperçu de l&#39;image avec l&#39;arrière-plan supprimé"
-              ></canvas>
+              <!-- The viewport scrolls once the canvas is zoomed past the
+                   space available. Keeping zoom as plain CSS sizing means
+                   getBoundingClientRect still maps pointer coordinates to
+                   image pixels correctly, with no transform maths. -->
+              <div class="viewport" data-viewport>
+                <canvas
+                  class="touch-none rounded-lg shadow-sm"
+                  data-canvas
+                  width="16"
+                  height="16"
+                  role="img"
+                  aria-label="Aperçu de l&#39;image avec l&#39;arrière-plan supprimé"
+                ></canvas>
+              </div>
+
+              <!-- Follows the pointer at the brush's real on-screen size, so
+                   the radius is visible before committing a stroke. -->
+              <div class="brush-cursor" data-brush-cursor hidden aria-hidden="true"></div>
 
               <!-- The empty state sits on top of the canvas and is hidden the
                    moment an image loads, via the data-has-image attribute. -->
@@ -213,6 +223,21 @@
               <button type="button" class="toggle" data-tool="brush" aria-pressed="false">Pinceau</button>
               <button type="button" class="btn-secondary" data-compare>Maintenir pour comparer</button>
               <span class="picked-chip ms-auto font-mono text-xs text-ink-500 dark:text-ink-400" data-picked></span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2" data-needs-image>
+              <div class="flex items-center gap-1" role="group" aria-label="Zoom">
+                <button type="button" class="btn-secondary px-3" data-zoom="out" aria-label="Réduire">
+                  &minus;
+                </button>
+                <span class="min-w-[4rem] text-center font-mono text-xs tabular-nums text-ink-600 dark:text-ink-300" data-zoom-level aria-live="polite"></span>
+                <button type="button" class="btn-secondary px-3" data-zoom="in" aria-label="Agrandir">
+                  +
+                </button>
+              </div>
+              <button type="button" class="btn-secondary text-xs" data-zoom="fit">Ajuster</button>
+              <button type="button" class="btn-secondary text-xs" data-zoom="actual">Taille réelle</button>
+              <span class="text-xs text-ink-500 dark:text-ink-400">Ctrl + molette pour zoomer, glisser pour déplacer</span>
             </div>
 
             <p class="text-xs text-ink-500 dark:text-ink-400" data-info></p>

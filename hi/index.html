@@ -46,7 +46,7 @@
     <link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png" />
     <link rel="manifest" href="../assets/site.webmanifest" />
 
-    <link rel="stylesheet" href="../assets/css/app.css?v=e1f98b56" />
+    <link rel="stylesheet" href="../assets/css/app.css?v=a6973d29" />
 
     <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Cutout","alternateName":"बैकग्राउंड रिमूवर — मुफ़्त, निजी, आपके ब्राउज़र में","url":"https://client-side-background-remover.pages.dev/hi/","description":"किसी भी तस्वीर का बैकग्राउंड हटाएँ और पारदर्शी PNG डाउनलोड करें। सब कुछ आपके ब्राउज़र में चलता है — आपकी तस्वीर कभी अपलोड नहीं होती। मुफ़्त, बिना साइन-अप, बिना वॉटरमार्क।","applicationCategory":"UtilitiesApplication","operatingSystem":"Any browser","browserRequirements":"Requires JavaScript","inLanguage":"hi","isAccessibleForFree":true,"isFamilyFriendly":true,"image":"https://client-side-background-remover.pages.dev/assets/og/cover.png","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":[null,null,null,null],"permissions":"none","storageRequirements":"Local browser storage only"},{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"hi","mainEntity":[{"@type":"Question","name":"क्या मेरी तस्वीर कहीं अपलोड होती है?","acceptedAnswer":{"@type":"Answer","text":"नहीं। इस पेज के पास अपलोड करने के लिए कोई सर्वर ही नहीं है। आपकी तस्वीर ब्राउज़र खोलता है, आपकी अपनी मशीन पर चल रहा एक worker उसे संसाधित करता है, और टैब बंद करते ही वह मिट जाती है। आप खुद जाँच सकते हैं: नेटवर्क टैब खोलिए और कोई बैकग्राउंड हटाइए — कुछ भी नहीं भेजा जाता।"}},{"@type":"Question","name":"क्या यह वाकई मुफ़्त है, और वॉटरमार्क कहाँ है?","acceptedAnswer":{"@type":"Answer","text":"मुफ़्त, बिना खाते के, तस्वीरों की कोई सीमा नहीं और कोई वॉटरमार्क नहीं। यह पेज मुफ़्त होस्टिंग पर पड़ी स्थिर फ़ाइलें हैं, इसलिए लोड होने के बाद न कुछ चुकाना बचता है और न आपसे वसूलने को कुछ है।"}},{"@type":"Question","name":"क्या यह भीड़भाड़ वाली तस्वीर से बाल काट देगा?","acceptedAnswer":{"@type":"Answer","text":"नहीं, और यह बहाना बनाने के बजाय साफ़ कह देता है। यह रंग मिलाकर काम करता है, इसलिए सादे या लगभग सादे बैकग्राउंड पर शानदार है — उत्पाद की तस्वीरें, लोगो, हस्ताक्षर, स्क्रीनशॉट, ग्रीन स्क्रीन — और बिखरे दृश्य के सामने खींचे गए विषय पर कमज़ोर। जो औज़ार वह काम कर लेते हैं वे न्यूरल नेटवर्क चलाते हैं और पहले दसियों मेगाबाइट का मॉडल डाउनलोड करवाते हैं।"}},{"@type":"Question","name":"मेरी कटी हुई तस्वीर के चारों ओर हल्की रेखा क्यों है?","acceptedAnswer":{"@type":"Answer","text":"किनारे के पिक्सेल सचमुच विषय और बैकग्राउंड का मिश्रण होते हैं, इसलिए कटाई के बाद भी उनमें पुराने बैकग्राउंड का रंग रहता है। «रंगीन किनारा हटाएँ» चालू रहने दें और यह मिश्रण गणित से अलग कर दिया जाता है। फिर भी किनार बची रहे तो किनारे का खिसकाव एक-दो अंक ऋणात्मक कर दें।"}},{"@type":"Question","name":"मेरे विषय का कुछ हिस्सा क्यों गायब हो जाता है?","acceptedAnswer":{"@type":"Answer","text":"उसका रंग बैकग्राउंड के बहुत पास है। पहले सहनशीलता घटाएँ; अगर इससे धब्बे बचें तो सहनशीलता कम ही रखें और बाकी ब्रश से हटाएँ। हल्के बैकग्राउंड और हल्के विषय वाली तस्वीर में बैकग्राउंड का सटीक रंग चुनना आम तौर पर स्वचालित से बेहतर रहता है।"}},{"@type":"Question","name":"क्या मैं नतीजों का व्यावसायिक उपयोग कर सकता हूँ?","acceptedAnswer":{"@type":"Answer","text":"हाँ। तस्वीर आपकी है, नतीजा आपका है, और किसी श्रेय की शर्त नहीं है। फ़ाइल में कुछ भी जोड़ा नहीं जाता।"}}]}]</script>
 
@@ -158,17 +158,27 @@
           <!-- Canvas column -->
           <div class="flex flex-col gap-3">
             <div
-              class="canvas-stage relative grid min-h-[18rem] place-items-center overflow-hidden rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
+              class="canvas-stage relative min-h-[18rem] rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
               data-drop
             >
-              <canvas
-                class="max-h-[70vh] w-auto max-w-full touch-none rounded-lg shadow-sm"
-                data-canvas
-                width="16"
-                height="16"
-                role="img"
-                aria-label="बैकग्राउंड हटी हुई तस्वीर का पूर्वावलोकन"
-              ></canvas>
+              <!-- The viewport scrolls once the canvas is zoomed past the
+                   space available. Keeping zoom as plain CSS sizing means
+                   getBoundingClientRect still maps pointer coordinates to
+                   image pixels correctly, with no transform maths. -->
+              <div class="viewport" data-viewport>
+                <canvas
+                  class="touch-none rounded-lg shadow-sm"
+                  data-canvas
+                  width="16"
+                  height="16"
+                  role="img"
+                  aria-label="बैकग्राउंड हटी हुई तस्वीर का पूर्वावलोकन"
+                ></canvas>
+              </div>
+
+              <!-- Follows the pointer at the brush's real on-screen size, so
+                   the radius is visible before committing a stroke. -->
+              <div class="brush-cursor" data-brush-cursor hidden aria-hidden="true"></div>
 
               <!-- The empty state sits on top of the canvas and is hidden the
                    moment an image loads, via the data-has-image attribute. -->
@@ -213,6 +223,21 @@
               <button type="button" class="toggle" data-tool="brush" aria-pressed="false">ब्रश</button>
               <button type="button" class="btn-secondary" data-compare>तुलना के लिए दबाए रखें</button>
               <span class="picked-chip ms-auto font-mono text-xs text-ink-500 dark:text-ink-400" data-picked></span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2" data-needs-image>
+              <div class="flex items-center gap-1" role="group" aria-label="ज़ूम">
+                <button type="button" class="btn-secondary px-3" data-zoom="out" aria-label="ज़ूम आउट">
+                  &minus;
+                </button>
+                <span class="min-w-[4rem] text-center font-mono text-xs tabular-nums text-ink-600 dark:text-ink-300" data-zoom-level aria-live="polite"></span>
+                <button type="button" class="btn-secondary px-3" data-zoom="in" aria-label="ज़ूम इन">
+                  +
+                </button>
+              </div>
+              <button type="button" class="btn-secondary text-xs" data-zoom="fit">फ़िट</button>
+              <button type="button" class="btn-secondary text-xs" data-zoom="actual">वास्तविक आकार</button>
+              <span class="text-xs text-ink-500 dark:text-ink-400">ज़ूम के लिए Ctrl + स्क्रॉल, खिसकाने के लिए खींचें</span>
             </div>
 
             <p class="text-xs text-ink-500 dark:text-ink-400" data-info></p>

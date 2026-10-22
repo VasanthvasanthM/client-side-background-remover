@@ -46,7 +46,7 @@
     <link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png" />
     <link rel="manifest" href="../assets/site.webmanifest" />
 
-    <link rel="stylesheet" href="../assets/css/app.css?v=e1f98b56" />
+    <link rel="stylesheet" href="../assets/css/app.css?v=a6973d29" />
 
     <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Cutout","alternateName":"Penghapus Latar Belakang — gratis, privat, di peramban Anda","url":"https://client-side-background-remover.pages.dev/id/","description":"Hapus latar belakang gambar dan unduh PNG transparan. Semuanya berjalan di peramban Anda — foto Anda tidak pernah diunggah. Gratis, tanpa pendaftaran, tanpa watermark.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any browser","browserRequirements":"Requires JavaScript","inLanguage":"id","isAccessibleForFree":true,"isFamilyFriendly":true,"image":"https://client-side-background-remover.pages.dev/assets/og/cover.png","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":[null,null,null,null],"permissions":"none","storageRequirements":"Local browser storage only"},{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"id","mainEntity":[{"@type":"Question","name":"Apakah gambar saya diunggah ke suatu tempat?","acceptedAnswer":{"@type":"Answer","text":"Tidak. Halaman ini tidak punya server untuk dikirimi apa pun. Foto Anda didekode oleh peramban, diproses oleh worker yang berjalan di mesin Anda sendiri, lalu dibuang saat tab ditutup. Anda bisa memeriksanya sendiri: buka tab jaringan lalu hapus sebuah latar — tidak ada yang terkirim."}},{"@type":"Question","name":"Apakah benar-benar gratis, dan di mana watermark-nya?","acceptedAnswer":{"@type":"Answer","text":"Gratis, tanpa akun, tanpa batas jumlah gambar, dan tanpa watermark. Halaman ini hanya berkas statis di hosting gratis, jadi begitu termuat tidak ada lagi yang harus dibayar dan tidak ada yang perlu ditagihkan kepada Anda."}},{"@type":"Question","name":"Bisakah ia memotong rambut pada foto berlatar ramai?","acceptedAnswer":{"@type":"Answer","text":"Tidak, dan ia mengatakannya alih-alih berpura-pura. Alat ini bekerja dengan mencocokkan warna, jadi sangat bagus pada latar polos atau hampir polos — foto produk, logo, tanda tangan, tangkapan layar, layar hijau — dan buruk pada subjek yang difoto di depan pemandangan berantakan. Alat yang sanggup menangani kasus itu menjalankan jaringan saraf dan perlu mengunduh puluhan megabita bobot model lebih dulu."}},{"@type":"Question","name":"Kenapa ada garis tipis di sekeliling potongan saya?","acceptedAnswer":{"@type":"Answer","text":"Piksel tepi memang campuran nyata antara subjek dan latar, jadi setelah dipotong pun ia masih membawa warna latar lama. Biarkan «Hapus pinggiran berwarna» aktif dan campuran itu diurai secara hitungan. Kalau pinggiran masih tersisa, turunkan geser tepi satu atau dua angka untuk mencukurnya."}},{"@type":"Question","name":"Kenapa sebagian subjek saya hilang?","acceptedAnswer":{"@type":"Answer","text":"Warnanya terlalu dekat dengan latar. Turunkan dulu toleransinya; kalau malah menyisakan bintik, pertahankan toleransi rendah lalu sapukan sisanya dengan kuas. Pada foto berlatar terang dengan subjek terang, mengambil warna latar yang persis biasanya lebih baik daripada mode otomatis."}},{"@type":"Question","name":"Bolehkah hasilnya dipakai untuk komersial?","acceptedAnswer":{"@type":"Answer","text":"Boleh. Gambarnya milik Anda, hasilnya milik Anda, dan tidak ada kewajiban mencantumkan sumber. Tidak ada yang ditambahkan ke berkasnya."}}]}]</script>
 
@@ -158,17 +158,27 @@
           <!-- Canvas column -->
           <div class="flex flex-col gap-3">
             <div
-              class="canvas-stage relative grid min-h-[18rem] place-items-center overflow-hidden rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
+              class="canvas-stage relative min-h-[18rem] rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
               data-drop
             >
-              <canvas
-                class="max-h-[70vh] w-auto max-w-full touch-none rounded-lg shadow-sm"
-                data-canvas
-                width="16"
-                height="16"
-                role="img"
-                aria-label="Pratinjau gambar dengan latar belakang terhapus"
-              ></canvas>
+              <!-- The viewport scrolls once the canvas is zoomed past the
+                   space available. Keeping zoom as plain CSS sizing means
+                   getBoundingClientRect still maps pointer coordinates to
+                   image pixels correctly, with no transform maths. -->
+              <div class="viewport" data-viewport>
+                <canvas
+                  class="touch-none rounded-lg shadow-sm"
+                  data-canvas
+                  width="16"
+                  height="16"
+                  role="img"
+                  aria-label="Pratinjau gambar dengan latar belakang terhapus"
+                ></canvas>
+              </div>
+
+              <!-- Follows the pointer at the brush's real on-screen size, so
+                   the radius is visible before committing a stroke. -->
+              <div class="brush-cursor" data-brush-cursor hidden aria-hidden="true"></div>
 
               <!-- The empty state sits on top of the canvas and is hidden the
                    moment an image loads, via the data-has-image attribute. -->
@@ -213,6 +223,21 @@
               <button type="button" class="toggle" data-tool="brush" aria-pressed="false">Kuas</button>
               <button type="button" class="btn-secondary" data-compare>Tahan untuk membandingkan</button>
               <span class="picked-chip ms-auto font-mono text-xs text-ink-500 dark:text-ink-400" data-picked></span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2" data-needs-image>
+              <div class="flex items-center gap-1" role="group" aria-label="Zoom">
+                <button type="button" class="btn-secondary px-3" data-zoom="out" aria-label="Perkecil">
+                  &minus;
+                </button>
+                <span class="min-w-[4rem] text-center font-mono text-xs tabular-nums text-ink-600 dark:text-ink-300" data-zoom-level aria-live="polite"></span>
+                <button type="button" class="btn-secondary px-3" data-zoom="in" aria-label="Perbesar">
+                  +
+                </button>
+              </div>
+              <button type="button" class="btn-secondary text-xs" data-zoom="fit">Paskan</button>
+              <button type="button" class="btn-secondary text-xs" data-zoom="actual">Ukuran asli</button>
+              <span class="text-xs text-ink-500 dark:text-ink-400">Ctrl + gulir untuk zoom, seret untuk menggeser</span>
             </div>
 
             <p class="text-xs text-ink-500 dark:text-ink-400" data-info></p>

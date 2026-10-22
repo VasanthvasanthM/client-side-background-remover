@@ -46,7 +46,7 @@
     <link rel="apple-touch-icon" href="./assets/icon/apple-touch-icon.png" />
     <link rel="manifest" href="./assets/site.webmanifest" />
 
-    <link rel="stylesheet" href="./assets/css/app.css?v=e1f98b56" />
+    <link rel="stylesheet" href="./assets/css/app.css?v=a6973d29" />
 
     <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Cutout","alternateName":"Background Remover — Free, Private, Runs in Your Browser","url":"https://client-side-background-remover.pages.dev/","description":"Remove the background from an image and download a transparent PNG. Everything runs in your browser — your picture is never uploaded. Free, no signup, no watermark.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any browser","browserRequirements":"Requires JavaScript","inLanguage":"en","isAccessibleForFree":true,"isFamilyFriendly":true,"image":"https://client-side-background-remover.pages.dev/assets/og/cover.png","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":[null,null,null,null],"permissions":"none","storageRequirements":"Local browser storage only"},{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"Is my image uploaded anywhere?","acceptedAnswer":{"@type":"Answer","text":"No. The page has no server to upload to. Your picture is decoded by the browser, processed by a worker running on your own machine, and discarded when you close the tab. You can check it yourself: open the network tab and remove a background — nothing is sent."}},{"@type":"Question","name":"Is it really free, and where is the watermark?","acceptedAnswer":{"@type":"Answer","text":"Free, no account, no limit on how many images, and no watermark. The page is static files on free hosting, so once it has loaded there is nothing left to pay for and nothing to charge you for."}},{"@type":"Question","name":"Will it cut hair out of a busy photograph?","acceptedAnswer":{"@type":"Answer","text":"No, and it says so rather than pretending. This works by matching colour, so it is excellent on a plain or near-plain backdrop — product shots, logos, signatures, screenshots, green screens — and poor on a subject photographed against a cluttered scene. Tools that manage that case run a neural network and need tens of megabytes of model weights downloaded first."}},{"@type":"Question","name":"Why is there a faint outline around my cutout?","acceptedAnswer":{"@type":"Answer","text":"Edge pixels are a genuine mix of subject and background, so after keying they still carry the old background's colour. Leave \"Remove colour fringe\" on and it is un-mixed arithmetically. If a rim survives, nudge the edge shift negative by one or two to shave it off."}},{"@type":"Question","name":"Why does part of my subject disappear?","acceptedAnswer":{"@type":"Answer","text":"Its colour is too close to the background. Lower the tolerance first; if that leaves speckles instead, keep the tolerance low and paint the rest out with the brush. On a photo with both a light background and a light subject, picking the exact background colour usually beats automatic."}},{"@type":"Question","name":"Can I use the results commercially?","acceptedAnswer":{"@type":"Answer","text":"Yes. The image is yours, the result is yours, and there is no attribution requirement. Nothing is added to the file."}}]}]</script>
 
@@ -158,17 +158,27 @@
           <!-- Canvas column -->
           <div class="flex flex-col gap-3">
             <div
-              class="canvas-stage relative grid min-h-[18rem] place-items-center overflow-hidden rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
+              class="canvas-stage relative min-h-[18rem] rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
               data-drop
             >
-              <canvas
-                class="max-h-[70vh] w-auto max-w-full touch-none rounded-lg shadow-sm"
-                data-canvas
-                width="16"
-                height="16"
-                role="img"
-                aria-label="Image preview with the background removed"
-              ></canvas>
+              <!-- The viewport scrolls once the canvas is zoomed past the
+                   space available. Keeping zoom as plain CSS sizing means
+                   getBoundingClientRect still maps pointer coordinates to
+                   image pixels correctly, with no transform maths. -->
+              <div class="viewport" data-viewport>
+                <canvas
+                  class="touch-none rounded-lg shadow-sm"
+                  data-canvas
+                  width="16"
+                  height="16"
+                  role="img"
+                  aria-label="Image preview with the background removed"
+                ></canvas>
+              </div>
+
+              <!-- Follows the pointer at the brush's real on-screen size, so
+                   the radius is visible before committing a stroke. -->
+              <div class="brush-cursor" data-brush-cursor hidden aria-hidden="true"></div>
 
               <!-- The empty state sits on top of the canvas and is hidden the
                    moment an image loads, via the data-has-image attribute. -->
@@ -213,6 +223,21 @@
               <button type="button" class="toggle" data-tool="brush" aria-pressed="false">Brush</button>
               <button type="button" class="btn-secondary" data-compare>Hold to compare</button>
               <span class="picked-chip ms-auto font-mono text-xs text-ink-500 dark:text-ink-400" data-picked></span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2" data-needs-image>
+              <div class="flex items-center gap-1" role="group" aria-label="Zoom">
+                <button type="button" class="btn-secondary px-3" data-zoom="out" aria-label="Zoom out">
+                  &minus;
+                </button>
+                <span class="min-w-[4rem] text-center font-mono text-xs tabular-nums text-ink-600 dark:text-ink-300" data-zoom-level aria-live="polite"></span>
+                <button type="button" class="btn-secondary px-3" data-zoom="in" aria-label="Zoom in">
+                  +
+                </button>
+              </div>
+              <button type="button" class="btn-secondary text-xs" data-zoom="fit">Fit</button>
+              <button type="button" class="btn-secondary text-xs" data-zoom="actual">Actual size</button>
+              <span class="text-xs text-ink-500 dark:text-ink-400">Ctrl + scroll to zoom, drag to pan</span>
             </div>
 
             <p class="text-xs text-ink-500 dark:text-ink-400" data-info></p>

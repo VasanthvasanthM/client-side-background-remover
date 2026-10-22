@@ -211,8 +211,9 @@
     cursor: crosshair;
   }
 
+  /* A crosshair marks the exact centre; the ring overlay shows the radius. */
   [data-pointer-mode='brush'] [data-canvas] {
-    cursor: cell;
+    cursor: crosshair;
   }
 
   [data-has-image='false'] [data-needs-image] {
@@ -238,5 +239,60 @@
      would be a stray grey square under the drop prompt. */
   [data-has-image='false'] [data-canvas] {
     visibility: hidden;
+  }
+}
+
+@layer components {
+  /* The scrolling window onto the canvas. At "fit" the canvas is constrained
+     to the box; once zoomed it overflows and this scrolls. */
+  .viewport {
+    @apply grid max-h-[70vh] min-h-[16rem] place-items-center overflow-auto rounded-xl;
+    scrollbar-width: thin;
+    overscroll-behavior: contain;
+  }
+
+  /* Fit: let the canvas shrink to the available space, never upscaling. */
+  [data-zoom-mode='fit'] .viewport canvas {
+    @apply max-h-[66vh] max-w-full;
+    width: auto;
+    height: auto;
+  }
+
+  /* Zoomed: an explicit pixel width, set from JS. The canvas is wider than
+     the viewport, so the viewport scrolls. */
+  [data-zoom-mode='zoom'] .viewport canvas {
+    max-width: none;
+    max-height: none;
+    height: auto;
+    image-rendering: pixelated;
+  }
+
+  /* Drag-to-pan is only offered when no painting tool owns the pointer. */
+  [data-zoom-mode='zoom'][data-pointer-mode='none'] .viewport {
+    cursor: grab;
+  }
+
+  [data-zoom-mode='zoom'][data-pointer-mode='none'] .viewport.is-panning {
+    cursor: grabbing;
+  }
+
+  /* The brush preview ring. Positioned from JS in stage coordinates; the
+     doubled ring keeps it visible on both light and dark pixels, which a
+     single-colour outline cannot do. */
+  .brush-cursor {
+    @apply pointer-events-none absolute z-20 rounded-full;
+    border: 1px solid rgb(255 255 255 / 0.95);
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.65),
+      inset 0 0 0 1px rgb(0 0 0 / 0.45);
+    transform: translate(-50%, -50%);
+  }
+
+  /* Restore mode reads as additive, erase as subtractive. */
+  .brush-cursor[data-erase='false'] {
+    border-color: rgb(167 139 250 / 0.95);
+    box-shadow:
+      0 0 0 1px rgb(76 29 149 / 0.7),
+      inset 0 0 0 1px rgb(76 29 149 / 0.5);
   }
 }

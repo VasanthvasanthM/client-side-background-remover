@@ -46,7 +46,7 @@
     <link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png" />
     <link rel="manifest" href="../assets/site.webmanifest" />
 
-    <link rel="stylesheet" href="../assets/css/app.css?v=e1f98b56" />
+    <link rel="stylesheet" href="../assets/css/app.css?v=a6973d29" />
 
     <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Cutout","alternateName":"Quitar fondo de imágenes — gratis, privado, en tu navegador","url":"https://client-side-background-remover.pages.dev/es/","description":"Quita el fondo de una imagen y descarga un PNG transparente. Todo se procesa en tu navegador: tu foto nunca se sube. Gratis, sin registro y sin marca de agua.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any browser","browserRequirements":"Requires JavaScript","inLanguage":"es","isAccessibleForFree":true,"isFamilyFriendly":true,"image":"https://client-side-background-remover.pages.dev/assets/og/cover.png","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":[null,null,null,null],"permissions":"none","storageRequirements":"Local browser storage only"},{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"es","mainEntity":[{"@type":"Question","name":"¿Se sube mi imagen a algún sitio?","acceptedAnswer":{"@type":"Answer","text":"No. La página no tiene ningún servidor al que subirla. Tu foto la descodifica el navegador, la procesa un worker en tu propia máquina y se descarta al cerrar la pestaña. Puedes comprobarlo: abre la pestaña de red y quita un fondo; no se envía nada."}},{"@type":"Question","name":"¿Es realmente gratis? ¿Dónde está la marca de agua?","acceptedAnswer":{"@type":"Answer","text":"Gratis, sin cuenta, sin límite de imágenes y sin marca de agua. La página son archivos estáticos en alojamiento gratuito, así que una vez cargada no queda nada que pagar ni nada que cobrarte."}},{"@type":"Question","name":"¿Recorta el pelo en una foto con fondo complicado?","acceptedAnswer":{"@type":"Answer","text":"No, y lo dice en lugar de fingir. Esto funciona comparando colores, así que es excelente con un fondo liso o casi liso —fotos de producto, logotipos, firmas, capturas, pantallas verdes— y malo con un sujeto fotografiado ante una escena desordenada. Las herramientas que resuelven ese caso ejecutan una red neuronal y necesitan descargar decenas de megabytes de pesos."}},{"@type":"Question","name":"¿Por qué queda un contorno tenue alrededor del recorte?","acceptedAnswer":{"@type":"Answer","text":"Los píxeles del borde son una mezcla real de sujeto y fondo, así que tras el recorte siguen arrastrando el color del fondo antiguo. Deja activado «Quitar el borde de color» y esa mezcla se deshace matemáticamente. Si sobrevive un reborde, baja uno o dos puntos el desplazamiento del borde para raparlo."}},{"@type":"Question","name":"¿Por qué desaparece parte de mi sujeto?","acceptedAnswer":{"@type":"Answer","text":"Su color se parece demasiado al del fondo. Baja primero la tolerancia; si eso deja motas, mantenla baja y píntalas con el pincel. En una foto con fondo claro y sujeto claro, elegir el color exacto del fondo suele funcionar mejor que el modo automático."}},{"@type":"Question","name":"¿Puedo usar los resultados comercialmente?","acceptedAnswer":{"@type":"Answer","text":"Sí. La imagen es tuya, el resultado es tuyo y no hay que atribuir nada. Al archivo no se le añade nada."}}]}]</script>
 
@@ -158,17 +158,27 @@
           <!-- Canvas column -->
           <div class="flex flex-col gap-3">
             <div
-              class="canvas-stage relative grid min-h-[18rem] place-items-center overflow-hidden rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
+              class="canvas-stage relative min-h-[18rem] rounded-2xl border-2 border-dashed border-ink-300 p-2 dark:border-ink-700 sm:min-h-[26rem]"
               data-drop
             >
-              <canvas
-                class="max-h-[70vh] w-auto max-w-full touch-none rounded-lg shadow-sm"
-                data-canvas
-                width="16"
-                height="16"
-                role="img"
-                aria-label="Vista previa de la imagen con el fondo eliminado"
-              ></canvas>
+              <!-- The viewport scrolls once the canvas is zoomed past the
+                   space available. Keeping zoom as plain CSS sizing means
+                   getBoundingClientRect still maps pointer coordinates to
+                   image pixels correctly, with no transform maths. -->
+              <div class="viewport" data-viewport>
+                <canvas
+                  class="touch-none rounded-lg shadow-sm"
+                  data-canvas
+                  width="16"
+                  height="16"
+                  role="img"
+                  aria-label="Vista previa de la imagen con el fondo eliminado"
+                ></canvas>
+              </div>
+
+              <!-- Follows the pointer at the brush's real on-screen size, so
+                   the radius is visible before committing a stroke. -->
+              <div class="brush-cursor" data-brush-cursor hidden aria-hidden="true"></div>
 
               <!-- The empty state sits on top of the canvas and is hidden the
                    moment an image loads, via the data-has-image attribute. -->
@@ -213,6 +223,21 @@
               <button type="button" class="toggle" data-tool="brush" aria-pressed="false">Pincel</button>
               <button type="button" class="btn-secondary" data-compare>Mantén para comparar</button>
               <span class="picked-chip ms-auto font-mono text-xs text-ink-500 dark:text-ink-400" data-picked></span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2" data-needs-image>
+              <div class="flex items-center gap-1" role="group" aria-label="Zoom">
+                <button type="button" class="btn-secondary px-3" data-zoom="out" aria-label="Alejar">
+                  &minus;
+                </button>
+                <span class="min-w-[4rem] text-center font-mono text-xs tabular-nums text-ink-600 dark:text-ink-300" data-zoom-level aria-live="polite"></span>
+                <button type="button" class="btn-secondary px-3" data-zoom="in" aria-label="Acercar">
+                  +
+                </button>
+              </div>
+              <button type="button" class="btn-secondary text-xs" data-zoom="fit">Ajustar</button>
+              <button type="button" class="btn-secondary text-xs" data-zoom="actual">Tamaño real</button>
+              <span class="text-xs text-ink-500 dark:text-ink-400">Ctrl + rueda para acercar, arrastra para desplazar</span>
             </div>
 
             <p class="text-xs text-ink-500 dark:text-ink-400" data-info></p>

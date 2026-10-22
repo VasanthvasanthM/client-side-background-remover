@@ -20,7 +20,10 @@ to Cloudflare Pages for nothing.
 | **Automatic** | Detects the backdrop from a ring of border pixels and removes everything connected to the edges that matches it |
 | **By colour** | Eyedropper one colour and remove it — either only where it touches the edges, or everywhere, which is what clears the gaps inside letters |
 | **Green screen** | Keys on hue, so a lit screen and its shadows go together, with saturation and brightness floors that protect dark hair and grey clothing |
-| **Brush** | Paint away what the automatic pass missed, or paint back what it took |
+| **Brush** | Paint away what the automatic pass missed, or paint back what it took. A ring follows the pointer at the brush's real on-screen size |
+
+Zoom with the buttons, Ctrl/Cmd + wheel, or `0` / `1` / `+` / `-`; drag to pan
+when no painting tool is active.
 
 Output is a transparent PNG or WebP, or the subject composited onto a flat
 colour, optionally trimmed tight to the subject.
@@ -62,7 +65,7 @@ silently producing a bad one.
 
 English (root), Spanish, Portuguese, French, Hindi, Indonesian and Arabic,
 each at its own subfolder URL with full `hreflang` alternates. Arabic renders
-right-to-left. Every dictionary holds the same 368 keys, enforced by
+right-to-left. Every dictionary holds the same 375 keys, enforced by
 `npm run check`.
 
 ```
@@ -100,7 +103,7 @@ app in production breaks it here first.
 | --- | --- |
 | `npm run build` | Clean, compile CSS, generate images, render every page, write the sitemap |
 | `npm run serve` | Static server at `:4173` that mirrors Cloudflare Pages |
-| `npm test` | 158 assertions over the colour, mask and compositing maths |
+| `npm test` | 175 assertions over the colour, mask and compositing maths |
 | `npm run check` | Dictionary parity, URL uniqueness, built-output and CSP audit |
 | `npm run clean` | Remove generated output, leaving sources |
 
@@ -130,7 +133,7 @@ assets/js/      color.js      sRGB, linear light, CIE L*a*b*, HSV — pure
                 editor.js     image loading, worker messaging, canvas
                 app.js        control wiring
                 store.js      validated localStorage, settings only
-assets/i18n/    seven dictionaries, 368 keys each
+assets/i18n/    seven dictionaries, 375 keys each
 src/            page and landing templates, plus header/footer partials
 scripts/        the build, the sitemap generator, the checks and the tests
 ```
@@ -183,7 +186,7 @@ editor. No fonts are fetched, no CDN is contacted, and the social image is a
 
 ## Testing
 
-`npm test` runs 158 assertions with no framework, over synthesised images
+`npm test` runs 175 assertions with no framework, over synthesised images
 whose correct answer is known by construction — the assertions are about
 geometry, not about "looks right".
 

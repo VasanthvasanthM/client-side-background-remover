@@ -357,12 +357,31 @@ implementation.
 - The copyright year is written at runtime, so a page cached across New Year
   never shows a stale year.
 
+**Added after user testing**
+
+Both of these came out of someone actually trying to use the brush and not
+being able to, which is the only reliable way to find them:
+
+- **A brush ring that follows the pointer**, drawn at the brush's true
+  on-screen size. The radius is stored in image pixels, so it is multiplied by
+  the current zoom before being shown — at 25% a 40px brush covers 10 screen
+  pixels, and a ring of the wrong size is worse than no ring. It is tinted
+  differently for erase and restore, because those are the same tool and the
+  checkbox that distinguishes them is in another panel.
+
+- **Zoom and pan.** Fit, actual size, stepped buttons, Ctrl/Cmd + wheel about
+  the pointer, keyboard `0`/`1`/`+`/`-`, and drag-to-pan when no painting tool
+  owns the pointer. Implemented as plain CSS sizing on a scrolling viewport
+  rather than a transform, which means `getBoundingClientRect` keeps mapping
+  pointer coordinates to image pixels with no extra maths — the brush and the
+  eyedropper needed no changes at all to work while zoomed.
+
+  Zooming anchors to a point: the viewport centre for the buttons, the pointer
+  for the wheel. Without that the scroll offsets stay put while the content
+  grows, and whatever you were looking at slides off screen.
+
 **Worth considering**
 
-- **No zoom or pan.** Checking a cutout's edges on a large image means
-  trusting a downscaled view. This is the most significant missing feature.
-- **No visible brush cursor.** The pointer changes shape but does not show the
-  brush radius, so size has to be judged from the slider.
 - **Export has no progress indication** beyond a status line. A full-size
   recompute on a 40-megapixel image takes seconds with no bar.
 - **No batch mode.** Several of the use-case pages — marketplace listings

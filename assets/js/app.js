@@ -25,7 +25,13 @@ function boot(root) {
   initChrome();
 
   const canvas = $('[data-canvas]', root);
+  const viewport = $('[data-viewport]', root);
+  const stage = canvas.closest('[data-drop]');
+  const brushCursor = $('[data-brush-cursor]', root);
   const editor = new Editor({ canvas, onState: () => renderState() });
+
+  /** null = fit to the viewport; a number = screen pixels per image pixel. */
+  let zoom = null;
 
   /** The colour the eyedropper last picked, kept out of the store until used. */
   let pickedColor = '';
@@ -71,6 +77,11 @@ function boot(root) {
     const ok = await editor.load(file);
     if (ok) {
       pickedColor = '';
+      // A new image always starts fitted. applyZoom has to run too: clearing
+      // the variable alone would leave the previous image's pixel width on
+      // the canvas and the stage still in zoom mode.
+      zoom = null;
+      applyZoom();
       scheduleRefresh();
     }
   }
@@ -109,6 +120,8 @@ function boot(root) {
   $('[data-clear]', root)?.addEventListener('click', () => {
     editor.unload();
     pickedColor = '';
+    zoom = null;
+    applyZoom();
   });
 
   // -------------------------------------------------------------------------
@@ -212,6 +225,169 @@ function boot(root) {
 
   // -------------------------------------------------------------------------
   // Canvas interaction
+  // -------------------------------------------------------------------------
+
+  // -------------------------------------------------------------------------
+  // Zoom
+  // -------------------------------------------------------------------------
+
+  const MIN_ZOOM = 0.1;
+  const MAX_ZOOM = 8;
+
+  /**
+   * The scale that "fit" currently resolves to.
+   *
+   * Measured from the rendered canvas rather than recomputed from the
+   * viewport box, because the CSS constraints that produce the fit are the
+   * source of truth and duplicating them here would drift from them.
+   */
+  function fittedScale() {
+    if (!editor.hasImage || canvas.width === 0) return 1;
+    const rect = canvas.getBoundingClientRect();
+    return rect.width > 0 ? rect.width / canvas.width : 1;
+  }
+
+  function currentScale() {
+    return zoom ?? fittedScale();
+  }
+
+  /**
+   * Change zoom, keeping a chosen point of the image where it already is.
+   *
+   * Without an anchor the scroll offsets stay put while the content grows, so
+   * whatever you were looking at slides off screen — the image appears to leap
+   * away on every click. Anchoring to the viewport centre, or to the pointer
+   * for a wheel zoom, is what makes it feel attached.
+   */
+  function setZoom(next, anchor) {
+    if (!editor.hasImage) return;
+
+    const previous = currentScale();
+    const clamped = next === null ? null : Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, next));
+
+    const focusX = anchor ? anchor.contentX : viewport.scrollLeft + viewport.clientWidth / 2;
+    const focusY = anchor ? anchor.contentY : viewport.scrollTop + viewport.clientHeight / 2;
+    const keepX = anchor ? anchor.viewX : viewport.clientWidth / 2;
+    const keepY = anchor ? anchor.viewY : viewport.clientHeight / 2;
+
+    zoom = clamped;
+    applyZoom();
+
+    if (zoom !== null && previous > 0) {
+      const ratio = currentScale() / previous;
+      viewport.scrollLeft = focusX * ratio - keepX;
+      viewport.scrollTop = focusY * ratio - keepY;
+    }
+    renderState();
+  }
+
+  function applyZoom() {
+    root.dataset.zoomMode = zoom === null ? 'fit' : 'zoom';
+    canvas.style.width = zoom === null ? '' : Math.round(canvas.width * zoom) + 'px';
+  }
+
+  for (const button of $$('[data-zoom]', root)) {
+    button.addEventListener('click', () => {
+      const action = button.dataset.zoom;
+      if (action === 'fit') setZoom(null);
+      else if (action === 'actual') setZoom(1);
+      else setZoom(currentScale() * (action === 'in' ? 1.25 : 1 / 1.25));
+    });
+  }
+
+  // Ctrl/Cmd + wheel zooms about the pointer. A plain wheel is left alone so
+  // it scrolls the viewport, like every other scrollable region on the page.
+  viewport.addEventListener(
+    'wheel',
+    (event) => {
+      if (!event.ctrlKey && !event.metaKey) return;
+      if (!editor.hasImage) return;
+      event.preventDefault();
+
+      const rect = viewport.getBoundingClientRect();
+      const viewX = event.clientX - rect.left;
+      const viewY = event.clientY - rect.top;
+
+      setZoom(currentScale() * (event.deltaY < 0 ? 1.15 : 1 / 1.15), {
+        contentX: viewport.scrollLeft + viewX,
+        contentY: viewport.scrollTop + viewY,
+        viewX,
+        viewY,
+      });
+    },
+    { passive: false },
+  );
+
+  // -------------------------------------------------------------------------
+  // Drag to pan, only when no painting tool owns the pointer
+  // -------------------------------------------------------------------------
+
+  let panning = null;
+
+  viewport.addEventListener('pointerdown', (event) => {
+    if (zoom === null || pointerMode !== 'none' || !editor.hasImage) return;
+    panning = {
+      id: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      left: viewport.scrollLeft,
+      top: viewport.scrollTop,
+    };
+    viewport.setPointerCapture(event.pointerId);
+    viewport.classList.add('is-panning');
+  });
+
+  viewport.addEventListener('pointermove', (event) => {
+    if (!panning || panning.id !== event.pointerId) return;
+    viewport.scrollLeft = panning.left - (event.clientX - panning.x);
+    viewport.scrollTop = panning.top - (event.clientY - panning.y);
+  });
+
+  for (const type of ['pointerup', 'pointercancel']) {
+    viewport.addEventListener(type, (event) => {
+      if (!panning || panning.id !== event.pointerId) return;
+      viewport.releasePointerCapture?.(event.pointerId);
+      viewport.classList.remove('is-panning');
+      panning = null;
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // Brush size ring
+  // -------------------------------------------------------------------------
+
+  /**
+   * Draw the brush at its true on-screen size under the pointer.
+   *
+   * The brush radius is in image pixels, so it has to be multiplied by the
+   * current scale to be shown: at 25% zoom a 40px brush covers 10 screen
+   * pixels, and a ring of the wrong size is worse than no ring.
+   */
+  function moveBrushCursor(event) {
+    if (!brushCursor) return;
+
+    if (pointerMode !== 'brush' || !editor.hasImage) {
+      brushCursor.hidden = true;
+      return;
+    }
+
+    const rect = stage.getBoundingClientRect();
+    const diameter = Math.max(4, store.get('brushSize') * currentScale());
+
+    brushCursor.hidden = false;
+    brushCursor.dataset.erase = String(store.get('brushErase'));
+    brushCursor.style.width = diameter + 'px';
+    brushCursor.style.height = diameter + 'px';
+    brushCursor.style.left = event.clientX - rect.left + 'px';
+    brushCursor.style.top = event.clientY - rect.top + 'px';
+  }
+
+  canvas.addEventListener('pointermove', moveBrushCursor);
+  canvas.addEventListener('pointerenter', moveBrushCursor);
+  canvas.addEventListener('pointerleave', () => {
+    if (brushCursor) brushCursor.hidden = true;
+  });
+
   // -------------------------------------------------------------------------
 
   canvas.addEventListener('pointerdown', (event) => {
@@ -329,6 +505,10 @@ function boot(root) {
     if (key === 'b') setPointerMode('brush');
     else if (key === 'i') setPointerMode('pick');
     else if (key === 'escape') setPointerMode('none');
+    else if (key === '0') setZoom(null);
+    else if (key === '1') setZoom(1);
+    else if (key === '+' || key === '=') setZoom(currentScale() * 1.25);
+    else if (key === '-') setZoom(currentScale() / 1.25);
   });
 
   function setPointerMode(mode) {
@@ -380,6 +560,19 @@ function boot(root) {
       picked.style.setProperty('--picked', pickedColor || 'transparent');
     }
 
+    const level = $('[data-zoom-level]', root);
+    if (level) level.textContent = editor.hasImage ? Math.round(currentScale() * 100) + '%' : '';
+
+    for (const button of $$('[data-zoom]', root)) {
+      const action = button.dataset.zoom;
+      if (action === 'fit') button.setAttribute('aria-pressed', String(zoom === null));
+      else if (action === 'actual') button.setAttribute('aria-pressed', String(zoom === 1));
+    }
+
+    // The ring belongs to the brush tool alone; leaving it on screen after
+    // switching tools would suggest the brush is still armed.
+    if (brushCursor && pointerMode !== 'brush') brushCursor.hidden = true;
+
     renderInfo();
     renderWarning();
   }
@@ -420,6 +613,7 @@ function boot(root) {
     if (notice) notice.textContent = t('common.notSaved');
   };
 
+  applyZoom();
   applyTranslations(root);
   renderState();
 }
