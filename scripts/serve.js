@@ -3,7 +3,7 @@
  * this directory (directory requests resolve to index.html). Dependency-free.
  *
  *   npm run serve        # http://localhost:4173
- *   PORT=5000 npm run serve
+ *   PORT=5000 npm run serve   # an explicit port is honoured exactly
  */
 
 import { createReadStream } from 'node:fs';
@@ -13,7 +13,19 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const PORT = Number(process.env.PORT) || 4173;
+/**
+ * This project's own default port.
+ *
+ * Each site in this series gets a distinct one. Sharing a default is how
+ * you end up with a port that answers, serves a *different* project, and
+ * sends you debugging a change that was never deployed to the thing you
+ * were looking at.
+ */
+const DEFAULT_PORT = 4178;
+const PORT = Number(process.env.PORT) || DEFAULT_PORT;
+
+/** How far to scan upward before giving up. */
+const PORT_ATTEMPTS = 20;
 
 /**
  * Parse Cloudflare's _headers format so local testing sees the same CSP and
@@ -115,6 +127,37 @@ const server = http.createServer(async (req, res) => {
   createReadStream(file).pipe(res);
 });
 
-server.listen(PORT, () => {
-  console.log(`Serving ${ROOT}\n  http://localhost:${PORT}`);
+/**
+ * Listen on the first free port at or above the requested one.
+ *
+ * Several of these sites get left running at once, so a hard failure on a
+ * busy port is a daily annoyance. An explicit PORT is honoured exactly:
+ * if you asked for a specific port, silently using a different one would
+ * be worse than refusing.
+ */
+function listen(port, attemptsLeft) {
+  server.once('error', (error) => {
+    if (error.code !== 'EADDRINUSE') throw error;
+
+    if (process.env.PORT || attemptsLeft <= 0) {
+      console.error(`Port ${port} is already in use.`);
+      process.exitCode = 1;
+      return;
+    }
+    console.warn(`Port ${port} is busy, trying ${port + 1}…`);
+    listen(port + 1, attemptsLeft - 1);
+  });
+
+  // No success callback here: server.listen(port, cb) registers cb as a
+  // one-time 'listening' listener, and a listen that fails leaves it
+  // attached — so after a retry the stale callbacks fire too and report
+  // the ports that did not work. One handler reading the real address is
+  // both simpler and always right.
+  server.listen(port);
+}
+
+server.on('listening', () => {
+  console.log(`Serving ${ROOT}\n  http://localhost:${server.address().port}`);
 });
+
+listen(PORT, PORT_ATTEMPTS);

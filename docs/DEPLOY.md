@@ -117,7 +117,7 @@ npm run build && npm run check && npm run serve
 ```
 
 The local server applies the generated `_headers`, so the CSP and caching you
-see at `localhost:4173` are the ones Cloudflare will send.
+see at `localhost:4178` are the ones Cloudflare will send.
 
 Then, against the live site:
 

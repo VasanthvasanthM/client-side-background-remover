@@ -90,7 +90,7 @@ survives neither a paste into a chat nor being read aloud over a call.
 ```bash
 npm install          # tailwindcss, the only dependency, and dev-only
 npm run build        # 371 pages, sitemap, robots.txt and _headers
-npm run serve        # http://localhost:4173
+npm run serve        # http://localhost:4178
 ```
 
 `npm run dev` does both. The local server parses `_headers` and applies the
@@ -102,7 +102,7 @@ app in production breaks it here first.
 | Script | Does |
 | --- | --- |
 | `npm run build` | Clean, compile CSS, generate images, render every page, write the sitemap |
-| `npm run serve` | Static server at `:4173` that mirrors Cloudflare Pages |
+| `npm run serve` | Static server at `:4178` that mirrors Cloudflare Pages |
 | `npm test` | 175 assertions over the colour, mask and compositing maths |
 | `npm run check` | Dictionary parity, URL uniqueness, built-output and CSP audit |
 | `npm run clean` | Remove generated output, leaving sources |
