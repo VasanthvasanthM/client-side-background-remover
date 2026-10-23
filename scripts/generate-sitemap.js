@@ -122,7 +122,14 @@ function urlEntry(entry, group) {
  * origins appear only when a measurement ID was supplied at build time.
  */
 function headersFile() {
-  const scriptSrc = ["'self'", GA4_ID ? 'https://www.googletagmanager.com' : ''].filter(Boolean).join(' ');
+  // 'wasm-unsafe-eval' is required by the optional AI mode: instantiating a
+  // WebAssembly module counts as eval under CSP, and there is no narrower
+  // token for it. It permits WebAssembly only — not eval(), not
+  // new Function(), not inline script — so it is a far smaller concession
+  // than 'unsafe-eval', which this policy still refuses.
+  const scriptSrc = ["'self'", "'wasm-unsafe-eval'", GA4_ID ? 'https://www.googletagmanager.com' : '']
+    .filter(Boolean)
+    .join(' ');
   const connectSrc = [
     "'self'",
     GA4_ID ? 'https://www.google-analytics.com' : '',
@@ -173,6 +180,14 @@ function headersFile() {
 # revalidate instead. A 304 costs one round trip and keeps deploys instant.
 /assets/js/*
   Cache-Control: public, max-age=300, must-revalidate
+
+# The model and the WASM runtime are large and versioned by filename, so
+# they are cached as hard as the stylesheet. A visitor pays for them once.
+/assets/model/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/vendor/*
+  Cache-Control: public, max-age=31536000, immutable
 
 /assets/i18n/*
   Cache-Control: public, max-age=3600, must-revalidate

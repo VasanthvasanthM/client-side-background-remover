@@ -13,7 +13,7 @@
  * — there is no second implementation to drift.
  */
 
-import { buildMask, renderResult, applyStrokes } from './engine.js';
+import { buildMask, renderResult, applyStrokes, refineExternalMask } from './engine.js';
 
 /** Held between messages: the whole point of the load/compute split. */
 const images = {
@@ -25,6 +25,16 @@ const images = {
 let cachedMask = null;
 let cachedKey = '';
 let cachedMeta = null;
+
+/**
+ * The raw AI mask for the loaded image, before any refinement.
+ *
+ * Kept apart from cachedMask because it costs seconds rather than
+ * milliseconds and depends only on the pixels: changing the feather or the
+ * edge shift must not trigger another forward pass.
+ */
+let aiMask = null;
+let aiScope = '';
 
 /**
  * Settings that change the mask, as a cache key.
@@ -53,7 +63,7 @@ function maskKey(settings, strokeRevision) {
   ]);
 }
 
-self.onmessage = (event) => {
+self.onmessage = async (event) => {
   const { type, token } = event.data;
 
   try {
@@ -62,16 +72,18 @@ self.onmessage = (event) => {
         handleLoad(event.data);
         break;
       case 'preview':
-        handlePreview(event.data);
+        await handlePreview(event.data);
         break;
       case 'export':
-        handleExport(event.data);
+        await handleExport(event.data);
         break;
       case 'release':
         images.preview = null;
         images.full = null;
         cachedMask = null;
         cachedKey = '';
+        aiMask = null;
+        aiScope = '';
         break;
       default:
         self.postMessage({ type: 'error', token, message: `unknown message "${type}"` });
@@ -89,10 +101,34 @@ function handleLoad({ scope, rgba, width, height, token }) {
     cachedMask = null;
     cachedKey = '';
   }
+  // A new image invalidates the AI mask for that scope.
+  if (aiScope === scope) {
+    aiMask = null;
+    aiScope = '';
+  }
   self.postMessage({ type: 'loaded', scope, token, width, height });
 }
 
-function handlePreview({ token, settings, strokes = [], strokeRevision = 0 }) {
+
+/**
+ * The AI mask for one scope, computed at most once per image.
+ *
+ * Progress is forwarded to the page as it downloads, because the first run
+ * fetches several megabytes and a silent multi-second wait reads as a hang.
+ */
+async function ensureAiMask(scope, image, token) {
+  if (aiMask && aiScope === scope) return aiMask;
+
+  const { segment } = await import('./ai.js');
+
+  aiMask = await segment(image.rgba, image.width, image.height, (progress) => {
+    self.postMessage({ type: 'progress', token, stage: 'model', ...progress });
+  });
+  aiScope = scope;
+  return aiMask;
+}
+
+async function handlePreview({ token, settings, strokes = [], strokeRevision = 0 }) {
   const image = images.preview;
   if (!image) {
     self.postMessage({ type: 'error', token, message: 'no image loaded' });
@@ -101,7 +137,16 @@ function handlePreview({ token, settings, strokes = [], strokeRevision = 0 }) {
 
   const key = maskKey(settings, strokeRevision);
   if (key !== cachedKey || !cachedMask) {
-    const result = buildMask(image.rgba, image.width, image.height, settings);
+    const result =
+      settings.mode === 'ai'
+        ? refineExternalMask(
+            image.rgba,
+            (await ensureAiMask('preview', image, token)).slice(),
+            image.width,
+            image.height,
+            settings,
+          )
+        : buildMask(image.rgba, image.width, image.height, settings);
     cachedMeta = {
       keyColor: result.keyColor,
       confidence: result.confidence,
@@ -141,14 +186,23 @@ function handlePreview({ token, settings, strokes = [], strokeRevision = 0 }) {
  * Upscaling would be faster but visibly softer on a large image, and export is
  * the one moment where quality matters more than latency.
  */
-function handleExport({ token, settings, strokes = [] }) {
+async function handleExport({ token, settings, strokes = [] }) {
   const image = images.full ?? images.preview;
   if (!image) {
     self.postMessage({ type: 'error', token, message: 'no image loaded' });
     return;
   }
 
-  const result = buildMask(image.rgba, image.width, image.height, settings);
+  const result =
+    settings.mode === 'ai'
+      ? refineExternalMask(
+          image.rgba,
+          (await ensureAiMask('full', image, token)).slice(),
+          image.width,
+          image.height,
+          settings,
+        )
+      : buildMask(image.rgba, image.width, image.height, settings);
   const mask = applyStrokes(result.mask, image.width, image.height, strokes);
 
   const pixels = renderResult(image.rgba.slice(), mask, image.width, image.height, {

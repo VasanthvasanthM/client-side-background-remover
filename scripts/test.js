@@ -60,6 +60,7 @@ import {
   buildMask,
   renderResult,
   applyStrokes,
+  refineExternalMask,
   checkerboard,
   PREVIEW_MAX_EDGE,
 } from '../assets/js/engine.js';
@@ -631,6 +632,64 @@ describe('engine');
   equal(board.length, 16 * 16 * 4, 'the checkerboard is the right size');
   assert(board[0] !== board[8 * 4], 'with alternating squares');
   equal(board[3], 255, 'and is fully opaque');
+}
+
+describe('external masks');
+{
+  // The AI mode produces a raw alpha map and hands it here. Everything after
+  // that has to be the same code the colour modes use, or the two paths drift
+  // and only one of them gets fixed when something is wrong.
+  const w = 80;
+  const h = 80;
+  const photo = blank(w, h, [200, 200, 200]);
+  fillRect(photo, w, { x: 20, y: 20, width: 40, height: 40 }, [40, 40, 40]);
+
+  // A hard-edged mask with a stray speck, as a model might emit.
+  const raw = new Uint8ClampedArray(w * h);
+  for (let y = 20; y < 60; y += 1) {
+    for (let x = 20; x < 60; x += 1) raw[y * w + x] = KEEP;
+  }
+  raw[2 * w + 2] = KEEP;
+
+  const result = refineExternalMask(photo, raw.slice(), w, h, {});
+
+  equal(at(result.mask, w, 40, 40), KEEP, 'the subject the mask marked is kept');
+  equal(at(result.mask, w, 5, 5), DROP, 'everything it did not mark is removed');
+  equal(at(result.mask, w, 2, 2), DROP, 'and a stray speck is dropped by the shared refinement');
+
+  // Border uniformity says nothing about a mask the model produced, so it
+  // must not be used to second-guess it.
+  equal(result.confidence, 1, 'confidence is not inferred from the border');
+  equal(result.warning, '', 'a good external mask raises no warning');
+
+  const busy = blank(w, h, [10, 90, 170]);
+  fillRect(busy, w, { x: 0, y: 40, width: w, height: 40 }, [190, 140, 60]);
+  equal(
+    refineExternalMask(busy, raw.slice(), w, h, {}).warning,
+    '',
+    'busy-background never fires in this path — it is the case the model exists for',
+  );
+
+  // The two absolute checks still apply.
+  equal(
+    refineExternalMask(photo, new Uint8ClampedArray(w * h).fill(KEEP), w, h, {}).warning,
+    'nothing-removed',
+    'a mask that keeps everything still says so',
+  );
+  equal(
+    refineExternalMask(photo, new Uint8ClampedArray(w * h), w, h, {}).warning,
+    'everything-removed',
+    'and one that keeps nothing says so too',
+  );
+
+  equal(refineExternalMask(new Uint8ClampedArray(0), new Uint8ClampedArray(0), 0, 0, {}).warning, 'empty',
+    'a zero-pixel image does not crash');
+
+  // Feather and edge shift must reach an external mask exactly as they reach
+  // a colour-derived one.
+  const shifted = refineExternalMask(photo, raw.slice(), w, h, { edgeShift: -3, featherRadius: 0 });
+  equal(at(shifted.mask, w, 21, 40), DROP, 'a negative edge shift pulls the boundary in');
+  equal(at(shifted.mask, w, 40, 40), KEEP, 'without touching the middle');
 }
 
 describe('brush strokes');

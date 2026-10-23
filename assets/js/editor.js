@@ -31,10 +31,12 @@ export const ACCEPTED_TYPES = Object.freeze([
 ]);
 
 export class Editor {
-  constructor({ canvas, onState }) {
+  constructor({ canvas, onState, onProgress }) {
     this.canvas = canvas;
     this.context = canvas.getContext('2d', { willReadFrequently: false });
     this.onState = onState ?? (() => {});
+    /** Interim reports while a long request runs, such as the model download. */
+    this.onProgress = onProgress ?? (() => {});
 
     /** Full-resolution source pixels, kept for export. */
     this.full = null;
@@ -84,6 +86,15 @@ export class Editor {
 
     this.worker.onmessage = (event) => {
       const { token } = event.data;
+
+      // Progress is an interim report on a request that is still running.
+      // Resolving on it would hand the caller a progress object instead of
+      // a result and leave the real reply with nobody listening.
+      if (event.data.type === 'progress') {
+        this.onProgress?.(event.data);
+        return;
+      }
+
       const resolver = this.pending.get(token);
       if (!resolver) return; // a superseded request; its result is stale
       this.pending.delete(token);

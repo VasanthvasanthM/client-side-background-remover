@@ -22,7 +22,7 @@ import {
   FORMATS,
   USE_CASES,
 } from './landing-pages.js';
-import { ROOT } from './render-utils.js';
+import { ROOT, APP_RUNTIME_PREFIXES } from './render-utils.js';
 import { parseHex } from '../assets/js/color.js';
 import { DEFAULT_SETTINGS } from '../assets/js/engine.js';
 
@@ -189,6 +189,59 @@ async function checkTemplateTokens(dicts) {
   }
 
   done(before, `${files.length} templates reference ${used.size} dictionary keys, all present in all locales`);
+}
+
+
+/**
+ * Every key the running app looks up must survive into the inlined subset.
+ *
+ * The page bakes most strings into its markup, but anything built at runtime —
+ * an error, a status line, a warning — is fetched by key from a trimmed
+ * dictionary. If a key falls outside the prefix list it silently renders as
+ * the key itself, which looks like a missing translation rather than a bug and
+ * is easy to ship. This caught exactly that: the prefix list had been copied
+ * from a different project and covered four of the fifteen groups in use.
+ */
+async function checkRuntimeKeys(dicts) {
+  console.log('\nruntime keys');
+  const before = failures.length;
+
+  const sources = await readdir(path.join(ROOT, 'assets', 'js'));
+  const used = new Set();
+  const dynamic = new Set();
+
+  for (const file of sources) {
+    if (!file.endsWith('.js')) continue;
+    const code = await readFile(path.join(ROOT, 'assets', 'js', file), 'utf8');
+
+    for (const match of code.matchAll(/\bt\(\s*'([A-Za-z0-9_.-]+)'/g)) used.add(match[1]);
+    // Keys assembled at runtime, e.g. `warn.${name}`. These are usually
+    // built into a variable before they reach t(), so the scan looks for
+    // any template literal shaped like a dictionary key rather than only
+    // direct arguments — the narrower version silently found nothing.
+    for (const match of code.matchAll(/`([a-z][A-Za-z0-9_-]*\.)\$\{/g)) {
+      dynamic.add(match[1]);
+    }
+  }
+
+  const covered = (key) => APP_RUNTIME_PREFIXES.some((prefix) => key.startsWith(prefix));
+
+  for (const key of used) {
+    if (!covered(key)) fail('runtime', `t('${key}') is not covered by APP_RUNTIME_PREFIXES`);
+  }
+  for (const prefix of dynamic) {
+    if (!APP_RUNTIME_PREFIXES.includes(prefix)) {
+      fail('runtime', `keys built as t(\`${prefix}…\`) need "${prefix}" in APP_RUNTIME_PREFIXES`);
+    }
+  }
+
+  // And the keys themselves must exist in every dictionary.
+  for (const [code, dict] of dicts) {
+    const missing = [...used].filter((key) => !Object.hasOwn(dict, key));
+    if (missing.length) fail('runtime', `${code} lacks ${missing.slice(0, 5).join(', ')}`);
+  }
+
+  done(before, `${used.size} runtime keys across ${dynamic.size} dynamic groups, all shipped and translated`);
 }
 
 // ---------------------------------------------------------------------------
@@ -481,6 +534,12 @@ async function checkSitemapAndHeaders() {
     const csp = headers.match(/Content-Security-Policy: (.+)/)?.[1] ?? '';
 
     if (/script-src[^;]*'unsafe-inline'/.test(csp)) fail('headers', "script-src allows 'unsafe-inline'");
+    // 'wasm-unsafe-eval' is expected and narrow; plain 'unsafe-eval' is not,
+    // and the two are easy to confuse when editing the policy by hand.
+    if (/script-src[^;]*[^-]'unsafe-eval'/.test(csp)) fail('headers', "script-src allows 'unsafe-eval'");
+    if (!/script-src[^;]*'wasm-unsafe-eval'/.test(csp)) {
+      fail('headers', "script-src is missing 'wasm-unsafe-eval', which the AI mode needs");
+    }
     if (/script-src[^;]*sha256-/.test(csp)) {
       fail('headers', 'script-src carries a hash, which means an inline script crept back in');
     }
@@ -509,6 +568,7 @@ async function main() {
   checkLocales();
   const dicts = await checkDictionaries();
   await checkTemplateTokens(dicts);
+  await checkRuntimeKeys(dicts);
   checkLandingData();
   checkLandingPages();
   await checkBuiltOutput();

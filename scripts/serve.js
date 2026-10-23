@@ -79,6 +79,13 @@ const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
+  // A module served as anything but a JavaScript type is refused outright by
+  // the browser, and .wasm must be application/wasm for streaming
+  // instantiation. Cloudflare gets both right; this server has to as well, or
+  // the AI mode appears broken only in local testing.
+  '.mjs': 'text/javascript; charset=utf-8',
+  '.wasm': 'application/wasm',
+  '.onnx': 'application/octet-stream',
   '.json': 'application/json; charset=utf-8',
   '.xml': 'application/xml; charset=utf-8',
   '.txt': 'text/plain; charset=utf-8',

@@ -8,44 +8,91 @@ Every issue in the first section was found during this build and is fixed in
 the committed code. Each is recorded with the symptom, the cause and what now
 prevents it, because the interesting part of a bug is what let it exist.
 
-Verified by `npm test` (169 assertions) and `npm run check` (7 sections, 371
+Verified by `npm test` (186 assertions) and `npm run check` (7 sections, 371
 built pages), both passing.
 
 ---
 
 ## The architectural decision this project turns on
 
-A background remover is usually an ML product: U²-Net or RMBG behind ONNX
-Runtime Web, 5–45 MB of model weights, a WASM runtime, and
-`'wasm-unsafe-eval'` in the Content-Security-Policy.
+The default engine is algorithmic — perceptual colour matching, scanline flood
+fill, chroma keying, morphology and alpha matting. It starts instantly, needs
+no download, works offline and keeps the CSP small.
 
-This one is algorithmic instead — perceptual colour matching, scanline flood
-fill, chroma keying, morphology and alpha matting. That is a real trade, and
-it is worth stating plainly rather than burying:
+Its boundary is real: it matches colours, so it cannot segment a subject from
+a cluttered room. That was mitigated first by honesty — the engine measures
+border uniformity before removing anything and warns when colour matching is
+the wrong tool — and the warnings remain, because they are what makes the fast
+path trustworthy.
 
-**What it buys.** Instant start with nothing to download, genuine offline
-operation, a CSP that stays a plain `script-src 'self'`, a repository with no
-binary model in it, and a tool that cannot be slow on a weak connection.
+But honesty is not a substitute for working. A background remover that fails
+on a photograph taken indoors fails at the job most people arrive with, and no
+amount of well-worded warning changes that. So there is now a second engine.
 
-**What it costs.** It cannot segment a subject from a cluttered background,
-and it will not cut hair out of a photograph taken in a room. That is not a
-tuning problem; it is the method's boundary.
+**AI mode** runs U²-Net (small variant, Apache-2.0, 4.36 MB) through ONNX
+Runtime Web (MIT, 13.58 MB of WebAssembly) — about 7.6 MB over the wire once
+compressed. It is:
 
-The mitigation is honesty, implemented rather than written down: the engine
-measures how uniform the border is before removing anything and returns a
-`busy-background` warning when the backdrop is not close to one colour, so the
-UI says the cut will be rough instead of silently producing a bad one. A
-colour-matching tool that admits its limits is more useful than one that
-pretends not to have them.
+- **opt-in**, behind an explicit consent prompt stating the size
+- **lazily imported**, so a visitor who never enables it downloads nothing;
+  `ai.js` is reached only through a dynamic `import()` inside the worker
+- **self-hosted**, so enabling it still makes no third-party request
+- **cached** in the Cache API rather than left to an HTTP cache that may evict
+  a 4 MB entry whenever it likes
 
-If an ML mode is ever added, it should be a lazily loaded opt-in with a
-self-hosted model, so the default path keeps every property above.
+The privacy claim is unchanged and worth restating precisely, because this is
+the one place it could plausibly have broken: **the model travels to the
+browser; the image still never leaves it.** There is no network call in the
+image path in either mode.
+
+The cost is `'wasm-unsafe-eval'` in `script-src`. Instantiating a WebAssembly
+module counts as eval under CSP and there is no narrower token. It permits
+WebAssembly only — not `eval()`, not `new Function()`, not inline script — and
+`npm run check` now fails if plain `'unsafe-eval'` ever appears beside it.
+
+Inference is single-threaded on purpose. Threads need SharedArrayBuffer, which
+needs cross-origin isolation, which means sending COEP and breaking the
+analytics snippet for anyone who enables it. A one-shot 320×320 forward pass
+takes roughly two seconds on one thread, which is an acceptable price for not
+reshaping the whole site's headers around an optional feature.
+
+The two engines are complementary rather than ranked. The model knows *what* a
+subject is; it draws the boundary on a 320-pixel grid that is then scaled up.
+On a clean backdrop the colour modes still give a crisper edge.
 
 ---
 
 ## Critical issues / bugs
 
-### 1. Auto mode seeded the flood fill from the four corners — **fixed**
+### 1. The runtime dictionary shipped four of the fifteen key groups in use — **fixed**
+
+**Severity: high**, and invisible in casual testing, which is what makes it
+worth putting first.
+
+Most strings are baked into the markup at build time. Anything assembled at
+runtime — an error, a status line, one of the honesty warnings — is looked up
+by key from a trimmed dictionary inlined into the page. That subset is chosen
+by a prefix list, and the list had been copied from a different project in
+this series and never updated: it covered `app.`, `a11y.`, `common.` and
+`foot.`, plus eight prefixes belonging to a date calculator.
+
+So 17 keys were shipped where 50 were needed. Every error message, the saved
+file confirmation, the picked-colour label, the image info line and — most
+pointedly — the `mixed-background` warning added one commit earlier would
+have rendered as the bare key.
+
+Fixed, and `npm run check` now scans `assets/js` for `t('…')` literals and
+for template-built keys like `` `warn.${name}` ``, then fails if any of them
+falls outside the prefix list or is missing from a dictionary. Removing two
+prefixes makes it report seven failures, so it is known to work rather than
+assumed to.
+
+**Why it survived so long:** a missing runtime key degrades to text that
+looks like a translation placeholder, not like a crash. Nothing throws.
+
+---
+
+### 2. Auto mode seeded the flood fill from the four corners — **fixed**
 
 **Severity: critical.** This was the worst bug in the project: it destroyed
 the subject on the single most common photograph anyone would bring to a
@@ -87,7 +134,7 @@ corners, and asserts that every seed is a backdrop pixel.
 
 ---
 
-### 2. The honesty warning had a gap exactly where it was needed most — **fixed**
+### 3. The honesty warning had a gap exactly where it was needed most — **fixed**
 
 **Severity: high.** Related to the above, and worth separating because the
 threshold was wrong on its own terms.
@@ -110,7 +157,7 @@ that feels broken and one that feels like it is helping.
 
 ---
 
-### 3. The worker's mask cache could serve a stale result — **fixed**
+### 4. The worker's mask cache could serve a stale result — **fixed**
 
 **Severity: high.** A silent wrong-output bug, the worst kind in an image
 editor because the user sees a plausible result and does not know it is wrong.
@@ -136,7 +183,7 @@ behaves like one for append-only arrays. Undo is what breaks the assumption.
 
 ---
 
-### 4. The canvas draw raced itself and flickered — **fixed**
+### 5. The canvas draw raced itself and flickered — **fixed**
 
 **Severity: high.** Visible on the single most common interaction.
 
@@ -164,7 +211,7 @@ one task, so neither defect is possible.
 
 ---
 
-### 5. The CSP blocked the image decode fallback — **fixed**
+### 6. The CSP blocked the image decode fallback — **fixed**
 
 **Severity: high on affected browsers**, and invisible on the development
 machine, which is what makes it dangerous.
@@ -186,7 +233,7 @@ decorative.
 
 ---
 
-### 6. `worker-src` was left to fall back — **fixed**
+### 7. `worker-src` was left to fall back — **fixed**
 
 **Severity: medium**, and entirely avoidable.
 
@@ -202,7 +249,7 @@ missing, alongside the other directives this app depends on.
 
 ---
 
-### 7. The default tolerance was below the noise floor — **fixed**
+### 8. The default tolerance was below the noise floor — **fixed**
 
 **Severity: medium.** It made the tool look worse than it is on exactly the
 images people bring to it.
@@ -220,7 +267,7 @@ up.
 
 ---
 
-### 8. A French slug collision would have shipped two pages at one URL — **fixed**
+### 9. A French slug collision would have shipped two pages at one URL — **fixed**
 
 **Severity: high for SEO.** The chroma-key tool page and the green colour page
 both resolved to `/fr/supprimer-fond-vert/`. One would have overwritten the
@@ -234,7 +281,7 @@ duplicate landing URL, which is how it was caught before the first full build.
 
 ---
 
-### 9. Two wasteful full-image passes per interaction — **fixed**
+### 10. Two wasteful full-image passes per interaction — **fixed**
 
 **Severity: medium (performance).**
 
@@ -249,7 +296,7 @@ Both now accept the value the caller already has.
 
 ---
 
-### 10. The audit tool reported false positives — **fixed**
+### 11. The audit tool reported false positives — **fixed**
 
 **Severity: low, but worth recording.** The first `npm run check` flagged an
 inline `<script>` on all 371 pages. The element was
@@ -492,7 +539,7 @@ being able to, which is the only reliable way to find them:
 
 | Area | Status |
 | --- | --- |
-| Correctness | 10 issues found, all fixed; 169 assertions covering the engine |
+| Correctness | 11 issues found, all fixed; 186 assertions covering the engine |
 | Performance | Worker-based, cached, coalesced; no main-thread segmentation |
 | Responsiveness | Mobile-first, 44 px targets, CLS ~0, RTL verified |
 | SEO | 371 pages, complete `hreflang`, computed long-tail content |
@@ -500,5 +547,5 @@ being able to, which is the only reliable way to find them:
 | Security | No network in the image path, no XSS surface, validated storage, strict CSP |
 | Cloudflare Pages | Fully static, relative paths, generated headers, verified locally |
 
-`npm test` — 169 assertions passing.
+`npm test` — 186 assertions passing.
 `npm run check` — 7 sections, 371 pages, passing.

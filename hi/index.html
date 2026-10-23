@@ -46,7 +46,7 @@
     <link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png" />
     <link rel="manifest" href="../assets/site.webmanifest" />
 
-    <link rel="stylesheet" href="../assets/css/app.css?v=a6973d29" />
+    <link rel="stylesheet" href="../assets/css/app.css?v=59c8f662" />
 
     <script type="application/ld+json">[{"@context":"https://schema.org","@type":"WebApplication","name":"Cutout","alternateName":"बैकग्राउंड रिमूवर — मुफ़्त, निजी, आपके ब्राउज़र में","url":"https://client-side-background-remover.pages.dev/hi/","description":"किसी भी तस्वीर का बैकग्राउंड हटाएँ और पारदर्शी PNG डाउनलोड करें। सब कुछ आपके ब्राउज़र में चलता है — आपकी तस्वीर कभी अपलोड नहीं होती। मुफ़्त, बिना साइन-अप, बिना वॉटरमार्क।","applicationCategory":"UtilitiesApplication","operatingSystem":"Any browser","browserRequirements":"Requires JavaScript","inLanguage":"hi","isAccessibleForFree":true,"isFamilyFriendly":true,"image":"https://client-side-background-remover.pages.dev/assets/og/cover.png","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":[null,null,null,null],"permissions":"none","storageRequirements":"Local browser storage only"},{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"hi","mainEntity":[{"@type":"Question","name":"क्या मेरी तस्वीर कहीं अपलोड होती है?","acceptedAnswer":{"@type":"Answer","text":"नहीं। इस पेज के पास अपलोड करने के लिए कोई सर्वर ही नहीं है। आपकी तस्वीर ब्राउज़र खोलता है, आपकी अपनी मशीन पर चल रहा एक worker उसे संसाधित करता है, और टैब बंद करते ही वह मिट जाती है। आप खुद जाँच सकते हैं: नेटवर्क टैब खोलिए और कोई बैकग्राउंड हटाइए — कुछ भी नहीं भेजा जाता।"}},{"@type":"Question","name":"क्या यह वाकई मुफ़्त है, और वॉटरमार्क कहाँ है?","acceptedAnswer":{"@type":"Answer","text":"मुफ़्त, बिना खाते के, तस्वीरों की कोई सीमा नहीं और कोई वॉटरमार्क नहीं। यह पेज मुफ़्त होस्टिंग पर पड़ी स्थिर फ़ाइलें हैं, इसलिए लोड होने के बाद न कुछ चुकाना बचता है और न आपसे वसूलने को कुछ है।"}},{"@type":"Question","name":"क्या यह भीड़भाड़ वाली तस्वीर से बाल काट देगा?","acceptedAnswer":{"@type":"Answer","text":"नहीं, और यह बहाना बनाने के बजाय साफ़ कह देता है। यह रंग मिलाकर काम करता है, इसलिए सादे या लगभग सादे बैकग्राउंड पर शानदार है — उत्पाद की तस्वीरें, लोगो, हस्ताक्षर, स्क्रीनशॉट, ग्रीन स्क्रीन — और बिखरे दृश्य के सामने खींचे गए विषय पर कमज़ोर। जो औज़ार वह काम कर लेते हैं वे न्यूरल नेटवर्क चलाते हैं और पहले दसियों मेगाबाइट का मॉडल डाउनलोड करवाते हैं।"}},{"@type":"Question","name":"मेरी कटी हुई तस्वीर के चारों ओर हल्की रेखा क्यों है?","acceptedAnswer":{"@type":"Answer","text":"किनारे के पिक्सेल सचमुच विषय और बैकग्राउंड का मिश्रण होते हैं, इसलिए कटाई के बाद भी उनमें पुराने बैकग्राउंड का रंग रहता है। «रंगीन किनारा हटाएँ» चालू रहने दें और यह मिश्रण गणित से अलग कर दिया जाता है। फिर भी किनार बची रहे तो किनारे का खिसकाव एक-दो अंक ऋणात्मक कर दें।"}},{"@type":"Question","name":"मेरे विषय का कुछ हिस्सा क्यों गायब हो जाता है?","acceptedAnswer":{"@type":"Answer","text":"उसका रंग बैकग्राउंड के बहुत पास है। पहले सहनशीलता घटाएँ; अगर इससे धब्बे बचें तो सहनशीलता कम ही रखें और बाकी ब्रश से हटाएँ। हल्के बैकग्राउंड और हल्के विषय वाली तस्वीर में बैकग्राउंड का सटीक रंग चुनना आम तौर पर स्वचालित से बेहतर रहता है।"}},{"@type":"Question","name":"क्या मैं नतीजों का व्यावसायिक उपयोग कर सकता हूँ?","acceptedAnswer":{"@type":"Answer","text":"हाँ। तस्वीर आपकी है, नतीजा आपका है, और किसी श्रेय की शर्त नहीं है। फ़ाइल में कुछ भी जोड़ा नहीं जाता।"}}]}]</script>
 
@@ -247,7 +247,7 @@
           <div class="flex flex-col gap-4">
             <div class="card">
               <h2 class="text-sm font-bold">बैकग्राउंड कैसे पहचाना जाए</h2>
-              <div class="mt-3 grid grid-cols-3 gap-2" role="group" aria-label="बैकग्राउंड कैसे पहचाना जाए">
+              <div class="mt-3 grid grid-cols-2 gap-2" role="group" aria-label="बैकग्राउंड कैसे पहचाना जाए">
                 <button type="button" class="toggle px-2 text-xs" data-mode="auto" aria-pressed="true">
                   स्वचालित
                 </button>
@@ -257,8 +257,33 @@
                 <button type="button" class="toggle px-2 text-xs" data-mode="chroma" aria-pressed="false">
                   ग्रीन स्क्रीन
                 </button>
+                <button type="button" class="toggle px-2 text-xs" data-mode="ai" aria-pressed="false">
+                  AI
+                </button>
               </div>
               <p class="mt-2 text-xs text-ink-500 dark:text-ink-400">स्वचालित किनारों के आसपास का रंग पढ़ता है। रंग से आपका चुना हुआ एक रंग हटाता है। ग्रीन स्क्रीन रंगत (hue) पर काम करता है, इसलिए रोशन हिस्सा और उसकी छाया दोनों हट जाते हैं।</p>
+
+              <!-- Consent gate. The model is several megabytes, so it is never
+                   fetched until someone asks for it in so many words. -->
+              <div class="mt-3 rounded-xl border border-cut-300 bg-cut-50 p-3 dark:border-cut-700 dark:bg-cut-950/40" data-ai-consent hidden>
+                <p class="text-sm font-semibold">AI मोड चालू करें?</p>
+                <p class="mt-1 text-xs text-ink-600 dark:text-ink-300">इससे 7.6 MB का एक मॉडल एक ही बार डाउनलोड होता है। उसके बाद वह इसी डिवाइस पर रहता है और बिना इंटरनेट भी चलता है।</p>
+                <p class="mt-1 text-xs text-ink-600 dark:text-ink-300">मॉडल आपके ब्राउज़र तक आता है; आपकी तस्वीर फिर भी बाहर नहीं जाती। किसी भी हाल में कुछ अपलोड नहीं होता।</p>
+                <div class="mt-3 flex gap-2">
+                  <button type="button" class="btn-primary flex-1 text-xs" data-ai-accept>डाउनलोड करके चालू करें</button>
+                  <button type="button" class="btn-secondary flex-1 text-xs" data-ai-cancel>अभी नहीं</button>
+                </div>
+              </div>
+
+              <!-- Download and inference progress. -->
+              <div class="mt-3" data-ai-progress hidden>
+                <p class="text-xs text-ink-600 dark:text-ink-300" data-ai-progress-label></p>
+                <div class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-ink-200 dark:bg-ink-800">
+                  <div class="h-full rounded-full bg-cut-600 transition-[width] dark:bg-cut-400" data-ai-progress-bar style="width: 0%"></div>
+                </div>
+              </div>
+
+              <p class="mt-2 text-xs text-ink-500 dark:text-ink-400" data-ai-note hidden>AI मोड रंग मिलाने के बजाय विषय को पहचानता है, इसलिए यह भीड़ भरे बैकग्राउंड भी संभाल लेता है। किनारा 320 पिक्सेल की जाली से बनाया जाता है, इसलिए सादे बैकग्राउंड पर रंग वाले मोड अब भी ज़्यादा साफ़ किनारा देते हैं।</p>
             </div>
 
             <div class="card" data-needs-image>
@@ -599,7 +624,7 @@
       </div>
     </footer>
 
-    <script type="application/json" id="i18n-dict">{"app.name":"Cutout","app.tagline":"ब्राउज़र में ही बैकग्राउंड हटाएँ","a11y.skip":"सीधे टूल पर जाएँ","a11y.langPicker":"भाषा","a11y.theme":"रंग थीम बदलें","a11y.editor":"बैकग्राउंड रिमूवर","a11y.canvas":"बैकग्राउंड हटी हुई तस्वीर का पूर्वावलोकन","a11y.breadcrumb":"पथ","common.saved":"सेटिंग्स इसी डिवाइस पर सहेजी गई हैं","common.notSaved":"आपका ब्राउज़र लोकल स्टोरेज रोक रहा है, इसलिए टैब बंद करते ही सेटिंग्स मिट जाएँगी।","common.reset":"सहेजी गई सेटिंग्स मिटाएँ","common.faq":"आम सवाल","foot.privacy":"हर पिक्सेल आपके ब्राउज़र में संसाधित होता है। कोई खाता नहीं, कोई अपलोड नहीं, कोई वॉटरमार्क नहीं।","foot.tools":"औज़ार","foot.languages":"भाषाएँ","foot.disclaimer":"नतीजा इस पर निर्भर करता है कि आपका विषय बैकग्राउंड से कितना अलग है। यह रंग मिलाता है; वस्तुएँ नहीं पहचानता।","foot.copyright":"© {year} {name}"}</script>
+    <script type="application/json" id="i18n-dict">{"app.name":"Cutout","app.tagline":"ब्राउज़र में ही बैकग्राउंड हटाएँ","a11y.skip":"सीधे टूल पर जाएँ","a11y.langPicker":"भाषा","a11y.theme":"रंग थीम बदलें","a11y.editor":"बैकग्राउंड रिमूवर","a11y.canvas":"बैकग्राउंड हटी हुई तस्वीर का पूर्वावलोकन","a11y.breadcrumb":"पथ","common.saved":"सेटिंग्स इसी डिवाइस पर सहेजी गई हैं","common.notSaved":"आपका ब्राउज़र लोकल स्टोरेज रोक रहा है, इसलिए टैब बंद करते ही सेटिंग्स मिट जाएँगी।","common.reset":"सहेजी गई सेटिंग्स मिटाएँ","common.faq":"आम सवाल","ai.consentTitle":"AI मोड चालू करें?","ai.consentBody":"इससे 7.6 MB का एक मॉडल एक ही बार डाउनलोड होता है। उसके बाद वह इसी डिवाइस पर रहता है और बिना इंटरनेट भी चलता है।","ai.consentPrivacy":"मॉडल आपके ब्राउज़र तक आता है; आपकी तस्वीर फिर भी बाहर नहीं जाती। किसी भी हाल में कुछ अपलोड नहीं होता।","ai.accept":"डाउनलोड करके चालू करें","ai.cancel":"अभी नहीं","ai.downloading":"मॉडल डाउनलोड हो रहा है… {size} में से {percent}%","ai.note":"AI मोड रंग मिलाने के बजाय विषय को पहचानता है, इसलिए यह भीड़ भरे बैकग्राउंड भी संभाल लेता है। किनारा 320 पिक्सेल की जाली से बनाया जाता है, इसलिए सादे बैकग्राउंड पर रंग वाले मोड अब भी ज़्यादा साफ़ किनारा देते हैं।","out.heading":"आउटपुट","out.background":"बैकग्राउंड","out.custom":"मनचाहा रंग","out.transparent":"पारदर्शी","out.trim":"विषय तक काटें","out.format":"फ़ाइल का प्रकार","out.png":"PNG — पारदर्शी, बिना गुणवत्ता हानि","out.webp":"WebP — पारदर्शी, हल्की","out.download":"तस्वीर डाउनलोड करें","out.reset":"सेटिंग्स रीसेट करें","out.newImage":"नई तस्वीर","out.working":"पूरे आकार में तैयार किया जा रहा है…","out.saved":"सहेजा गया {dimensions} · {size}","pick.none":"कोई रंग नहीं चुना","info.image":"{name} · {dimensions}","warn.nothing-removed":"कुछ नहीं हटा। सहनशीलता बढ़ाएँ, या बैकग्राउंड का रंग खुद चुनें।","warn.everything-removed":"लगभग सब कुछ हट गया। सहनशीलता घटाएँ — विषय का रंग बैकग्राउंड के बहुत पास है।","warn.busy-background":"बैकग्राउंड एक समतल रंग नहीं है, इसलिए स्वचालित कटाई खुरदरी रहेगी। रंग चुनना या ब्रश चलाना बेहतर रहेगा।","warn.mixed-background":"एक बैकग्राउंड रंग हट गया है, पर बैकग्राउंड का कुछ हिस्सा दूसरे रंग का है। उस रंग को ड्रॉपर से चुनिए, या बाकी को ब्रश से मिटा दीजिए।","warn.empty":"इस तस्वीर में काम करने लायक कोई पिक्सेल नहीं है।","err.tooLarge":"यह फ़ाइल 50 MB से बड़ी है। उसी तस्वीर का छोटा संस्करण आज़माएँ।","err.badType":"यह फ़ाइल प्रकार खोला नहीं जा सकता। PNG, JPG, WebP, GIF, BMP, AVIF या ICO इस्तेमाल करें।","err.tooManyPixels":"यह तस्वीर ब्राउज़र टैब में संसाधित करने के लिए बहुत बड़ी है। इसे छोटा करके फिर कोशिश करें।","err.decode":"यह तस्वीर पढ़ी नहीं जा सकी। यह खराब हो सकती है, या ऐसे प्रारूप में सहेजी है जिसे यह ब्राउज़र नहीं समझता।","err.unknown":"इस तस्वीर को पढ़ने में कुछ गड़बड़ हो गई।","err.exportFailed":"तस्वीर सहेजी नहीं जा सकी। WebP की जगह PNG आज़माएँ।","foot.privacy":"हर पिक्सेल आपके ब्राउज़र में संसाधित होता है। कोई खाता नहीं, कोई अपलोड नहीं, कोई वॉटरमार्क नहीं।","foot.tools":"औज़ार","foot.languages":"भाषाएँ","foot.disclaimer":"नतीजा इस पर निर्भर करता है कि आपका विषय बैकग्राउंड से कितना अलग है। यह रंग मिलाता है; वस्तुएँ नहीं पहचानता।","foot.copyright":"© {year} {name}"}</script>
     <script type="module" src="../assets/js/app.js"></script>
   </body>
 </html>

@@ -28,7 +28,11 @@ function boot(root) {
   const viewport = $('[data-viewport]', root);
   const stage = canvas.closest('[data-drop]');
   const brushCursor = $('[data-brush-cursor]', root);
-  const editor = new Editor({ canvas, onState: () => renderState() });
+  const editor = new Editor({
+    canvas,
+    onState: () => renderState(),
+    onProgress: (progress) => showProgress(progress),
+  });
 
   /** null = fit to the viewport; a number = screen pixels per image pixel. */
   let zoom = null;
@@ -132,6 +136,14 @@ function boot(root) {
   for (const button of $$('[data-mode]', root)) {
     button.addEventListener('click', () => {
       const mode = button.dataset.mode;
+
+      // AI mode costs a multi-megabyte download, so it is asked for once
+      // and explicitly rather than triggered by a button press.
+      if (mode === 'ai' && !store.get('aiAccepted')) {
+        showConsent(true);
+        return;
+      }
+
       store.set({ mode });
       // Chroma keying without a key colour is meaningless; seed a sensible
       // green so the first result is the one the user expected.
@@ -226,6 +238,56 @@ function boot(root) {
   // -------------------------------------------------------------------------
   // Canvas interaction
   // -------------------------------------------------------------------------
+
+  // -------------------------------------------------------------------------
+  // AI mode: consent, progress and failure
+  // -------------------------------------------------------------------------
+
+  const consentPanel = $('[data-ai-consent]', root);
+  const progressPanel = $('[data-ai-progress]', root);
+  const progressBar = $('[data-ai-progress-bar]', root);
+  const progressLabel = $('[data-ai-progress-label]', root);
+  const aiNote = $('[data-ai-note]', root);
+
+  function showConsent(visible) {
+    if (consentPanel) consentPanel.hidden = !visible;
+  }
+
+  $('[data-ai-accept]', root)?.addEventListener('click', () => {
+    store.set({ aiAccepted: true, mode: 'ai' });
+    showConsent(false);
+    renderState();
+    scheduleRefresh();
+  });
+
+  $('[data-ai-cancel]', root)?.addEventListener('click', () => {
+    showConsent(false);
+  });
+
+  /**
+   * Report the model download.
+   *
+   * The first run fetches several megabytes before anything appears to
+   * happen, and a silent multi-second wait is indistinguishable from a hang.
+   */
+  function showProgress(progress) {
+    if (!progressPanel) return;
+
+    if (progress?.cached || !progress || progress.loaded >= progress.total) {
+      progressPanel.hidden = true;
+      return;
+    }
+
+    const percent = Math.round((progress.loaded / progress.total) * 100);
+    progressPanel.hidden = false;
+    if (progressBar) progressBar.style.width = `${percent}%`;
+    if (progressLabel) {
+      progressLabel.textContent = t('ai.downloading', {
+        percent: String(percent),
+        size: formatBytes(progress.total),
+      });
+    }
+  }
 
   // -------------------------------------------------------------------------
   // Zoom
@@ -572,6 +634,9 @@ function boot(root) {
     // The ring belongs to the brush tool alone; leaving it on screen after
     // switching tools would suggest the brush is still armed.
     if (brushCursor && pointerMode !== 'brush') brushCursor.hidden = true;
+
+    if (aiNote) aiNote.hidden = state.mode !== 'ai';
+    if (consentPanel && state.aiAccepted) consentPanel.hidden = true;
 
     renderInfo();
     renderWarning();

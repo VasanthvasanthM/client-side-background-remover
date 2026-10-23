@@ -273,6 +273,40 @@ export function renderResult(rgba, mask, width, height, input = {}) {
 }
 
 /**
+ * Finish a mask that came from somewhere other than colour matching.
+ *
+ * The AI mode produces a raw alpha map; everything after that — dropping
+ * speckles, filling holes, shifting and feathering the edge — is the same
+ * work the colour modes need, so it runs through the identical path rather
+ * than a parallel one that could drift.
+ *
+ * `keyColor` is still reported because decontamination needs a background
+ * colour to un-mix, and the border estimate is as good a guess as exists when
+ * no colour was keyed on.
+ */
+export function refineExternalMask(rgba, mask, width, height, input = {}) {
+  const settings = { ...DEFAULT_SETTINGS, ...input };
+  if (width * height === 0) {
+    return { mask, keyColor: [255, 255, 255], confidence: 0, coverage: 0, warning: 'empty' };
+  }
+
+  const refined = refine(mask, width, height, settings);
+  const kept = coverage(refined);
+
+  return {
+    mask: refined,
+    keyColor: detectBackground(rgba, width, height).color,
+    // The model does not read the border, so border uniformity says nothing
+    // about whether to trust this result.
+    confidence: 1,
+    coverage: kept,
+    // Only the two absolute checks apply; "busy background" is precisely the
+    // case this mode exists to handle, so warning about it would be wrong.
+    warning: kept > 0.99 ? 'nothing-removed' : kept < 0.001 ? 'everything-removed' : '',
+  };
+}
+
+/**
  * Replay manual brush strokes onto a mask.
  *
  * Strokes are stored in normalised 0-1 image coordinates rather than pixels,

@@ -45,6 +45,14 @@ export const DEFAULTS = Object.freeze({
   exportFormat: 'png', // 'png' | 'webp'
   exportQuality: 92, // WebP only; PNG is lossless
 
+  /**
+   * Whether the visitor has accepted the AI model download.
+   *
+   * Remembered so the consent prompt appears once rather than on every
+   * visit; the weights themselves live in the Cache API, not here.
+   */
+  aiAccepted: false,
+
   // Brush
   brushSize: 24,
   brushHardness: 70,
@@ -65,7 +73,7 @@ const VALIDATORS = {
   theme: (v) => ['system', 'light', 'dark'].includes(v),
   lang: (v) => typeof v === 'string' && v.length <= 5,
 
-  mode: (v) => ['auto', 'color', 'chroma'].includes(v),
+  mode: (v) => ['auto', 'color', 'chroma', 'ai'].includes(v),
   tolerance: isPercent,
   softness: isPercent,
   contiguous: isBool,
@@ -82,6 +90,7 @@ const VALIDATORS = {
   exportFormat: (v) => ['png', 'webp'].includes(v),
   exportQuality: (v) => Number.isFinite(v) && v >= 40 && v <= 100,
 
+  aiAccepted: isBool,
   brushSize: (v) => Number.isFinite(v) && v >= 2 && v <= 200,
   brushHardness: isPercent,
   brushErase: isBool,
@@ -166,6 +175,9 @@ class Store {
     // Chroma mode without a key colour would silently key on pure green; make
     // that explicit rather than surprising.
     if (next.mode === 'chroma' && !next.pickedColor) next.pickedColor = '#00b140';
+    // Never restore straight into AI mode without consent: a reload would
+    // otherwise start a multi-megabyte download unannounced.
+    if (next.mode === 'ai' && !next.aiAccepted) next.mode = 'auto';
 
     return next;
   }

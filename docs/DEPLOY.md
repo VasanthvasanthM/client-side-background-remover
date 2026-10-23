@@ -96,17 +96,36 @@ with.
 
 ### The CSP this app needs
 
-Three directives matter more here than on a typical static site, and
-`npm run check` fails the build if any of them goes missing:
+Four directives matter more here than on a typical static site, and
+`npm run check` fails the build if any of them goes missing or goes wrong:
 
 - **`worker-src 'self'`** — the segmentation engine runs in a module worker.
   Without it the app looks loaded and then does nothing.
 - **`img-src … blob:`** — the `<img>` decode fallback loads the chosen file
   through `URL.createObjectURL`, and browsers do not treat a `blob:` URL as
   matching `'self'`.
-- **`script-src 'self'`** with no hashes — possible because the page ships no
-  inline script at all. If a hash ever appears in the generated policy, an
-  inline script has crept back in.
+- **`script-src 'wasm-unsafe-eval'`** — required by AI mode; instantiating a
+  WebAssembly module counts as eval under CSP. It permits WebAssembly only.
+  The check also fails if plain `'unsafe-eval'` ever appears, which is easy to
+  confuse with it when editing by hand.
+- **no hashes in `script-src`** — possible because the page ships no inline
+  script at all. If a hash appears, an inline script has crept back in.
+
+### The AI assets
+
+| Path | Size | Licence |
+| --- | --- | --- |
+| `assets/model/u2netp.onnx` | 4.36 MB | Apache-2.0 (U²-Net) |
+| `assets/vendor/ort/ort-wasm-simd-threaded.wasm` | 13.58 MB | MIT (ONNX Runtime Web) |
+| `assets/vendor/ort/ort.min.mjs` | 0.35 MB | MIT |
+
+About 7.6 MB over the wire once compressed, and only for visitors who opt in.
+Both directories are served `immutable` for a year, so a visitor pays once.
+
+Cloudflare Pages serves `.mjs` as JavaScript and `.wasm` as `application/wasm`
+by default. Both matter: a module served as `application/octet-stream` is
+refused outright by the browser. The local server was fixed to match, because
+getting this wrong makes AI mode look broken in testing only.
 
 ---
 
@@ -153,6 +172,12 @@ It is instant, because every deployment is an immutable set of static files.
 Almost always the CSP. Check the console for a violation naming
 `worker-src` or `blob:`. Both are in the generated policy, so this means
 `_headers` is stale — rebuild fully rather than running one step.
+
+**AI mode downloads and then fails.**
+Check the console for a CSP violation naming `wasm-unsafe-eval`, and check
+that `/assets/vendor/ort/ort.min.mjs` is served as a JavaScript type rather
+than `application/octet-stream` — a module with the wrong type is refused
+without being executed.
 
 **The build fails with `GA4_ID "..." is not a valid measurement ID`.**
 The ID must look like `G-XXXXXXXXXX`. A Universal Analytics `UA-` ID or a

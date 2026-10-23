@@ -163,7 +163,7 @@
           <div class="flex flex-col gap-4">
             <div class="card">
               <h2 class="text-sm font-bold">{{t.mode.heading}}</h2>
-              <div class="mt-3 grid grid-cols-3 gap-2" role="group" aria-label="{{t.mode.heading}}">
+              <div class="mt-3 grid grid-cols-2 gap-2" role="group" aria-label="{{t.mode.heading}}">
                 <button type="button" class="toggle px-2 text-xs" data-mode="auto" aria-pressed="true">
                   {{t.mode.auto}}
                 </button>
@@ -173,8 +173,33 @@
                 <button type="button" class="toggle px-2 text-xs" data-mode="chroma" aria-pressed="false">
                   {{t.mode.chroma}}
                 </button>
+                <button type="button" class="toggle px-2 text-xs" data-mode="ai" aria-pressed="false">
+                  {{t.mode.ai}}
+                </button>
               </div>
               <p class="mt-2 text-xs text-ink-500 dark:text-ink-400">{{t.mode.hint}}</p>
+
+              <!-- Consent gate. The model is several megabytes, so it is never
+                   fetched until someone asks for it in so many words. -->
+              <div class="mt-3 rounded-xl border border-cut-300 bg-cut-50 p-3 dark:border-cut-700 dark:bg-cut-950/40" data-ai-consent hidden>
+                <p class="text-sm font-semibold">{{t.ai.consentTitle}}</p>
+                <p class="mt-1 text-xs text-ink-600 dark:text-ink-300">{{t.ai.consentBody}}</p>
+                <p class="mt-1 text-xs text-ink-600 dark:text-ink-300">{{t.ai.consentPrivacy}}</p>
+                <div class="mt-3 flex gap-2">
+                  <button type="button" class="btn-primary flex-1 text-xs" data-ai-accept>{{t.ai.accept}}</button>
+                  <button type="button" class="btn-secondary flex-1 text-xs" data-ai-cancel>{{t.ai.cancel}}</button>
+                </div>
+              </div>
+
+              <!-- Download and inference progress. -->
+              <div class="mt-3" data-ai-progress hidden>
+                <p class="text-xs text-ink-600 dark:text-ink-300" data-ai-progress-label></p>
+                <div class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-ink-200 dark:bg-ink-800">
+                  <div class="h-full rounded-full bg-cut-600 transition-[width] dark:bg-cut-400" data-ai-progress-bar style="width: 0%"></div>
+                </div>
+              </div>
+
+              <p class="mt-2 text-xs text-ink-500 dark:text-ink-400" data-ai-note hidden>{{t.ai.note}}</p>
             </div>
 
             <div class="card" data-needs-image>

@@ -20,6 +20,7 @@ to Cloudflare Pages for nothing.
 | **Automatic** | Detects the backdrop from a ring of border pixels and removes everything connected to the edges that matches it |
 | **By colour** | Eyedropper one colour and remove it — either only where it touches the edges, or everywhere, which is what clears the gaps inside letters |
 | **Green screen** | Keys on hue, so a lit screen and its shadows go together, with saturation and brightness floors that protect dark hair and grey clothing |
+| **AI** *(opt-in)* | Finds the subject instead of matching colours, so it handles cluttered backgrounds and rooms. One-time 7.6 MB download, then offline |
 | **Brush** | Paint away what the automatic pass missed, or paint back what it took. A ring follows the pointer at the brush's real on-screen size |
 
 Zoom with the buttons, Ctrl/Cmd + wheel, or `0` / `1` / `+` / `-`; drag to pan
@@ -28,18 +29,25 @@ when no painting tool is active.
 Output is a transparent PNG or WebP, or the subject composited onto a flat
 colour, optionally trimmed tight to the subject.
 
-### What it is not
+### Two engines, one promise
 
-This matches colours. **It does not recognise objects.** It is excellent on a
-plain or near-plain backdrop — product shots, logos, signatures, screenshots,
-scanned pages, green screens — and poor on a subject photographed against a
-cluttered scene. It will not cut hair out of a busy photograph.
+The three colour modes match colours. They **do not recognise objects**, so
+they are excellent on a plain or near-plain backdrop — product shots, logos,
+signatures, screenshots, scanned pages, green screens — and poor on a subject
+photographed in a room. When the border is several unrelated colours the page
+says the cut will be rough rather than silently producing a bad one.
 
-Tools that manage that case run a neural network and need tens of megabytes of
-model weights downloaded first. This one needs nothing, starts instantly and
-works offline. That is the trade, and the UI states it: when the border is
-several unrelated colours, the page says the cut will be rough instead of
-silently producing a bad one.
+**AI mode** covers exactly that gap. It runs U²-Net in WebAssembly and finds
+the subject, so a cluttered background is no obstacle. It is opt-in because it
+costs a one-time 7.6 MB download; after that it is cached and works offline.
+
+Neither mode uploads anything. In AI mode **the model travels to the browser;
+the image still never leaves it.** Both files are served from this origin, so
+enabling AI makes no third-party request either.
+
+The trade runs both ways: the model knows *what* a subject is, but draws its
+boundary on a 320-pixel grid that is then scaled up. On a clean backdrop the
+colour modes still give a crisper edge.
 
 ### The parts most tools get wrong
 
@@ -65,7 +73,7 @@ silently producing a bad one.
 
 English (root), Spanish, Portuguese, French, Hindi, Indonesian and Arabic,
 each at its own subfolder URL with full `hreflang` alternates. Arabic renders
-right-to-left. Every dictionary holds the same 375 keys, enforced by
+right-to-left. Every dictionary holds the same 383 keys, enforced by
 `npm run check`.
 
 ```
@@ -103,7 +111,7 @@ app in production breaks it here first.
 | --- | --- |
 | `npm run build` | Clean, compile CSS, generate images, render every page, write the sitemap |
 | `npm run serve` | Static server at `:4178` that mirrors Cloudflare Pages |
-| `npm test` | 175 assertions over the colour, mask and compositing maths |
+| `npm test` | 186 assertions over the colour, mask and compositing maths |
 | `npm run check` | Dictionary parity, URL uniqueness, built-output and CSP audit |
 | `npm run clean` | Remove generated output, leaving sources |
 
@@ -133,7 +141,10 @@ assets/js/      color.js      sRGB, linear light, CIE L*a*b*, HSV — pure
                 editor.js     image loading, worker messaging, canvas
                 app.js        control wiring
                 store.js      validated localStorage, settings only
-assets/i18n/    seven dictionaries, 375 keys each
+                ai.js         optional segmentation, lazily imported
+assets/model/   u2netp.onnx   U²-Net small, Apache-2.0, 4.36 MB
+assets/vendor/  ort/          ONNX Runtime Web, MIT, WASM runtime
+assets/i18n/    seven dictionaries, 383 keys each
 src/            page and landing templates, plus header/footer partials
 scripts/        the build, the sitemap generator, the checks and the tests
 ```
@@ -186,7 +197,7 @@ editor. No fonts are fetched, no CDN is contacted, and the social image is a
 
 ## Testing
 
-`npm test` runs 175 assertions with no framework, over synthesised images
+`npm test` runs 186 assertions with no framework, over synthesised images
 whose correct answer is known by construction — the assertions are about
 geometry, not about "looks right".
 

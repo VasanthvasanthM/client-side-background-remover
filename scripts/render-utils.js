@@ -120,18 +120,23 @@ export const APP_RUNTIME_PREFIXES = [
   'a11y.',
   'common.',
   'foot.',
-  'age.',
-  'diff.',
-  'add.',
-  'zones.',
-  'cd.',
-  'city.',
-  'zodiac.',
-  'chinese.',
-  'generation.',
+  // Everything the running app looks up by key rather than having baked
+  // into the markup: status lines, errors, the honesty warnings, the
+  // model download progress.
+  'out.',
+  'err.',
+  'warn.',
+  'pick.',
+  'info.',
+  'ai.',
 ];
 
-export const LANDING_RUNTIME_PREFIXES = ['app.', 'a11y.', 'common.', 'foot.', 'city.', 'pair.', 'birthYear.'];
+// Deliberately absent: 'tool.', 'color.', 'format.', 'use.', 'faq.' and
+// 'landing.'. Those are landing-page prose, several times the size of the
+// subset the app actually reads, and inlining them would put every landing
+// page's text into every other page.
+
+export const LANDING_RUNTIME_PREFIXES = ['app.', 'a11y.', 'common.', 'foot.'];
 
 export function runtimeDict(dict, prefixes) {
   const out = {};
