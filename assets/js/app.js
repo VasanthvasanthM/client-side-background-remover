@@ -248,16 +248,69 @@ function boot(root) {
   const progressBar = $('[data-ai-progress-bar]', root);
   const progressLabel = $('[data-ai-progress-label]', root);
   const aiNote = $('[data-ai-note]', root);
+  const aiStatus = $('[data-ai-status]', root);
+  const aiStatusText = $('[data-ai-status-text]', root);
+  const aiStatusIcon = $('[data-ai-status-icon]', root);
+
+  /** '' | 'downloading' | 'ready' | 'running' | 'failed' */
+  let aiState = '';
+
+  function setAiState(next, detail) {
+    aiState = next;
+    if (!aiStatus) return;
+
+    const label = {
+      ready: t('ai.ready'),
+      running: t('ai.running'),
+      failed: detail || t('ai.failed'),
+    }[next];
+
+    aiStatus.hidden = !label;
+    if (!label) return;
+
+    if (aiStatusText) aiStatusText.textContent = label;
+    if (aiStatusIcon) aiStatusIcon.textContent = next === 'failed' ? '\u26a0' : next === 'ready' ? '\u2713' : '\u22ef';
+    aiStatus.className =
+      next === 'failed'
+        ? 'mt-2 flex items-start gap-1.5 text-xs text-amber-700 dark:text-amber-300'
+        : 'mt-2 flex items-start gap-1.5 text-xs text-ink-600 dark:text-ink-300';
+  }
+
+  /**
+   * Ask the worker for the model directly.
+   *
+   * Deliberately not routed through the preview path: that returns
+   * immediately when no image is loaded, so pressing the consent button
+   * before opening a photo used to do nothing at all — no download, no
+   * progress, no error. A button that promises a download has to start one.
+   */
+  async function downloadModel() {
+    setAiState('downloading');
+    try {
+      await editor.warmup();
+      if (progressPanel) progressPanel.hidden = true;
+      setAiState('ready');
+      return true;
+    } catch (error) {
+      if (progressPanel) progressPanel.hidden = true;
+      setAiState('failed', error?.message);
+      return false;
+    }
+  }
 
   function showConsent(visible) {
     if (consentPanel) consentPanel.hidden = !visible;
   }
 
-  $('[data-ai-accept]', root)?.addEventListener('click', () => {
+  $('[data-ai-accept]', root)?.addEventListener('click', async () => {
     store.set({ aiAccepted: true, mode: 'ai' });
     showConsent(false);
     renderState();
-    scheduleRefresh();
+
+    // Fetch first, then render. With an image already open the preview
+    // would start the same download anyway; without one, this is the only
+    // thing that does.
+    if (await downloadModel()) scheduleRefresh();
   });
 
   $('[data-ai-cancel]', root)?.addEventListener('click', () => {
@@ -271,10 +324,24 @@ function boot(root) {
    * happen, and a silent multi-second wait is indistinguishable from a hang.
    */
   function showProgress(progress) {
+    // Stage reports carry no byte counts; they say what the worker is
+    // doing so a silent few seconds does not read as a hang.
+    if (progress?.stage === 'running') {
+      if (progressPanel) progressPanel.hidden = true;
+      setAiState('running');
+      return;
+    }
+    if (progress?.stage === 'done') {
+      if (progressPanel) progressPanel.hidden = true;
+      setAiState('ready');
+      return;
+    }
+
     if (!progressPanel) return;
 
     if (progress?.cached || !progress || progress.loaded >= progress.total) {
       progressPanel.hidden = true;
+      if (progress?.cached) setAiState('ready');
       return;
     }
 
@@ -636,6 +703,8 @@ function boot(root) {
     if (brushCursor && pointerMode !== 'brush') brushCursor.hidden = true;
 
     if (aiNote) aiNote.hidden = state.mode !== 'ai';
+    if (aiStatus && state.mode !== 'ai') aiStatus.hidden = true;
+    else if (aiStatus && aiState) aiStatus.hidden = false;
     if (consentPanel && state.aiAccepted) consentPanel.hidden = true;
 
     renderInfo();
@@ -681,4 +750,16 @@ function boot(root) {
   applyZoom();
   applyTranslations(root);
   renderState();
+
+  // Report a model that is already on disk, so a returning visitor sees
+  // "ready" rather than an empty panel and wonders whether it downloaded.
+  if (store.get('aiAccepted')) {
+    import('./ai.js')
+      .then(({ isModelCached }) => isModelCached())
+      .then((cached) => {
+        if (cached) setAiState('ready');
+        renderState();
+      })
+      .catch(() => {});
+  }
 }

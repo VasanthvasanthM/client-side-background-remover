@@ -96,7 +96,12 @@ export function loadSession(onProgress) {
   if (sessionPromise) return sessionPromise;
 
   sessionPromise = (async () => {
-    const ort = await import(/* @vite-ignore */ new URL('ort.min.mjs', ORT_DIR).href);
+    // The wasm-only bundle, not the default one. ort.min.mjs bundles every
+    // backend and reaches for the JSEP/WebGPU glue, which pairs with a 27 MB
+    // wasm; this build has no use for it and shipping it would double the
+    // download. Keeping the two in step matters — the bundle and its glue file
+    // are a matched pair, and npm run check now enforces that.
+    const ort = await import(/* @vite-ignore */ new URL('ort.wasm.min.mjs', ORT_DIR).href);
 
     ort.env.wasm.numThreads = 1;
     ort.env.wasm.simd = true;

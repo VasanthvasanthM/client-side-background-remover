@@ -199,6 +199,14 @@
                 </div>
               </div>
 
+              <!-- Persistent state of the model: ready, failed, or nothing.
+                   Without it there is no way to tell a finished download from
+                   one that never started. -->
+              <p class="mt-2 flex items-start gap-1.5 text-xs" data-ai-status hidden role="status" aria-live="polite">
+                <span data-ai-status-icon aria-hidden="true"></span>
+                <span data-ai-status-text></span>
+              </p>
+
               <p class="mt-2 text-xs text-ink-500 dark:text-ink-400" data-ai-note hidden>{{t.ai.note}}</p>
             </div>
 

@@ -206,6 +206,16 @@ export class Editor {
     }
   }
 
+  /**
+   * Fetch the AI model now, without needing an image.
+   *
+   * Resolves once the weights are on disk and the session is built, so
+   * the caller can report a real "ready" rather than guessing.
+   */
+  async warmup() {
+    return this.#post({ type: 'warmup' });
+  }
+
   /** Forget the image entirely, including inside the worker. */
   unload() {
     this.full = null;

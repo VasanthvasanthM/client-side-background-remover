@@ -244,6 +244,67 @@ async function checkRuntimeKeys(dicts) {
   done(before, `${used.size} runtime keys across ${dynamic.size} dynamic groups, all shipped and translated`);
 }
 
+
+/**
+ * The vendored ONNX runtime must be complete.
+ *
+ * ORT's entry bundle loads a matching glue module by name at runtime, and the
+ * two are a pair: the all-backends bundle wants the JSEP/WebGPU glue, the
+ * wasm-only bundle wants the plain one. Vendoring the wrong half fails only in
+ * a browser, with "no available backend found" — a Node smoke test pointed at
+ * node_modules cannot catch it, because node_modules has every file.
+ *
+ * So this reads the bundle the app imports, extracts the filenames it
+ * references, and insists they are all present.
+ */
+async function checkVendoredRuntime() {
+  console.log('\nvendored runtime');
+  const before = failures.length;
+
+  const dir = path.join(ROOT, 'assets', 'vendor', 'ort');
+  if (!(await exists(dir))) {
+    note('no vendored runtime — AI mode is not built into this checkout');
+    return;
+  }
+
+  const present = new Set(await readdir(dir));
+
+  // Whichever bundle ai.js imports is the one that matters.
+  const ai = await readFile(path.join(ROOT, 'assets', 'js', 'ai.js'), 'utf8');
+  const entry = ai.match(/new URL\('(ort[A-Za-z0-9_.-]*\.mjs)'/)?.[1];
+
+  if (!entry) {
+    fail('vendor', 'could not tell which ORT bundle ai.js imports');
+    done(before, '');
+    return;
+  }
+  if (!present.has(entry)) {
+    fail('vendor', `ai.js imports ${entry}, which is not vendored`);
+    done(before, '');
+    return;
+  }
+
+  const bundle = await readFile(path.join(dir, entry), 'utf8');
+  const referenced = new Set([...bundle.matchAll(/ort-wasm[a-z0-9.-]*\.(?:mjs|wasm)/g)].map((m) => m[0]));
+
+  for (const file of referenced) {
+    if (!present.has(file)) {
+      fail('vendor', `${entry} loads ${file}, which is not vendored — AI mode will fail in a browser`);
+    }
+  }
+
+  // A glue module is useless without its binary and vice versa. Only the
+  // ort-wasm-* files are glue; ort*.mjs are entry bundles and have no binary
+  // of their own.
+  for (const file of present) {
+    if (!file.startsWith('ort-wasm') || !file.endsWith('.mjs')) continue;
+    const wasm = file.replace(/\.mjs$/, '.wasm');
+    if (!present.has(wasm)) fail('vendor', `${file} has no matching ${wasm}`);
+  }
+
+  done(before, `${entry} plus ${referenced.size} referenced file(s), all present`);
+}
+
 // ---------------------------------------------------------------------------
 // 4. Zone data
 // ---------------------------------------------------------------------------
@@ -569,6 +630,7 @@ async function main() {
   const dicts = await checkDictionaries();
   await checkTemplateTokens(dicts);
   await checkRuntimeKeys(dicts);
+  await checkVendoredRuntime();
   checkLandingData();
   checkLandingPages();
   await checkBuiltOutput();

@@ -77,6 +77,9 @@ self.onmessage = async (event) => {
       case 'export':
         await handleExport(event.data);
         break;
+      case 'warmup':
+        await handleWarmup(event.data);
+        break;
       case 'release':
         images.preview = null;
         images.full = null;
@@ -120,12 +123,31 @@ async function ensureAiMask(scope, image, token) {
   if (aiMask && aiScope === scope) return aiMask;
 
   const { segment } = await import('./ai.js');
+  self.postMessage({ type: 'progress', token, stage: 'running' });
 
   aiMask = await segment(image.rgba, image.width, image.height, (progress) => {
     self.postMessage({ type: 'progress', token, stage: 'model', ...progress });
   });
+  self.postMessage({ type: 'progress', token, stage: 'done' });
   aiScope = scope;
   return aiMask;
+}
+
+/**
+ * Download the model and build the session, with no image involved.
+ *
+ * This exists because accepting the download used to go through the
+ * normal preview path, which returns immediately when nothing is loaded —
+ * so pressing the button with no photo open did nothing at all, silently.
+ * Fetching on its own terms means the consent button always does what it
+ * says, and the weights are ready before the first image arrives.
+ */
+async function handleWarmup({ token }) {
+  const { loadSession } = await import('./ai.js');
+  await loadSession((progress) => {
+    self.postMessage({ type: 'progress', token, stage: 'model', ...progress });
+  });
+  self.postMessage({ type: 'warmup', token, ready: true });
 }
 
 async function handlePreview({ token, settings, strokes = [], strokeRevision = 0 }) {
