@@ -240,6 +240,66 @@ function boot(root) {
   // -------------------------------------------------------------------------
 
   // -------------------------------------------------------------------------
+  // Worked examples
+  // -------------------------------------------------------------------------
+
+  /**
+   * The settings each example is meant to demonstrate.
+   *
+   * They are the same values the matching landing page recommends, so the
+   * example and the documentation cannot drift apart.
+   */
+  const EXAMPLES = {
+    auto: { mode: 'auto', tolerance: 32, settings: {} },
+    color: { mode: 'color', pick: '#ffffff', settings: { tolerance: 24, contiguous: false } },
+    chroma: { mode: 'chroma', pick: '#00b140', settings: { tolerance: 60 } },
+    ai: { mode: 'ai', settings: {} },
+  };
+
+  for (const button of $$('[data-example]', root)) {
+    button.addEventListener('click', () => loadExample(button.dataset.example));
+  }
+
+  /**
+   * Load an example picture and switch to the mode it demonstrates.
+   *
+   * Fetched from this origin and turned into a File so it travels the
+   * identical path a dropped file does — no second code path to keep in
+   * step, and the privacy story is unchanged because the bytes never
+   * leave the page.
+   */
+  async function loadExample(name) {
+    const example = EXAMPLES[name];
+    if (!example) return;
+
+    // The AI example needs consent first, or clicking it would start a
+    // multi-megabyte download nobody asked for.
+    if (example.mode === 'ai' && !store.get('aiAccepted')) {
+      showConsent(true);
+      return;
+    }
+
+    try {
+      const url = new URL(`../samples/${name}.png`, import.meta.url);
+      const blob = await (await fetch(url)).blob();
+      const file = new File([blob], `example-${name}.png`, { type: 'image/png' });
+
+      store.set({ mode: example.mode, ...example.settings });
+      pickedColor = example.pick ?? '';
+
+      const ok = await editor.load(file);
+      if (ok) {
+        zoom = null;
+        applyZoom();
+        renderState();
+        scheduleRefresh();
+      }
+    } catch {
+      setStatus(t('err.unknown'));
+    }
+  }
+
+  // -------------------------------------------------------------------------
   // AI mode: consent, progress and failure
   // -------------------------------------------------------------------------
 
@@ -556,22 +616,22 @@ function boot(root) {
 
   // Hold to compare against the original. Pointer and keyboard both, because
   // "hold a key" is unusable for anyone who cannot hold two at once.
-  const compare = $('[data-compare]', root);
-  if (compare) {
-    const show = (on) => {
-      store.set({ showOriginal: on });
-      editor.draw();
-      renderState();
-    };
-    compare.addEventListener('pointerdown', () => show(true));
-    compare.addEventListener('pointerup', () => show(false));
-    compare.addEventListener('pointerleave', () => show(false));
-    compare.addEventListener('click', (event) => {
-      // A click with no preceding pointerdown is a keyboard activation:
-      // toggle instead of requiring a hold.
-      if (event.detail === 0) show(!store.get('showOriginal'));
-    });
+  /**
+   * Compare is a toggle, not a hold.
+   *
+   * Hold-to-compare is pleasant with a mouse and unusable everywhere
+   * else: on a touchscreen a long press opens the context menu, and with
+   * a keyboard there is nothing to hold. A toggle behaves identically on
+   * all three, and the label says which way it will go.
+   */
+  function toggleCompare(force) {
+    if (!editor.hasImage) return;
+    store.set({ showOriginal: force ?? !store.get('showOriginal') });
+    editor.draw();
+    renderState();
   }
+
+  $('[data-compare]', root)?.addEventListener('click', () => toggleCompare());
 
   // -------------------------------------------------------------------------
   // Export
@@ -634,6 +694,7 @@ function boot(root) {
     if (key === 'b') setPointerMode('brush');
     else if (key === 'i') setPointerMode('pick');
     else if (key === 'escape') setPointerMode('none');
+    else if (key === 'c') toggleCompare();
     else if (key === '0') setZoom(null);
     else if (key === '1') setZoom(1);
     else if (key === '+' || key === '=') setZoom(currentScale() * 1.25);
@@ -701,6 +762,14 @@ function boot(root) {
     // The ring belongs to the brush tool alone; leaving it on screen after
     // switching tools would suggest the brush is still armed.
     if (brushCursor && pointerMode !== 'brush') brushCursor.hidden = true;
+
+    const modeHint = $('[data-mode-hint]', root);
+    if (modeHint) modeHint.textContent = t(`mode.hint.${state.mode}`);
+
+    const compareButton = $('[data-compare]', root);
+    const compareLabel = $('[data-compare-label]', root);
+    if (compareButton) compareButton.setAttribute('aria-pressed', String(state.showOriginal));
+    if (compareLabel) compareLabel.textContent = state.showOriginal ? t('compare.showEdited') : t('compare.showOriginal');
 
     if (aiNote) aiNote.hidden = state.mode !== 'ai';
     if (aiStatus && state.mode !== 'ai') aiStatus.hidden = true;

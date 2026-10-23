@@ -129,6 +129,10 @@ export const APP_RUNTIME_PREFIXES = [
   'pick.',
   'info.',
   'ai.',
+  // The compare toggle relabels itself, so its two states are read at
+  // runtime. They live under their own prefix rather than 'tool.', which
+  // also holds every landing page's prose.
+  'compare.',
 ];
 
 // Deliberately absent: 'tool.', 'color.', 'format.', 'use.', 'faq.' and

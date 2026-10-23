@@ -24,7 +24,12 @@ to Cloudflare Pages for nothing.
 | **Brush** | Paint away what the automatic pass missed, or paint back what it took. A ring follows the pointer at the brush's real on-screen size |
 
 Zoom with the buttons, Ctrl/Cmd + wheel, or `0` / `1` / `+` / `-`; drag to pan
-when no painting tool is active.
+when no painting tool is active. `C` switches between the original and the
+result.
+
+Each mode ships a worked example: one click loads a picture that mode handles
+well with its settings already applied, which teaches the difference between
+them far faster than the hint text does.
 
 Output is a transparent PNG or WebP, or the subject composited onto a flat
 colour, optionally trimmed tight to the subject.
@@ -73,7 +78,7 @@ colour modes still give a crisper edge.
 
 English (root), Spanish, Portuguese, French, Hindi, Indonesian and Arabic,
 each at its own subfolder URL with full `hreflang` alternates. Arabic renders
-right-to-left. Every dictionary holds the same 383 keys, enforced by
+right-to-left. Every dictionary holds the same 397 keys, enforced by
 `npm run check`.
 
 ```
@@ -143,8 +148,9 @@ assets/js/      color.js      sRGB, linear light, CIE L*a*b*, HSV — pure
                 store.js      validated localStorage, settings only
                 ai.js         optional segmentation, lazily imported
 assets/model/   u2netp.onnx   U²-Net small, Apache-2.0, 4.36 MB
+assets/samples/ four worked examples, one per mode, 75 KB total
 assets/vendor/  ort/          ONNX Runtime Web, MIT, WASM runtime
-assets/i18n/    seven dictionaries, 383 keys each
+assets/i18n/    seven dictionaries, 397 keys each
 src/            page and landing templates, plus header/footer partials
 scripts/        the build, the sitemap generator, the checks and the tests
 ```

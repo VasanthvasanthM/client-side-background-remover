@@ -6,9 +6,10 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "build": "npm run clean && npm run build:css && npm run build:assets && npm run build:pages && npm run build:landing && npm run build:sitemap",
+    "build": "npm run clean && npm run build:css && npm run build:assets && npm run build:samples && npm run build:pages && npm run build:landing && npm run build:sitemap",
     "build:css": "tailwindcss -i src/input.css -o assets/css/app.css --minify",
     "build:assets": "node scripts/generate-assets.js",
+    "build:samples": "node scripts/generate-samples.js",
     "build:pages": "node scripts/build-pages.js",
     "build:landing": "node scripts/build-landing.js",
     "build:sitemap": "node scripts/generate-sitemap.js",

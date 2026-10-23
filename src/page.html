@@ -137,7 +137,9 @@
             <div class="flex flex-wrap items-center gap-2" data-needs-image>
               <button type="button" class="toggle" data-tool="pick" aria-pressed="false">{{t.tool.pick}}</button>
               <button type="button" class="toggle" data-tool="brush" aria-pressed="false">{{t.tool.brush}}</button>
-              <button type="button" class="btn-secondary" data-compare>{{t.tool.compare}}</button>
+              <button type="button" class="toggle" data-compare aria-pressed="false" title="{{t.compare.hint}}">
+                <span data-compare-label>{{t.compare.showOriginal}}</span>
+              </button>
               <span class="picked-chip ms-auto font-mono text-xs text-ink-500 dark:text-ink-400" data-picked></span>
             </div>
 
@@ -177,7 +179,34 @@
                   {{t.mode.ai}}
                 </button>
               </div>
-              <p class="mt-2 text-xs text-ink-500 dark:text-ink-400">{{t.mode.hint}}</p>
+              <p class="mt-2 text-xs text-ink-500 dark:text-ink-400" data-mode-hint></p>
+
+              <!-- One worked example per mode. Each loads a picture the
+                   mode visibly succeeds on, with that mode's settings
+                   already applied, because reading what a mode is for is
+                   far less convincing than watching it work. -->
+              <div class="mt-4 border-t border-ink-200 pt-3 dark:border-ink-800">
+                <p class="text-xs font-semibold">{{t.example.heading}}</p>
+                <div class="mt-2 grid grid-cols-4 gap-1.5">
+                  <button type="button" class="example" data-example="auto">
+                    <img src="{{ASSET_PREFIX}}assets/samples/auto.png" alt="{{t.example.auto}}" loading="lazy" width="440" height="340" />
+                    <span>{{t.mode.auto}}</span>
+                  </button>
+                  <button type="button" class="example" data-example="color">
+                    <img src="{{ASSET_PREFIX}}assets/samples/color.png" alt="{{t.example.color}}" loading="lazy" width="360" height="360" />
+                    <span>{{t.mode.color}}</span>
+                  </button>
+                  <button type="button" class="example" data-example="chroma">
+                    <img src="{{ASSET_PREFIX}}assets/samples/chroma.png" alt="{{t.example.chroma}}" loading="lazy" width="400" height="320" />
+                    <span>{{t.mode.chroma}}</span>
+                  </button>
+                  <button type="button" class="example" data-example="ai">
+                    <img src="{{ASSET_PREFIX}}assets/samples/ai.png" alt="{{t.example.ai}}" loading="lazy" width="400" height="330" />
+                    <span>{{t.mode.ai}}</span>
+                  </button>
+                </div>
+                <p class="mt-1.5 text-xs text-ink-500 dark:text-ink-400">{{t.example.hint}}</p>
+              </div>
 
               <!-- Consent gate. The model is several megabytes, so it is never
                    fetched until someone asks for it in so many words. -->
