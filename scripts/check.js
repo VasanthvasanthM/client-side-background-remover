@@ -12,7 +12,7 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 
-import { LOCALES, DEFAULT_LOCALE, GA4_ID, SITE_URL, absoluteUrl } from './site.config.js';
+import { LOCALES, DEFAULT_LOCALE, GA4_ID, ADSENSE_ID, SITE_URL, absoluteUrl } from './site.config.js';
 import {
   allLandingPages,
   alternatesFor,
@@ -608,6 +608,13 @@ async function checkSitemapAndHeaders() {
     const allowsGa = csp.includes('googletagmanager.com');
     if (GA4_ID && !allowsGa) fail('headers', 'a GA4 ID is set but the CSP does not allow googletagmanager.com');
     if (!GA4_ID && allowsGa) fail('headers', 'the CSP allows googletagmanager.com with no GA4 ID configured');
+
+    // Same guard for ads, in both directions. A CSP that forbids the ad
+    // origins shows no adverts and reports no error anywhere; a CSP that
+    // allows them with no publisher id is a loosened policy buying nothing.
+    const allowsAds = csp.includes('pagead2.googlesyndication.com');
+    if (ADSENSE_ID && !allowsAds) fail('headers', 'an AdSense ID is set but the CSP does not allow pagead2.googlesyndication.com');
+    if (!ADSENSE_ID && allowsAds) fail('headers', 'the CSP allows AdSense origins with no ADSENSE_ID configured');
 
     // worker-src is in this list because the segmentation engine runs in a
     // worker: without it the app silently does nothing on a strict browser.

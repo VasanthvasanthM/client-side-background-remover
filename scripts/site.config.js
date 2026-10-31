@@ -27,6 +27,23 @@ export const SITE_URL = (raw || PLACEHOLDER_URL).replace(/\/+$/, '');
  */
 export const GA4_ID = (process.env.GA4_ID || '').trim();
 
+/**
+ * AdSense publisher id, e.g. `ca-pub-1234567890123456`.
+ *
+ * Unset is the default and means the built site carries no ad markup, no
+ * third-party ad script and no widened CSP — byte-identical to a build from
+ * before ads existed. Set it and the landing pages gain two slots each; the
+ * tool pages never do, because an advert beside the tool costs the visit that
+ * would otherwise bring someone back.
+ */
+export const ADSENSE_ID = (process.env.ADSENSE_ID || '').trim();
+
+const ADSENSE_ID_RE = /^ca-pub-\d{16}$/;
+
+if (ADSENSE_ID && !ADSENSE_ID_RE.test(ADSENSE_ID)) {
+  throw new Error(`ADSENSE_ID "${ADSENSE_ID}" is not a valid publisher id (expected ca-pub- followed by 16 digits).`);
+}
+
 const GA4_ID_RE = /^G-[A-Z0-9]{6,}$/;
 
 if (GA4_ID && !GA4_ID_RE.test(GA4_ID)) {

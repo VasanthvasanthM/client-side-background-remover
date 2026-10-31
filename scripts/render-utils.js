@@ -10,6 +10,7 @@ import {
   DEFAULT_LOCALE,
   SITE_URL,
   GA4_ID,
+  ADSENSE_ID,
   OG_IMAGE_PATH,
   BUILD_YEAR,
   absoluteUrl,
@@ -227,6 +228,37 @@ export function ga4Snippet(assetPrefix) {
   return [
     `    <script async src="https://www.googletagmanager.com/gtag/js?id=${GA4_ID}"></script>`,
     `    <script src="${assetPrefix}assets/js/analytics.js" data-ga4-id="${GA4_ID}" defer></script>`,
+  ].join('\n');
+}
+
+/**
+ * The AdSense loader, or nothing at all.
+ *
+ * Like `ga4Snippet`, the id rides on a data attribute and the logic lives in
+ * `assets/js/ads.js`, so `script-src` needs no hash and no 'unsafe-inline'.
+ */
+export function adsenseSnippet(assetPrefix) {
+  if (!ADSENSE_ID) return '';
+  return [
+    `    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}" crossorigin="anonymous"></script>`,
+    `    <script src="${assetPrefix}assets/js/ads.js" data-adsense-id="${ADSENSE_ID}" defer></script>`,
+  ].join('\n');
+}
+
+/**
+ * One ad slot, or nothing at all.
+ *
+ * The wrapper reserves height before the advert loads. Without that the page
+ * jumps when it arrives, which Google itself penalises as layout shift — and
+ * which is worse than usual here, because the thing that moves is the article
+ * someone is in the middle of reading.
+ */
+export function adSlot(label) {
+  if (!ADSENSE_ID) return '';
+  return [
+    `      <aside class="ad-slot" data-ad-slot="${label}" aria-label="Advertisement">`,
+    `        <ins class="adsbygoogle" style="display:block" data-ad-client="${ADSENSE_ID}" data-ad-format="auto" data-full-width-responsive="true"></ins>`,
+    '      </aside>',
   ].join('\n');
 }
 

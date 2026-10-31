@@ -13,7 +13,7 @@
 import { readdir, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import { LOCALES, DEFAULT_LOCALE, SITE_URL, GA4_ID, USING_PLACEHOLDER_URL, absoluteUrl } from './site.config.js';
+import { LOCALES, DEFAULT_LOCALE, SITE_URL, GA4_ID, ADSENSE_ID, USING_PLACEHOLDER_URL, absoluteUrl } from './site.config.js';
 import { allLandingPages } from './landing-pages.js';
 import { ROOT } from './render-utils.js';
 
@@ -127,13 +127,29 @@ function headersFile() {
   // token for it. It permits WebAssembly only — not eval(), not
   // new Function(), not inline script — so it is a far smaller concession
   // than 'unsafe-eval', which this policy still refuses.
-  const scriptSrc = ["'self'", "'wasm-unsafe-eval'", GA4_ID ? 'https://www.googletagmanager.com' : '']
+  const scriptSrc = [
+    "'self'",
+    "'wasm-unsafe-eval'",
+    GA4_ID ? 'https://www.googletagmanager.com' : '',
+    ...(ADSENSE_ID ? [
+      'https://pagead2.googlesyndication.com',
+      'https://partner.googleadservices.com',
+      'https://tpc.googlesyndication.com',
+      'https://adservice.google.com',
+    ] : []),
+  ]
     .filter(Boolean)
     .join(' ');
   const connectSrc = [
     "'self'",
     GA4_ID ? 'https://www.google-analytics.com' : '',
     GA4_ID ? 'https://*.analytics.google.com' : '',
+    ...(ADSENSE_ID ? [
+      'https://pagead2.googlesyndication.com',
+      'https://googleads.g.doubleclick.net',
+      'https://ep1.adtrafficquality.google',
+      'https://ep2.adtrafficquality.google',
+    ] : []),
   ]
     .filter(Boolean)
     .join(' ');
@@ -147,7 +163,12 @@ function headersFile() {
     // chosen file through URL.createObjectURL, and browsers do not treat a
     // blob: URL as matching 'self'. Without it, image loading fails on every
     // browser that takes that path.
-    "img-src 'self' data: blob:",
+    ADSENSE_ID
+      // Creatives come from advertiser CDNs that cannot be listed,
+      // and ad frames from several Google hosts. This is the real
+      // cost of AdSense on a site with a strict policy.
+      ? "img-src 'self' data: blob: https:"
+      : "img-src 'self' data: blob:",
     "font-src 'self'",
     `connect-src ${connectSrc}`,
     "manifest-src 'self'",
@@ -155,6 +176,10 @@ function headersFile() {
     // fall back through child-src to script-src, which browsers have not
     // always agreed on — stating it removes the ambiguity.
     "worker-src 'self'",
+    // No frames at all without ads; the ad iframes need naming with them.
+    ADSENSE_ID
+      ? 'frame-src https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://www.google.com'
+      : "frame-src 'none'",
     "form-action 'none'",
     "frame-ancestors 'none'",
     "base-uri 'none'",

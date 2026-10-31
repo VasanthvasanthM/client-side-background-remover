@@ -308,3 +308,26 @@
     @apply aspect-square w-full rounded object-cover;
   }
 }
+
+
+/* An advert, with its space booked before it arrives.
+   Plain CSS rather than @apply so this lands the same way in every project,
+   and min-height rather than height so a taller creative grows instead of
+   being cropped. Collapsed entirely by ads.js when the loader is blocked. */
+.ad-slot {
+  display: block;
+  inline-size: 100%;
+  min-block-size: 280px;
+  margin-block: 2rem;
+  overflow: hidden;
+}
+
+.ad-slot::before {
+  content: 'Advertisement';
+  display: block;
+  padding-block-end: 0.25rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
