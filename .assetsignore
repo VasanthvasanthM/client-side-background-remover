@@ -1,0 +1,28 @@
+# Paths the deploy must not publish.
+#
+# These sites build into the repository root rather than into a dist/ folder,
+# so that every page sits one URL segment deep with no prefix to strip. The
+# consequence is that the deploy directory IS the repository, and the
+# toolchain sits beside the site unless it is named here.
+#
+# node_modules is the one that actually breaks the deploy: ~3,800 files, and
+# workerd inside it is 137 MiB against Cloudflare's 25 MiB per-file limit.
+# The rest are excluded because serving build inputs is pointless weight.
+#
+# Everything NOT listed here is published: index.html, the six locale folders,
+# the landing-page folders, assets/, sitemap.xml, robots.txt, _headers and
+# _redirects.
+
+node_modules
+scripts
+src
+docs
+marketing
+package.json
+package-lock.json
+tailwind.config.js
+README.md
+wrangler.jsonc
+wrangler.toml
+.wrangler
+.landing-manifest.json
