@@ -53,11 +53,19 @@ function initLanguage() {
  *
  * The build already wrote a correct year; this matters for a page served from
  * cache after New Year, when the baked year is a year behind.
+ *
+ * The year is passed as a **string**, and that is not incidental. `t()` runs
+ * every numeric variable through `Intl.NumberFormat`, which is right for the
+ * quantities it usually interpolates but wrong for a year: an identifier, not
+ * a quantity. Passed as a number it rendered as "© 2,026" in English and
+ * "© 2 026" in French — correct formatting of the wrong kind of value, on
+ * every page, and invisible to the build because the build-time copyright
+ * never goes through `t()`.
  */
 export function renderCopyright() {
   const node = $('[data-copyright]');
   if (!node) return;
-  node.textContent = t('foot.copyright', { year: new Date().getFullYear(), name: t('app.name') });
+  node.textContent = t('foot.copyright', { year: String(new Date().getFullYear()), name: t('app.name') });
 }
 
 export function renderStorageState() {
