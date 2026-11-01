@@ -122,8 +122,20 @@ const server = http.createServer(async (req, res) => {
   const file = await resolveFile(req.url || '/');
 
   if (!file) {
-    res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
-    res.end('404 Not Found');
+    // Cloudflare Pages answers an unknown path with 404.html and a real 404
+    // status. Serving plain text here instead would mean the one page written
+    // for this case is never seen until it is live.
+    try {
+      const body = await readFile(path.join(ROOT, '404.html'));
+      res.writeHead(404, {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'no-store',
+      });
+      res.end(body);
+    } catch {
+      res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
+      res.end('404 Not Found');
+    }
     return;
   }
 
