@@ -10,7 +10,7 @@
  *   node scripts/generate-sitemap.js
  */
 
-import { readdir, stat, writeFile } from 'node:fs/promises';
+import { readdir, stat, writeFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 
 import { LOCALES, DEFAULT_LOCALE, SITE_URL, GA4_ID, ADSENSE_ID, USING_PLACEHOLDER_URL, absoluteUrl } from './site.config.js';
@@ -287,6 +287,23 @@ async function main() {
     '',
   ].join('\n');
   await writeFile(path.join(ROOT, 'robots.txt'), robots, 'utf8');
+
+  // ads.txt proves to advertisers that these slots are ours to sell. Missing,
+  // the inventory is treated as unauthorised and most demand will not bid on
+  // it — the adverts still appear, they just earn less, with nothing in any
+  // log to say why. Removed when no publisher id is configured, so a stale
+  // file cannot outlive the account it names.
+  const adsTxtPath = path.join(ROOT, 'ads.txt');
+  if (ADSENSE_ID) {
+    const publisher = ADSENSE_ID.replace(/^ca-/, '');
+    await writeFile(
+      adsTxtPath,
+      `google.com, ${publisher}, DIRECT, f08c47fec0942fa0\n`,
+      'utf8',
+    );
+  } else {
+    await rm(adsTxtPath, { force: true });
+  }
 
   await writeFile(path.join(ROOT, '_headers'), headersFile(), 'utf8');
 
