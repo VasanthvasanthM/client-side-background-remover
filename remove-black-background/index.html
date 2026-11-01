@@ -42,7 +42,7 @@
     <link rel="icon" href="../assets/icon/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png" />
     <link rel="manifest" href="../assets/site.webmanifest" />
-    <link rel="stylesheet" href="../assets/css/app.css?v=0b3db9a5" />
+    <link rel="stylesheet" href="../assets/css/app.css?v=6353ad4c" />
 
     <script type="application/ld+json">[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Cutout","item":"https://client-side-background-remover.pages.dev/"},{"@type":"ListItem","position":2,"name":"Remove a black background","item":"https://client-side-background-remover.pages.dev/remove-black-background/"}]},{"@context":"https://schema.org","@type":"WebPage","name":"Remove a black background","description":"Remove a black background from any image and download a transparent PNG. Start at tolerance 30. Runs in your browser — nothing is uploaded.","url":"https://client-side-background-remover.pages.dev/remove-black-background/","inLanguage":"en","isPartOf":{"@type":"WebSite","name":"Cutout","url":"https://client-side-background-remover.pages.dev/"}},{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"en","mainEntity":[{"@type":"Question","name":"What tolerance should I use for a black background?","acceptedAnswer":{"@type":"Answer","text":"Start at 30 and adjust from there. Raise it if flecks of black survive; lower it if the subject starts disappearing."}},{"@type":"Question","name":"It removed part of my subject as well. What now?","acceptedAnswer":{"@type":"Answer","text":"The subject contains something close to that black. Lower the tolerance until the subject is safe, accept the leftover specks, and remove those with the brush — that is reliably faster than finding a tolerance that does both."}},{"@type":"Question","name":"Does it remove black inside the subject too?","acceptedAnswer":{"@type":"Answer","text":"Only if you want it to. Leave connectivity on and only the area joined to the edges goes; turn it off and every matching pixel goes, including enclosed gaps."}}]}]</script>
 
@@ -214,7 +214,7 @@
 
     <footer class="border-t border-ink-200 bg-white dark:border-ink-800 dark:bg-ink-900">
       <div class="mx-auto max-w-content px-4 py-10 sm:px-6">
-        <div class="grid gap-8 sm:grid-cols-3">
+        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p class="text-sm font-bold">Cutout</p>
             <p class="mt-2 text-sm text-ink-600 dark:text-ink-300">Every pixel is processed in your browser. No account, no uploads, no watermark.</p>
@@ -246,6 +246,15 @@
               <li><a class="link" href="../ar/remove-black-background/" hreflang="ar" lang="ar" >العربية</a></li>
             </ul>
           </nav>
+          <nav aria-labelledby="foot-legal">
+            <p class="text-sm font-bold" id="foot-legal">Site information</p>
+            <ul class="mt-2 space-y-1.5 text-sm" role="list">
+              <li><a class="link" href="../privacy/">Privacy Policy</a></li>
+              <li><a class="link" href="../terms/">Terms of Use</a></li>
+              <li><a class="link" href="../about/">About</a></li>
+              <li><a class="link" href="../contact/">Contact</a></li>
+            </ul>
+          </nav>
         </div>
 
         <div class="mt-8 border-t border-ink-200 pt-6 dark:border-ink-800">
@@ -258,7 +267,7 @@
       </div>
     </footer>
 
-    <script type="application/json" id="i18n-dict">{"app.name":"Cutout","app.tagline":"Remove backgrounds in your browser","a11y.skip":"Skip to the tool","a11y.langPicker":"Language","a11y.theme":"Switch colour theme","a11y.editor":"Background remover","a11y.canvas":"Image preview with the background removed","a11y.breadcrumb":"Breadcrumb","common.saved":"Settings saved on this device","common.notSaved":"Your browser is blocking local storage, so settings will reset when you close the tab.","common.reset":"Clear saved settings","common.faq":"Common questions","foot.privacy":"Every pixel is processed in your browser. No account, no uploads, no watermark.","foot.tools":"Tools","foot.languages":"Languages","foot.disclaimer":"Results depend on how distinct your subject is from its background. This matches colours; it does not recognise objects.","foot.copyright":"© {year} {name}"}</script>
+    <script type="application/json" id="i18n-dict">{"app.name":"Cutout","app.tagline":"Remove backgrounds in your browser","a11y.skip":"Skip to the tool","a11y.langPicker":"Language","a11y.theme":"Switch colour theme","a11y.editor":"Background remover","a11y.canvas":"Image preview with the background removed","a11y.breadcrumb":"Breadcrumb","common.saved":"Settings saved on this device","common.notSaved":"Your browser is blocking local storage, so settings will reset when you close the tab.","common.reset":"Clear saved settings","common.faq":"Common questions","foot.privacy":"Every pixel is processed in your browser. No account, no uploads, no watermark.","foot.tools":"Tools","foot.languages":"Languages","foot.disclaimer":"Results depend on how distinct your subject is from its background. This matches colours; it does not recognise objects.","foot.copyright":"© {year} {name}","foot.legalHeading":"Site information"}</script>
     <script type="module" src="../assets/js/landing.js"></script>
   </body>
 </html>

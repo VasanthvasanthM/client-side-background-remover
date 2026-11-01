@@ -150,6 +150,7 @@ async function main() {
       '{{ASSET_PREFIX}}': prefix,
       // One level up from a landing page is its locale's home.
       '{{HOME_HREF}}': '../',
+      '{{LEGAL_BASE}}': '../',
       '{{TOOL_HREF}}': `../${content.toolQuery}`,
       '{{CSS_VERSION}}': cssV,
       '{{PAGE_TITLE}}': escapeHtml(content.title),

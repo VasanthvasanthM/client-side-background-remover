@@ -395,5 +395,10 @@
   "use.q2": "Apakah {subject} dikirim ke server?",
   "use.a2": "Tidak. Ia didekode dan diproses sepenuhnya di peramban Anda, dan tidak ada yang dikirim ke mana pun. Tidak ada server untuk mengirimnya.",
   "use.q3": "Apakah ada watermark atau batasan?",
-  "use.a3": "Tidak keduanya. Tidak ada watermark yang ditambahkan, tidak ada batas jumlah gambar, dan tidak perlu akun."
+  "use.a3": "Tidak keduanya. Tidak ada watermark yang ditambahkan, tidak ada batas jumlah gambar, dan tidak perlu akun.",
+  "legal.privacy": "Kebijakan Privasi",
+  "legal.terms": "Ketentuan Penggunaan",
+  "legal.about": "Tentang",
+  "legal.contact": "Kontak",
+  "foot.legalHeading": "Informasi situs"
 }

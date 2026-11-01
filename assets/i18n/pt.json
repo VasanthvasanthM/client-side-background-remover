@@ -395,5 +395,10 @@
   "use.q2": "{subject} é enviada para um servidor?",
   "use.a2": "Não. É decodificada e processada inteiramente no seu navegador, e nada é enviado a lugar nenhum. Não há servidor para onde mandar.",
   "use.q3": "Tem marca d'água ou algum limite?",
-  "use.a3": "Nem uma coisa nem outra. Nenhuma marca d'água é acrescentada, não há teto de imagens e não é preciso conta."
+  "use.a3": "Nem uma coisa nem outra. Nenhuma marca d'água é acrescentada, não há teto de imagens e não é preciso conta.",
+  "legal.privacy": "Política de Privacidade",
+  "legal.terms": "Termos de Uso",
+  "legal.about": "Sobre",
+  "legal.contact": "Contato",
+  "foot.legalHeading": "Informações do site"
 }

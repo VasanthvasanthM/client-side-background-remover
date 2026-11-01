@@ -42,7 +42,7 @@
     <link rel="icon" href="../../assets/icon/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="../../assets/icon/apple-touch-icon.png" />
     <link rel="manifest" href="../../assets/site.webmanifest" />
-    <link rel="stylesheet" href="../../assets/css/app.css?v=0b3db9a5" />
+    <link rel="stylesheet" href="../../assets/css/app.css?v=6353ad4c" />
 
     <script type="application/ld+json">[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Cutout","item":"https://client-side-background-remover.pages.dev/ar/"},{"@type":"ListItem","position":2,"name":"إزالة الخلفية حسب اللون","item":"https://client-side-background-remover.pages.dev/ar/color-background-remover/"}]},{"@context":"https://schema.org","@type":"WebPage","name":"إزالة الخلفية حسب اللون","description":"التقط لونًا بالقطّارة وأزله من كل مكان، أو من حيث يلامس الحواف فقط.","url":"https://client-side-background-remover.pages.dev/ar/color-background-remover/","inLanguage":"ar","isPartOf":{"@type":"WebSite","name":"Cutout","url":"https://client-side-background-remover.pages.dev/ar/"}},{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"ar","mainEntity":[{"@type":"Question","name":"لماذا ما زال في شعاري بياض داخل الحروف؟","acceptedAnswer":{"@type":"Answer","text":"لأن ذلك البياض غير متصل بالخارج. ألغِ تحديد «المنطقة المتصلة بالحواف فقط» فيختفي."}},{"@type":"Question","name":"هل يطابق اللون مطابقة تامة؟","acceptedAnswer":{"@type":"Answer","text":"لا، ولا ينبغي: الضغط وضوضاء المستشعر يجعلان الخلفية المسطحة قيمة غير ثابتة أبدًا. والتسامح يحدد كم يبعد البكسل عن اللون الملتقط ويظل محسوبًا، مقيسًا في فضاء لوني إدراكي لا في RGB الخام."}},{"@type":"Question","name":"هل يمكنني إزالة أكثر من لون؟","acceptedAnswer":{"@type":"Answer","text":"واحدًا في كل مرة، لكن الفرشاة تغطي ما تبقّى؛ ولخلفية من لونين مسطحين، تمرير وضع اللون مرتين أسرع عادةً من مصارعة التسامح."}}]}]</script>
 
@@ -187,7 +187,7 @@
 
     <footer class="border-t border-ink-200 bg-white dark:border-ink-800 dark:bg-ink-900">
       <div class="mx-auto max-w-content px-4 py-10 sm:px-6">
-        <div class="grid gap-8 sm:grid-cols-3">
+        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p class="text-sm font-bold">Cutout</p>
             <p class="mt-2 text-sm text-ink-600 dark:text-ink-300">كل بكسل يُعالَج داخل متصفحك. بلا حساب، وبلا رفع، وبلا علامة مائية.</p>
@@ -219,6 +219,15 @@
               <li><a class="font-semibold" href="../../ar/color-background-remover/" hreflang="ar" lang="ar" aria-current="page" >العربية</a></li>
             </ul>
           </nav>
+          <nav aria-labelledby="foot-legal">
+            <p class="text-sm font-bold" id="foot-legal">معلومات الموقع</p>
+            <ul class="mt-2 space-y-1.5 text-sm" role="list">
+              <li><a class="link" href="../privacy/">سياسة الخصوصية</a></li>
+              <li><a class="link" href="../terms/">شروط الاستخدام</a></li>
+              <li><a class="link" href="../about/">نبذة</a></li>
+              <li><a class="link" href="../contact/">اتصل بنا</a></li>
+            </ul>
+          </nav>
         </div>
 
         <div class="mt-8 border-t border-ink-200 pt-6 dark:border-ink-800">
@@ -231,7 +240,7 @@
       </div>
     </footer>
 
-    <script type="application/json" id="i18n-dict">{"app.name":"Cutout","app.tagline":"أزل الخلفيات داخل متصفحك","a11y.skip":"تخطَّ إلى الأداة","a11y.langPicker":"اللغة","a11y.theme":"تغيير سمة الألوان","a11y.editor":"أداة إزالة الخلفية","a11y.canvas":"معاينة الصورة بعد إزالة الخلفية","a11y.breadcrumb":"مسار التنقل","common.saved":"الإعدادات محفوظة على هذا الجهاز","common.notSaved":"متصفحك يحجب التخزين المحلي، لذا ستُفقد الإعدادات عند إغلاق التبويب.","common.reset":"مسح الإعدادات المحفوظة","common.faq":"أسئلة شائعة","foot.privacy":"كل بكسل يُعالَج داخل متصفحك. بلا حساب، وبلا رفع، وبلا علامة مائية.","foot.tools":"الأدوات","foot.languages":"اللغات","foot.disclaimer":"تتوقف النتيجة على مدى تمايز موضوعك عن خلفيته. هذه الأداة تطابق الألوان؛ وهي لا تتعرّف على الأشياء.","foot.copyright":"© {year} {name}"}</script>
+    <script type="application/json" id="i18n-dict">{"app.name":"Cutout","app.tagline":"أزل الخلفيات داخل متصفحك","a11y.skip":"تخطَّ إلى الأداة","a11y.langPicker":"اللغة","a11y.theme":"تغيير سمة الألوان","a11y.editor":"أداة إزالة الخلفية","a11y.canvas":"معاينة الصورة بعد إزالة الخلفية","a11y.breadcrumb":"مسار التنقل","common.saved":"الإعدادات محفوظة على هذا الجهاز","common.notSaved":"متصفحك يحجب التخزين المحلي، لذا ستُفقد الإعدادات عند إغلاق التبويب.","common.reset":"مسح الإعدادات المحفوظة","common.faq":"أسئلة شائعة","foot.privacy":"كل بكسل يُعالَج داخل متصفحك. بلا حساب، وبلا رفع، وبلا علامة مائية.","foot.tools":"الأدوات","foot.languages":"اللغات","foot.disclaimer":"تتوقف النتيجة على مدى تمايز موضوعك عن خلفيته. هذه الأداة تطابق الألوان؛ وهي لا تتعرّف على الأشياء.","foot.copyright":"© {year} {name}","foot.legalHeading":"معلومات الموقع"}</script>
     <script type="module" src="../../assets/js/landing.js"></script>
   </body>
 </html>

@@ -395,5 +395,10 @@
   "use.q2": "{subject} est-elle envoyée à un serveur ?",
   "use.a2": "Non. Elle est décodée et traitée entièrement dans votre navigateur, et rien n'est envoyé nulle part. Il n'y a aucun serveur vers lequel l'envoyer.",
   "use.q3": "Y a-t-il un filigrane ou une limite ?",
-  "use.a3": "Ni l'un ni l'autre. Aucun filigrane n'est ajouté, il n'y a pas de plafond du nombre d'images, et aucun compte n'est nécessaire."
+  "use.a3": "Ni l'un ni l'autre. Aucun filigrane n'est ajouté, il n'y a pas de plafond du nombre d'images, et aucun compte n'est nécessaire.",
+  "legal.privacy": "Politique de confidentialité",
+  "legal.terms": "Conditions d’utilisation",
+  "legal.about": "À propos",
+  "legal.contact": "Contact",
+  "foot.legalHeading": "Informations du site"
 }

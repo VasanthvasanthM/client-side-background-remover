@@ -395,5 +395,10 @@
   "use.q2": "Is {subject} uploaded to a server?",
   "use.a2": "No. It is decoded and processed entirely in your browser, and nothing is sent anywhere. There is no server to send it to.",
   "use.q3": "Is there a watermark or a limit?",
-  "use.a3": "Neither. No watermark is added, there is no cap on how many images you process, and no account is needed."
+  "use.a3": "Neither. No watermark is added, there is no cap on how many images you process, and no account is needed.",
+  "legal.privacy": "Privacy Policy",
+  "legal.terms": "Terms of Use",
+  "legal.about": "About",
+  "legal.contact": "Contact",
+  "foot.legalHeading": "Site information"
 }

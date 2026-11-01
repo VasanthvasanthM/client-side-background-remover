@@ -1,6 +1,6 @@
     <footer class="border-t border-ink-200 bg-white dark:border-ink-800 dark:bg-ink-900">
       <div class="mx-auto max-w-content px-4 py-10 sm:px-6">
-        <div class="grid gap-8 sm:grid-cols-3">
+        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p class="text-sm font-bold">{{t.app.name}}</p>
             <p class="mt-2 text-sm text-ink-600 dark:text-ink-300">{{t.foot.privacy}}</p>
@@ -19,6 +19,15 @@
             <p class="text-sm font-bold" id="foot-langs">{{t.foot.languages}}</p>
             <ul class="mt-2 grid grid-cols-2 gap-1.5 text-sm" role="list">
 {{FOOTER_LANGS}}
+            </ul>
+          </nav>
+          <nav aria-labelledby="foot-legal">
+            <p class="text-sm font-bold" id="foot-legal">{{t.foot.legalHeading}}</p>
+            <ul class="mt-2 space-y-1.5 text-sm" role="list">
+              <li><a class="link" href="{{LEGAL_BASE}}privacy/">{{t.legal.privacy}}</a></li>
+              <li><a class="link" href="{{LEGAL_BASE}}terms/">{{t.legal.terms}}</a></li>
+              <li><a class="link" href="{{LEGAL_BASE}}about/">{{t.legal.about}}</a></li>
+              <li><a class="link" href="{{LEGAL_BASE}}contact/">{{t.legal.contact}}</a></li>
             </ul>
           </nav>
         </div>

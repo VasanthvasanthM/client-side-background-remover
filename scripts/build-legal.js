@@ -204,6 +204,7 @@ async function main() {
         ),
         '{{ASSET_PREFIX}}': prefix,
         '{{HOME_HREF}}': '../',
+        '{{LEGAL_BASE}}': '../',
         '{{TOOL_HREF}}': '../',
         '{{CSS_VERSION}}': cssV,
         '{{PAGE_TITLE}}': escapeHtml(`${title} — ${dict['app.name']}`),

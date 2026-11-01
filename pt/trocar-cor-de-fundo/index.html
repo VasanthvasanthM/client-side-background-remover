@@ -42,7 +42,7 @@
     <link rel="icon" href="../../assets/icon/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="../../assets/icon/apple-touch-icon.png" />
     <link rel="manifest" href="../../assets/site.webmanifest" />
-    <link rel="stylesheet" href="../../assets/css/app.css?v=0b3db9a5" />
+    <link rel="stylesheet" href="../../assets/css/app.css?v=6353ad4c" />
 
     <script type="application/ld+json">[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Cutout","item":"https://client-side-background-remover.pages.dev/pt/"},{"@type":"ListItem","position":2,"name":"Trocar a cor de fundo","item":"https://client-side-background-remover.pages.dev/pt/trocar-cor-de-fundo/"}]},{"@context":"https://schema.org","@type":"WebPage","name":"Trocar a cor de fundo","description":"Troque o fundo por uma cor sólida — branco para um anúncio de marketplace, uma cor de marca para a foto de perfil.","url":"https://client-side-background-remover.pages.dev/pt/trocar-cor-de-fundo/","inLanguage":"pt","isPartOf":{"@type":"WebSite","name":"Cutout","url":"https://client-side-background-remover.pages.dev/pt/"}},{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"pt","mainEntity":[{"@type":"Question","name":"Que branco os marketplaces querem?","acceptedAnswer":{"@type":"Answer","text":"Branco puro, #ffffff, é o que a Amazon e a maioria especifica. A primeira amostra branca é exatamente esse, não um branco quebrado."}},{"@type":"Question","name":"Posso colocar uma foto atrás em vez de uma cor?","acceptedAnswer":{"@type":"Answer","text":"Aqui não. Exporte um PNG transparente e sobreponha ao que quiser em qualquer editor — assim esta ferramenta faz um trabalho só e faz direito."}},{"@type":"Question","name":"Por que meu arquivo ficou maior?","acceptedAnswer":{"@type":"Answer","text":"Um fundo chapado comprime muito bem em PNG, então normalmente ele diminui. Se aumentou, a imagem é uma fotografia; mudar para WebP reduz bastante."}}]}]</script>
 
@@ -187,7 +187,7 @@
 
     <footer class="border-t border-ink-200 bg-white dark:border-ink-800 dark:bg-ink-900">
       <div class="mx-auto max-w-content px-4 py-10 sm:px-6">
-        <div class="grid gap-8 sm:grid-cols-3">
+        <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p class="text-sm font-bold">Cutout</p>
             <p class="mt-2 text-sm text-ink-600 dark:text-ink-300">Cada pixel é processado no seu navegador. Sem conta, sem uploads e sem marca d&#39;água.</p>
@@ -219,6 +219,15 @@
               <li><a class="link" href="../../ar/background-color-changer/" hreflang="ar" lang="ar" >العربية</a></li>
             </ul>
           </nav>
+          <nav aria-labelledby="foot-legal">
+            <p class="text-sm font-bold" id="foot-legal">Informações do site</p>
+            <ul class="mt-2 space-y-1.5 text-sm" role="list">
+              <li><a class="link" href="../privacy/">Política de Privacidade</a></li>
+              <li><a class="link" href="../terms/">Termos de Uso</a></li>
+              <li><a class="link" href="../about/">Sobre</a></li>
+              <li><a class="link" href="../contact/">Contato</a></li>
+            </ul>
+          </nav>
         </div>
 
         <div class="mt-8 border-t border-ink-200 pt-6 dark:border-ink-800">
@@ -231,7 +240,7 @@
       </div>
     </footer>
 
-    <script type="application/json" id="i18n-dict">{"app.name":"Cutout","app.tagline":"Remova fundos no seu navegador","a11y.skip":"Pular para a ferramenta","a11y.langPicker":"Idioma","a11y.theme":"Mudar o tema de cores","a11y.editor":"Removedor de fundo","a11y.canvas":"Prévia da imagem com o fundo removido","a11y.breadcrumb":"Trilha de navegação","common.saved":"Ajustes salvos neste aparelho","common.notSaved":"Seu navegador está bloqueando o armazenamento local, então os ajustes se perdem ao fechar a aba.","common.reset":"Apagar os ajustes salvos","common.faq":"Perguntas frequentes","foot.privacy":"Cada pixel é processado no seu navegador. Sem conta, sem uploads e sem marca d'água.","foot.tools":"Ferramentas","foot.languages":"Idiomas","foot.disclaimer":"O resultado depende de quão distinto o objeto é do fundo. Isto compara cores; não reconhece objetos.","foot.copyright":"© {year} {name}"}</script>
+    <script type="application/json" id="i18n-dict">{"app.name":"Cutout","app.tagline":"Remova fundos no seu navegador","a11y.skip":"Pular para a ferramenta","a11y.langPicker":"Idioma","a11y.theme":"Mudar o tema de cores","a11y.editor":"Removedor de fundo","a11y.canvas":"Prévia da imagem com o fundo removido","a11y.breadcrumb":"Trilha de navegação","common.saved":"Ajustes salvos neste aparelho","common.notSaved":"Seu navegador está bloqueando o armazenamento local, então os ajustes se perdem ao fechar a aba.","common.reset":"Apagar os ajustes salvos","common.faq":"Perguntas frequentes","foot.privacy":"Cada pixel é processado no seu navegador. Sem conta, sem uploads e sem marca d'água.","foot.tools":"Ferramentas","foot.languages":"Idiomas","foot.disclaimer":"O resultado depende de quão distinto o objeto é do fundo. Isto compara cores; não reconhece objetos.","foot.copyright":"© {year} {name}","foot.legalHeading":"Informações do site"}</script>
     <script type="module" src="../../assets/js/landing.js"></script>
   </body>
 </html>

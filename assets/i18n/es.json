@@ -395,5 +395,10 @@
   "use.q2": "¿Se sube {subject} a un servidor?",
   "use.a2": "No. Se descodifica y se procesa íntegramente en tu navegador, y no se envía nada a ningún sitio. No hay servidor al que enviarlo.",
   "use.q3": "¿Hay marca de agua o algún límite?",
-  "use.a3": "Ninguna de las dos cosas. No se añade marca de agua, no hay tope de imágenes y no hace falta cuenta."
+  "use.a3": "Ninguna de las dos cosas. No se añade marca de agua, no hay tope de imágenes y no hace falta cuenta.",
+  "legal.privacy": "Política de privacidad",
+  "legal.terms": "Términos de uso",
+  "legal.about": "Acerca de",
+  "legal.contact": "Contacto",
+  "foot.legalHeading": "Información del sitio"
 }

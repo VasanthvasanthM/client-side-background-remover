@@ -147,6 +147,7 @@ async function buildLocale({ page, header, footer, cssV }) {
       ),
       '{{ASSET_PREFIX}}': prefix,
       '{{HOME_HREF}}': prefix,
+      '{{LEGAL_BASE}}': './',
       '{{CSS_VERSION}}': cssV,
       '{{JSONLD}}': appJsonLd({ locale, dict, canonical }),
       '{{GA4}}': ga4Snippet(prefix),
