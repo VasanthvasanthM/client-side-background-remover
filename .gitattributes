@@ -1,0 +1,29 @@
+# Keep git's line-ending conversion away from binary files.
+#
+# Git guesses text-or-binary from the first few kilobytes. A PDF opens with
+# "%PDF-" and a long stretch of readable object headers before any compressed
+# stream, so the guess comes out wrong: on checkout git rewrote every LF inside
+# it as CRLF, and a 8,888-byte file came back from a fresh clone at 9,012 with
+# a broken cross-reference table. It still opened, because readers are
+# forgiving, which is exactly why nobody would have noticed.
+#
+# Everything here is matched by extension rather than left to the heuristic.
+
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.webp  binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
+*.wasm  binary
+*.mp4   binary
+*.webm  binary
+*.mp3   binary
+*.wav   binary
+*.zip   binary
+*.tgz   binary
